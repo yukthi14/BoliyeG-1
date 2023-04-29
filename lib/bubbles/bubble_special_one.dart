@@ -41,7 +41,7 @@ class BubbleSpecialOne extends StatelessWidget {
     Icon? stateIcon;
     if (sent) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -49,7 +49,7 @@ class BubbleSpecialOne extends StatelessWidget {
     }
     if (delivered) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -57,7 +57,7 @@ class BubbleSpecialOne extends StatelessWidget {
     }
     if (seen) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF92DEDA),
@@ -79,15 +79,15 @@ class BubbleSpecialOne extends StatelessWidget {
             ),
             margin: isSender
                 ? stateTick
-                    ? EdgeInsets.fromLTRB(7, 7, 14, 7)
-                    : EdgeInsets.fromLTRB(7, 7, 17, 7)
-                : EdgeInsets.fromLTRB(17, 7, 7, 7),
+                    ? const EdgeInsets.fromLTRB(7, 7, 14, 7)
+                    : const EdgeInsets.fromLTRB(7, 7, 17, 7)
+                : const EdgeInsets.fromLTRB(17, 7, 7, 7),
             child: Stack(
               children: <Widget>[
                 Padding(
                   padding: stateTick
-                      ? EdgeInsets.only(right: 20)
-                      : EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                      ? const EdgeInsets.only(right: 20)
+                      : const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                   child: Text(
                     text,
                     style: textStyle,
@@ -100,7 +100,7 @@ class BubbleSpecialOne extends StatelessWidget {
                         right: 0,
                         child: stateIcon,
                       )
-                    : SizedBox(
+                    : const SizedBox(
                         width: 1,
                       ),
               ],
@@ -127,8 +127,8 @@ class SpecialChatBubbleOne extends CustomPainter {
     required this.tail,
   });
 
-  double _radius = 10.0;
-  double _x = 10.0;
+  final double _radius = 10.0;
+  final double _x = 10.0;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -145,9 +145,9 @@ class SpecialChatBubbleOne extends CustomPainter {
               topLeft: Radius.circular(_radius),
             ),
             Paint()
-              ..color = this.color
+              ..color = color
               ..style = PaintingStyle.fill);
-        var path = new Path();
+        var path = Path();
         path.moveTo(size.width - _x, 0);
         path.lineTo(size.width - _x, 10);
         path.lineTo(size.width, 0);
@@ -158,10 +158,10 @@ class SpecialChatBubbleOne extends CustomPainter {
               0.0,
               size.width,
               size.height,
-              topRight: Radius.circular(3),
+              topRight: const Radius.circular(3),
             ),
             Paint()
-              ..color = this.color
+              ..color = color
               ..style = PaintingStyle.fill);
       } else {
         canvas.drawRRect(
@@ -176,7 +176,7 @@ class SpecialChatBubbleOne extends CustomPainter {
               topRight: Radius.circular(_radius),
             ),
             Paint()
-              ..color = this.color
+              ..color = color
               ..style = PaintingStyle.fill);
       }
     } else {

@@ -1,5 +1,10 @@
+import 'dart:math';
+
 import 'package:animate_icons/animate_icons.dart';
+import 'package:boliye_g/screens/chating_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -12,29 +17,78 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late AnimateIconController c1 = AnimateIconController();
-
-  bool onEndIconPress(BuildContext context) {
-    setState(() {
-      drawer = false;
-    });
-    return true;
-  }
-
-  bool onStartIconPress(BuildContext context) {
-    setState(() {
-      drawer = true;
-    });
-    return true;
-  }
+  // late AnimateIconController c1 = AnimateIconController();
+  //
+  // bool onEndIconPress(BuildContext context) {
+  //
+  //   return true;
+  // }
+  //
+  // bool onStartIconPress(BuildContext context) {
+  //  _globalKey.currentState?.openDrawer();
+  //   return true;
+  // }
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      key: _globalKey,
+      drawer: Drawer(
+        width: displayWidth(context) * 0.5,
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.only(top: displayHeight(context) * 0.1),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              ListTile(
+                title: const Text(Strings.profile),
+                onTap: () {
+                  // Navigator.pop(context);
+                },
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 0.2,
+              ),
+              ListTile(
+                title: const Text(Strings.setting),
+                onTap: () {
+                  // Navigator.pop(context);
+                },
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 0.2,
+              ),
+              ListTile(
+                title: const Text(Strings.aboutUs),
+                onTap: () async {},
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Container(
         color: Colors.black45,
         child: Stack(
           children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  top: displayHeight(context) * 0.03,
+                  left: displayWidth(context) * 0.01),
+              child: IconButton(
+                  onPressed: () {
+                    _globalKey.currentState?.openDrawer();
+                  },
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.white,
+                    size: displayWidth(context) * 0.07,
+                  )),
+            ),
             Container(
               height: displayHeight(context) * 0.06,
               margin: EdgeInsets.only(top: displayHeight(context) * 0.03),
@@ -76,7 +130,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-
               margin: EdgeInsets.only(top: displayHeight(context) * 0.3),
               height: displayHeight(context) * 0.7,
               decoration: const BoxDecoration(
@@ -105,72 +158,66 @@ class _HomePageState extends State<HomePage> {
                           Icons.search,
                           color: Colors.white,
                         ),
-                        //prefixIconColor: Colors.white,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              width: drawer ? displayWidth(context) * 0.5 : 0,
-              decoration: const BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(50),
-                    bottomRight: Radius.circular(50)),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black54,
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-              duration: const Duration(milliseconds: 300),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  drawer
-                      ? Text(
-                          Strings.profile,
-                          style: TextStyle(
-                            fontSize: displayWidth(context) * 0.05,
+                  SizedBox(
+                    height: displayHeight(context) * 0.6,
+                    width: displayHeight(context),
+                    child: ListView.separated(
+                      itemCount: 100,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                    duration: const Duration(milliseconds: 300),
+                                    type: PageTransitionType.topToBottom,
+                                    child: const ChattingScreen()));
+                          },
+                          child: Container(
                             color: Colors.white,
+                            height: displayHeight(context) * 0.075,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: displayWidth(context) * 0.12,
+                                  height: displayHeight(context) * 0.12,
+                                  margin: EdgeInsets.only(
+                                    left: displayWidth(context) * 0.05,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blueAccent,
+                                      image: DecorationImage(
+                                          image:
+                                              AssetImage(Strings.avatarImage))),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: displayWidth(context) * 0.2,
+                                      top: displayHeight(context) * 0.025),
+                                  child: Text(
+                                    Strings.userName,
+                                    style: TextStyle(
+                                      fontSize: displayWidth(context) * 0.05,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        )
-                      : const SizedBox(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: displayHeight(context) * 0.02,
-                        bottom: displayHeight(context) * 0.02),
-                    child: const Divider(
-                      color: Colors.white,
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  drawer
-                      ? Text(
-                          Strings.aboutUs,
-                          style: TextStyle(
-                            fontSize: displayWidth(context) * 0.05,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const SizedBox(),
+                  )
                 ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: displayHeight(context) * 0.03),
-              child: AnimateIcons(
-                startIcon: Icons.menu_rounded,
-                endIcon: Icons.close_rounded,
-                startIconColor: Colors.white,
-                endIconColor: Colors.white,
-                controller: c1,
-                duration: const Duration(milliseconds: 300),
-                size: displayWidth(context) * 0.07,
-                onEndIconPress: () => onEndIconPress(context),
-                onStartIconPress: () => onStartIconPress(context),
               ),
             ),
           ],
@@ -178,4 +225,51 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+// Widget openDrawer(BuildContext context) {
+//   return Drawer(
+//     backgroundColor: Colors.transparent,
+//     child: Padding(
+//       padding:  EdgeInsets.only(top: displayHeight(context)*0.1),
+//       child: ListView(
+//         padding: EdgeInsets.zero,
+//         children: [
+//
+//           ListTile(
+//             title: const Text('Profile'),
+//             onTap: () {
+//               // Navigator.pop(context);
+//             },
+//           ),
+//           const Divider(
+//             color: Colors.black,
+//             thickness: 0.2,
+//           ),
+//           ListTile(
+//             title: const Text('Records'),
+//             onTap: () {
+//             },
+//           ),
+//           const Divider(
+//             color: Colors.black,
+//             thickness: 0.2,
+//           ),
+//           ListTile(
+//             title: const Text('About Us'),
+//             onTap: () async {
+//             },
+//           ),
+//           const Divider(
+//             color: Colors.black,
+//             thickness: 0.2,
+//           ),
+//           ListTile(
+//             title: const Text('More app'),
+//             onTap: () {
+//             },
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
 }

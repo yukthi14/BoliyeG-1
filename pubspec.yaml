@@ -38,6 +38,7 @@ dependencies:
   image_picker: ^0.8.7+4
   camera: ^0.10.4
   animate_icons: ^2.0.0
+  page_transition: ^2.0.9
 
 dev_dependencies:
   flutter_test:

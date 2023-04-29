@@ -5,8 +5,10 @@ class Strings{
   static const String userName='@vishwajeet';
   static const String profile='Profile';
   static const String aboutUs='About Us';
+  static const String setting='Setting';
   static const String searchBar='Search by name';
 }
 bool drawer= false;
+bool upperDrawer= false;
 
 
