@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917614867550",
+    "project_id": "boliyag-6efcd",
+    "storage_bucket": "boliyag-6efcd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917614867550:android:789307ba2fa4e1a200b0cf",
+        "android_client_info": {
+          "package_name": "com.example.boliye_g"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917614867550-l9kbutiqvuavulp9thk5jfbs1n6tloh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL3uUCAf6aWIE89_KnUDCEe_yXWjCYbZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917614867550-l9kbutiqvuavulp9thk5jfbs1n6tloh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

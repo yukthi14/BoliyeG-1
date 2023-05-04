@@ -157,11 +157,11 @@ class SpecialChatBubbleThree extends CustomPainter {
             w - _radius * 1.5, h, w - _radius * 1.5, h - _radius * 0.6);
 
         /// bottom-right tail curve 1
-        path.quadraticBezierTo(w - _radius * 1, h, w, h);
+        path.quadraticBezierTo(w - _radius * 0.8, h, w+5, h-5);
 
         /// bottom-right tail curve 2
         path.quadraticBezierTo(
-            w - _radius * 0.8, h, w - _radius, h - _radius * 1.5);
+            w - _radius * 0.9, h, w - _radius, h - _radius * 1.5);
 
         /// right line
         path.lineTo(w - _radius, _radius * 1.5);
@@ -222,11 +222,11 @@ class SpecialChatBubbleThree extends CustomPainter {
         /// left line
         path.lineTo(_radius, h - _radius * 1.5);
         // bottom-right tail curve 1
-        path.quadraticBezierTo(_radius * .8, h, 0, h);
+        path.quadraticBezierTo(_radius * .8, h, -5, h-5);
 
         /// bottom-right tail curve 2
         path.quadraticBezierTo(
-            _radius * 1, h, _radius * 1.5, h - _radius * 0.6);
+            _radius -5, h, _radius * 1.5, h - _radius * 0.6);
 
         /// bottom-left bubble curve
         path.quadraticBezierTo(_radius * 1.5, h, _radius * 3, h);

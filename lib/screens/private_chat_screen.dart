@@ -1,24 +1,22 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../message_bar/message_bar.dart';
 
-class ChattingScreen extends StatefulWidget {
-  const ChattingScreen({Key? key}) : super(key: key);
+class PrivateChat extends StatefulWidget {
+  const PrivateChat({Key? key}) : super(key: key);
 
   @override
-  _ChattingScreenState createState() => _ChattingScreenState();
+  _PrivateChatState createState() => _PrivateChatState();
 }
 
-class _ChattingScreenState extends State<ChattingScreen> {
+class _PrivateChatState extends State<PrivateChat> {
   ValueNotifier<bool> cameraChange = ValueNotifier(false);
   AudioPlayer audioPlayer = AudioPlayer();
   Duration duration = const Duration();
@@ -26,10 +24,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
-
-  final _chats = [
-    {"isSender": false, "type": 0, "msg": "Hello There"},
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -70,46 +64,48 @@ class _ChattingScreenState extends State<ChattingScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          duration: const Duration(milliseconds: 300),
-                          alignment: Alignment.center,
-                          type: PageTransitionType.rotate,
-                          child: const PrivateChat()));
+                  Navigator.pop(context);
                 },
                 icon: Icon(
-                  Icons.lock_outline_rounded,
+                  Icons.lock_open_rounded,
                   size: displayWidth(context) * 0.07,
                 )),
           ],
         ),
         body: Stack(
           children: [
-            ListView.builder(
-                itemCount: _chats.length,
-                itemBuilder: (context, index) {
-                  final chat = _chats.elementAt(index);
-                  bool isSender = chat['isSender'] as bool;
-                  String msg = chat['msg'] as String;
-                  return BubbleSpecialThree(
-                    text: msg,
-                    color: const Color(0xFFE8E8EE),
+            SingleChildScrollView(
+              padding: EdgeInsets.only(top: displayHeight(context) * 0.02),
+              child: Column(
+                children: const <Widget>[
+                  BubbleSpecialThree(
+                    text: 'bubble special three with tail',
+                    color: Color(0xFF1B97F3),
                     tail: true,
-                    isSender: isSender,
-                  );
-                }),
+                    textStyle: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  BubbleSpecialThree(
+                    text: "bubble special three without tail",
+                    color: Color(0xFFE8E8EE),
+                    tail: false,
+                    isSender: false,
+                  ),
+                  BubbleSpecialThree(
+                    text: "bubble special three with tail",
+                    color: Color(0xFFE8E8EE),
+                    tail: true,
+                    isSender: false,
+                  ),
+                  SizedBox(
+                    height: 100,
+                  )
+                ],
+              ),
+            ),
             MessageBar(
               messageBarColor: Colors.black,
               sendButtonColor: Colors.white,
-              onSend: (_) {
-                _chats.add({
-                  "isSender": true,
-                  "type": 0,
-                  "msg": _,
-                });
-                setState(() {});
-              },
+              onSend: (_) {},
               actions: [
                 InkWell(
                   child: const Icon(

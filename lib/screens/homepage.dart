@@ -1,10 +1,9 @@
-import 'dart:math';
-
-import 'package:animate_icons/animate_icons.dart';
 import 'package:boliye_g/screens/chating_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -17,18 +16,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // late AnimateIconController c1 = AnimateIconController();
-  //
-  // bool onEndIconPress(BuildContext context) {
-  //
-  //   return true;
-  // }
-  //
-  // bool onStartIconPress(BuildContext context) {
-  //  _globalKey.currentState?.openDrawer();
-  //   return true;
-  // }
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    getToken();
+    super.initState();
+  }
+
+  getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final ref = FirebaseDatabase.instance.ref();
+    if (prefs.get('token') == null) {
+      try {
+        print(
+            "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
+        await FirebaseMessaging.instance.getToken().then((tokenValue) async {
+          print(
+              "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjkkkkkjjjjjjjjjjjjjjjj");
+          if (tokenValue.toString().isEmpty) {
+            print("Error in generate token");
+          } else {
+            print(tokenValue);
+            prefs.setString("token", tokenValue!);
+            await ref
+                .child('users')
+                .child(tokenValue)
+                .set({'userName': 'vishwajeet'});
+          }
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -39,6 +39,12 @@ dependencies:
   camera: ^0.10.4
   animate_icons: ^2.0.0
   page_transition: ^2.0.9
+  emoji_picker_flutter: ^1.5.4
+  firebase_core: ^2.10.0
+  firebase_database: ^10.1.1
+  shared_preferences: ^2.1.0
+  firebase_messaging: ^14.4.1
+
 
 dev_dependencies:
   flutter_test:

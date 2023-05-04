@@ -119,37 +119,35 @@ class MessageBar extends StatelessWidget {
                 children: <Widget>[
                   ...actions,
                   Expanded(
-                    child: Container(
-                      child: TextField(
-                        controller: _textController,
-                        keyboardType: TextInputType.multiline,
-                        textCapitalization: TextCapitalization.sentences,
-                        minLines: 1,
-                        maxLines: 3,
-                        onChanged: onTextChanged,
-                        decoration: InputDecoration(
-                          hintText: "Type your message here",
-                          hintMaxLines: 1,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 10),
-                          hintStyle: TextStyle(
-                            fontSize: 16,
+                    child: TextField(
+                      controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      textCapitalization: TextCapitalization.sentences,
+                      minLines: 1,
+                      maxLines: 3,
+                      onChanged: onTextChanged,
+                      decoration: InputDecoration(
+                        hintText: "BoliyG",
+                        hintMaxLines: 1,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 18.0, vertical: 10),
+                        hintStyle: const TextStyle(
+                          fontSize: 16,
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.2,
                           ),
-                          fillColor: Colors.white,
-                          filled: true,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                              width: 0.2,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: const BorderSide(
-                              color: Colors.black26,
-                              width: 0.2,
-                            ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Colors.black26,
+                            width: 0.2,
                           ),
                         ),
                       ),
