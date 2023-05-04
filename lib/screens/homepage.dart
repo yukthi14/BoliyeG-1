@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _controllerSearch = TextEditingController();
 
   @override
   void initState() {
@@ -53,195 +54,202 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      key: _globalKey,
-      drawer: Drawer(
-        width: displayWidth(context) * 0.5,
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: EdgeInsets.only(top: displayHeight(context) * 0.1),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                title: const Text(Strings.profile),
-                onTap: () {
-                  // Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                color: Colors.black,
-                thickness: 0.2,
-              ),
-              ListTile(
-                title: const Text(Strings.setting),
-                onTap: () {
-                  // Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                color: Colors.black,
-                thickness: 0.2,
-              ),
-              ListTile(
-                title: const Text(Strings.aboutUs),
-                onTap: () async {},
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        key: _globalKey,
+        drawer: Drawer(
+          width: displayWidth(context) * 0.5,
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.only(top: displayHeight(context) * 0.1),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  title: const Text(Strings.profile),
+                  onTap: () {
+                    // Navigator.pop(context);
+                  },
+                ),
+                const Divider(
+                  color: Colors.black,
+                  thickness: 0.2,
+                ),
+                ListTile(
+                  title: const Text(Strings.setting),
+                  onTap: () {
+                    // Navigator.pop(context);
+                  },
+                ),
+                const Divider(
+                  color: Colors.black,
+                  thickness: 0.2,
+                ),
+                ListTile(
+                  title: const Text(Strings.aboutUs),
+                  onTap: () async {},
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: Colors.black45,
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  top: displayHeight(context) * 0.03,
-                  left: displayWidth(context) * 0.01),
-              child: IconButton(
-                  onPressed: () {
-                    _globalKey.currentState?.openDrawer();
-                  },
-                  icon: Icon(
-                    Icons.menu,
-                    color: Colors.white,
-                    size: displayWidth(context) * 0.07,
-                  )),
-            ),
-            Container(
-              height: displayHeight(context) * 0.06,
-              margin: EdgeInsets.only(top: displayHeight(context) * 0.03),
-              child: Center(
-                  child: Text(
-                Strings.tittleName,
-                style: TextStyle(
-                    fontSize: displayWidth(context) * 0.07,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500),
-              )),
-            ),
-            Container(
-              width: displayWidth(context) * 0.25,
-              height: displayHeight(context) * 0.25,
-              margin: EdgeInsets.only(
-                  left: displayWidth(context) * 0.38,
-                  top: displayHeight(context) * 0.04),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image:
-                      DecorationImage(image: AssetImage(Strings.avatarImage))),
-            ),
-            Container(
-              width: displayWidth(context) * 0.4,
-              height: displayWidth(context) * 0.08,
-              margin: EdgeInsets.only(
-                  left: displayWidth(context) * 0.31,
-                  top: displayHeight(context) * 0.24),
-              child: Center(
-                child: Text(
-                  Strings.userName,
+        body: Container(
+          color: Colors.black45,
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: displayHeight(context) * 0.03,
+                    left: displayWidth(context) * 0.01),
+                child: IconButton(
+                    onPressed: () {
+                      _globalKey.currentState?.openDrawer();
+                    },
+                    icon: Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                      size: displayWidth(context) * 0.07,
+                    )),
+              ),
+              Container(
+                height: displayHeight(context) * 0.06,
+                margin: EdgeInsets.only(top: displayHeight(context) * 0.03),
+                child: Center(
+                    child: Text(
+                  Strings.tittleName,
                   style: TextStyle(
-                    fontSize: displayWidth(context) * 0.05,
+                      fontSize: displayWidth(context) * 0.07,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500),
+                )),
+              ),
+              Container(
+                width: displayWidth(context) * 0.25,
+                height: displayHeight(context) * 0.25,
+                margin: EdgeInsets.only(
+                    left: displayWidth(context) * 0.38,
+                    top: displayHeight(context) * 0.04),
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                     color: Colors.white,
+                    image: DecorationImage(
+                        image: AssetImage(Strings.avatarImage))),
+              ),
+              Container(
+                width: displayWidth(context) * 0.4,
+                height: displayWidth(context) * 0.08,
+                margin: EdgeInsets.only(
+                    left: displayWidth(context) * 0.31,
+                    top: displayHeight(context) * 0.24),
+                child: Center(
+                  child: Text(
+                    Strings.userName,
+                    style: TextStyle(
+                      fontSize: displayWidth(context) * 0.05,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: displayHeight(context) * 0.3),
-              height: displayHeight(context) * 0.7,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      topLeft: Radius.circular(50))),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: displayHeight(context) * 0.03,
-                        left: displayWidth(context) * 0.07,
-                        right: displayWidth(context) * 0.07),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.black45,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: Strings.searchBar,
-                        hintStyle: const TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.6,
-                    width: displayHeight(context),
-                    child: ListView.separated(
-                      itemCount: 100,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                    duration: const Duration(milliseconds: 300),
-                                    type: PageTransitionType.topToBottom,
-                                    child: const ChattingScreen()));
-                          },
-                          child: Container(
-                            color: Colors.white,
-                            height: displayHeight(context) * 0.075,
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: displayWidth(context) * 0.12,
-                                  height: displayHeight(context) * 0.12,
-                                  margin: EdgeInsets.only(
-                                    left: displayWidth(context) * 0.05,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.blueAccent,
-                                      image: DecorationImage(
-                                          image:
-                                              AssetImage(Strings.avatarImage))),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.2,
-                                      top: displayHeight(context) * 0.025),
-                                  child: Text(
-                                    Strings.userName,
-                                    style: TextStyle(
-                                      fontSize: displayWidth(context) * 0.05,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
+              Container(
+                margin: EdgeInsets.only(top: displayHeight(context) * 0.3),
+                height: displayHeight(context) * 0.7,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        topLeft: Radius.circular(50))),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: displayHeight(context) * 0.03,
+                          left: displayWidth(context) * 0.07,
+                          right: displayWidth(context) * 0.07),
+                      child: TextField(
+                        controller: _controllerSearch,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.black45,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                            borderSide: BorderSide.none,
                           ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                        color: Colors.black,
+                          hintText: Strings.searchBar,
+                          hintStyle: const TextStyle(color: Colors.white),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: displayHeight(context) * 0.6,
+                      width: displayHeight(context),
+                      child: ListView.separated(
+                        itemCount: 100,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      type: PageTransitionType.topToBottom,
+                                      child: const ChattingScreen()));
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              height: displayHeight(context) * 0.075,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    width: displayWidth(context) * 0.12,
+                                    height: displayHeight(context) * 0.12,
+                                    margin: EdgeInsets.only(
+                                      left: displayWidth(context) * 0.05,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blueAccent,
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                Strings.avatarImage))),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: displayWidth(context) * 0.2,
+                                        top: displayHeight(context) * 0.025),
+                                    child: Text(
+                                      Strings.userName,
+                                      style: TextStyle(
+                                        fontSize: displayWidth(context) * 0.05,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

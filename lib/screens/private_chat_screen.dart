@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
+import '../envelope/private_envelope.dart';
 import '../message_bar/message_bar.dart';
 
 class PrivateChat extends StatefulWidget {
@@ -24,6 +25,10 @@ class _PrivateChatState extends State<PrivateChat> {
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
+
+  final _chats = [
+    {"isSender": true, "type": 0, "msg": "Hello There"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -74,38 +79,36 @@ class _PrivateChatState extends State<PrivateChat> {
         ),
         body: Stack(
           children: [
-            SingleChildScrollView(
-              padding: EdgeInsets.only(top: displayHeight(context) * 0.02),
-              child: Column(
-                children: const <Widget>[
-                  BubbleSpecialThree(
-                    text: 'bubble special three with tail',
-                    color: Color(0xFF1B97F3),
-                    tail: true,
-                    textStyle: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  BubbleSpecialThree(
-                    text: "bubble special three without tail",
-                    color: Color(0xFFE8E8EE),
-                    tail: false,
-                    isSender: false,
-                  ),
-                  BubbleSpecialThree(
-                    text: "bubble special three with tail",
-                    color: Color(0xFFE8E8EE),
-                    tail: true,
-                    isSender: false,
-                  ),
-                  SizedBox(
-                    height: 100,
-                  )
-                ],
-              ),
-            ),
+            ListView.builder(
+                itemCount: _chats.length,
+                itemBuilder: (context, index) {
+                  final chat = _chats.elementAt(index);
+                  bool isSender = chat['isSender'] as bool;
+                  String msg = chat['msg'] as String;
+                  return PrivateEnvelope(
+                    msg: msg,
+                    coverColor: Colors.redAccent,
+                    topCoverColor: Colors.white,
+                    isSender: isSender,
+                    textColor: Colors.black,
+                    fountSize: 15,
+                    envelopeSize: displaySize(context),
+                    sent: false,
+                    delivered: false,
+                    seen: false,
+                  );
+                }),
             MessageBar(
               messageBarColor: Colors.black,
               sendButtonColor: Colors.white,
-              onSend: (_) {},
+              onSend: (_) {
+                _chats.add({
+                  "isSender": true,
+                  "type": 0,
+                  "msg": _,
+                });
+                setState(() {});
+              },
               actions: [
                 InkWell(
                   child: const Icon(

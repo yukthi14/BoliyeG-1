@@ -12,3 +12,4 @@ bool showEmoji = false;
 bool drawer = false;
 bool upperDrawer = false;
 List text = [];
+bool privateKey = false;

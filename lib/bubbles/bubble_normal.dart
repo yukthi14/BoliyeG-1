@@ -2,17 +2,6 @@ import 'package:flutter/material.dart';
 
 const double BUBBLE_RADIUS = 16;
 
-///basic chat bubble type
-///
-///chat bubble [BorderRadius] can be customized using [bubbleRadius]
-///chat bubble color can be customized using [color]
-///chat bubble tail can be customized  using [tail]
-///chat bubble display message can be changed using [text]
-///[text] is the only required parameter
-///message sender can be changed using [isSender]
-///[sent],[delivered] and [seen] can be used to display the message state
-///chat bubble [TextStyle] can be customized using [textStyle]
-
 class BubbleNormal extends StatelessWidget {
   final double bubbleRadius;
   final bool isSender;

@@ -92,6 +92,18 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   final chat = _chats.elementAt(index);
                   bool isSender = chat['isSender'] as bool;
                   String msg = chat['msg'] as String;
+                  // return PrivateEnvelope(
+                  //   msg: msg,
+                  //   coverColor: Colors.redAccent,
+                  //   topCoverColor: Colors.white,
+                  //   isSender: false,
+                  //   textColor: Colors.black,
+                  //   fountSize: 15,
+                  //   envelopeSize: displaySize(context),
+                  //   sent: false,
+                  //   delivered: false,
+                  //   seen: false,
+                  // );
                   return BubbleSpecialThree(
                     text: msg,
                     color: const Color(0xFFE8E8EE),
@@ -189,15 +201,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
         ),
         // This trailing comma makes auto-formatting nicer for build methods.
       ),
-    );
-  }
-
-  Widget _texing() {
-    return const BubbleSpecialThree(
-      text: "bubble special three with tail",
-      color: Color(0xFFE8E8EE),
-      tail: true,
-      isSender: false,
     );
   }
 

@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
 
-///iMessage's chat bubble type
-///
-///chat bubble color can be customized using [color]
-///chat bubble tail can be customized  using [tail]
-///chat bubble display message can be changed using [text]
-///[text] is the only required parameter
-///message sender can be changed using [isSender]
-///chat bubble [TextStyle] can be customized using [textStyle]
-
 class BubbleSpecialThree extends StatelessWidget {
   final bool isSender;
   final String text;
@@ -157,7 +148,7 @@ class SpecialChatBubbleThree extends CustomPainter {
             w - _radius * 1.5, h, w - _radius * 1.5, h - _radius * 0.6);
 
         /// bottom-right tail curve 1
-        path.quadraticBezierTo(w - _radius * 0.8, h, w+5, h-5);
+        path.quadraticBezierTo(w - _radius * 0.8, h, w + 5, h - 5);
 
         /// bottom-right tail curve 2
         path.quadraticBezierTo(
@@ -222,11 +213,11 @@ class SpecialChatBubbleThree extends CustomPainter {
         /// left line
         path.lineTo(_radius, h - _radius * 1.5);
         // bottom-right tail curve 1
-        path.quadraticBezierTo(_radius * .8, h, -5, h-5);
+        path.quadraticBezierTo(_radius * .8, h, -5, h - 5);
 
         /// bottom-right tail curve 2
         path.quadraticBezierTo(
-            _radius -5, h, _radius * 1.5, h - _radius * 0.6);
+            _radius - 5, h, _radius * 1.5, h - _radius * 0.6);
 
         /// bottom-left bubble curve
         path.quadraticBezierTo(_radius * 1.5, h, _radius * 3, h);
