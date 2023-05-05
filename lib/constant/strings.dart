@@ -1,6 +1,7 @@
 class Strings {
   static const String tittleName = 'BoliyeG';
   static const String avatarImage = 'assets/avatar.webp';
+  static const String backGroundImage = 'assets/private_background.jpg';
   static const String userName = '@vishwajeet';
   static const String profile = 'Profile';
   static const String aboutUs = 'About Us';

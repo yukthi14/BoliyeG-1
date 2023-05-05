@@ -47,9 +47,10 @@ class _PrivateChatState extends State<PrivateChat>
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.white),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -69,7 +70,7 @@ class _PrivateChatState extends State<PrivateChat>
                 Strings.userName,
                 style: TextStyle(
                   fontSize: displayWidth(context) * 0.05,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -85,43 +86,51 @@ class _PrivateChatState extends State<PrivateChat>
                 )),
           ],
         ),
-        body: Stack(
-          children: [
-            ListView.builder(
-                itemCount: _chats.length,
-                itemBuilder: (context, index) {
-                  final chat = _chats.elementAt(index);
-                  bool isSender = chat['isSender'] as bool;
-                  String msg = chat['msg'] as String;
-                  return RotationTransition(
-                    turns: _animation,
-                    child: PrivateEnvelope(
-                      msg: msg,
-                      coverColor: Colors.redAccent,
-                      topCoverColor: Colors.white,
-                      isSender: isSender,
-                      textColor: Colors.black,
-                      fountSize: 15,
-                      envelopeSize: displaySize(context),
-                      sent: false,
-                      delivered: false,
-                      seen: false,
-                    ),
-                  );
-                }),
-            MessageBar(
-              messageBarColor: Colors.black,
-              sendButtonColor: Colors.white,
-              onSend: (_) {
-                _chats.add({
-                  "isSender": true,
-                  "type": 0,
-                  "msg": _,
-                });
-                setState(() {});
-              },
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(Strings.backGroundImage),
+              fit: BoxFit.fitHeight,
             ),
-          ],
+          ),
+          child: Stack(
+            children: [
+              ListView.builder(
+                  itemCount: _chats.length,
+                  itemBuilder: (context, index) {
+                    final chat = _chats.elementAt(index);
+                    bool isSender = chat['isSender'] as bool;
+                    String msg = chat['msg'] as String;
+                    return RotationTransition(
+                      turns: _animation,
+                      child: PrivateEnvelope(
+                        msg: msg,
+                        coverColor: Colors.redAccent,
+                        topCoverColor: Colors.white,
+                        isSender: isSender,
+                        textColor: Colors.black,
+                        fountSize: 15,
+                        envelopeSize: displaySize(context),
+                        sent: false,
+                        delivered: false,
+                        seen: false,
+                      ),
+                    );
+                  }),
+              MessageBar(
+                messageBarColor: Colors.black,
+                sendButtonColor: Colors.white,
+                onSend: (_) {
+                  _chats.add({
+                    "isSender": true,
+                    "type": 0,
+                    "msg": _,
+                  });
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
         ),
         // This trailing comma makes auto-formatting nicer for build methods.
       ),
