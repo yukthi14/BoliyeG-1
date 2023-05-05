@@ -2,9 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_special_three.dart';
@@ -122,80 +120,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
                 });
                 setState(() {});
               },
-              actions: [
-                InkWell(
-                  child: const Icon(
-                    Icons.emoji_emotions_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  onTap: () {
-                    EmojiPicker(
-                      onEmojiSelected: (category, emoji) {
-                        // Do something when emoji is tapped
-                      },
-                      config: const Config(
-                          columns: 7,
-                          emojiSizeMax: 32.0,
-                          verticalSpacing: 0,
-                          horizontalSpacing: 0,
-                          initCategory: Category.RECENT,
-                          bgColor: Color(0xFFF2F2F2),
-                          indicatorColor: Colors.blue,
-                          iconColor: Colors.grey,
-                          iconColorSelected: Colors.blue,
-                          showRecentsTab: true,
-                          recentsLimit: 28,
-                          categoryIcons: CategoryIcons(),
-                          buttonMode: ButtonMode.MATERIAL),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.04,
-                      right: MediaQuery.of(context).size.width * 0.02),
-                  child: InkWell(
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    onTap: () async {
-                      ImagePicker image = ImagePicker();
-                      try {
-                        XFile? filePath =
-                            await image.pickImage(source: ImageSource.camera);
-                        print(filePath);
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                  ),
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //       left: MediaQuery.of(context).size.width * 0.02,
-                //       right: MediaQuery.of(context).size.width * 0.02),
-                //   child: InkWell(
-                //     child: const Icon(
-                //       Icons.image,
-                //       color: Colors.white,
-                //       size: 24,
-                //     ),
-                //     onTap: () async {
-                //       ImagePicker image = ImagePicker();
-                //       try {
-                //         XFile? filePath = await image.pickImage(
-                //             source: ImageSource.gallery);
-                //         print(filePath);
-                //       } catch (e) {
-                //         print(e);
-                //       }
-                //     },
-                //   ),
-                // ),
-              ],
             ),
           ],
         ),

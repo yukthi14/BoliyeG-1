@@ -1,9 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
@@ -17,7 +15,8 @@ class PrivateChat extends StatefulWidget {
   _PrivateChatState createState() => _PrivateChatState();
 }
 
-class _PrivateChatState extends State<PrivateChat> {
+class _PrivateChatState extends State<PrivateChat>
+    with TickerProviderStateMixin {
   ValueNotifier<bool> cameraChange = ValueNotifier(false);
   AudioPlayer audioPlayer = AudioPlayer();
   Duration duration = const Duration();
@@ -25,6 +24,15 @@ class _PrivateChatState extends State<PrivateChat> {
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    super.initState();
+  }
 
   final _chats = [
     {"isSender": true, "type": 0, "msg": "Hello There"},
@@ -85,17 +93,20 @@ class _PrivateChatState extends State<PrivateChat> {
                   final chat = _chats.elementAt(index);
                   bool isSender = chat['isSender'] as bool;
                   String msg = chat['msg'] as String;
-                  return PrivateEnvelope(
-                    msg: msg,
-                    coverColor: Colors.redAccent,
-                    topCoverColor: Colors.white,
-                    isSender: isSender,
-                    textColor: Colors.black,
-                    fountSize: 15,
-                    envelopeSize: displaySize(context),
-                    sent: false,
-                    delivered: false,
-                    seen: false,
+                  return RotationTransition(
+                    turns: _animation,
+                    child: PrivateEnvelope(
+                      msg: msg,
+                      coverColor: Colors.redAccent,
+                      topCoverColor: Colors.white,
+                      isSender: isSender,
+                      textColor: Colors.black,
+                      fountSize: 15,
+                      envelopeSize: displaySize(context),
+                      sent: false,
+                      delivered: false,
+                      seen: false,
+                    ),
                   );
                 }),
             MessageBar(
@@ -109,80 +120,6 @@ class _PrivateChatState extends State<PrivateChat> {
                 });
                 setState(() {});
               },
-              actions: [
-                InkWell(
-                  child: const Icon(
-                    Icons.emoji_emotions_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  onTap: () {
-                    EmojiPicker(
-                      onEmojiSelected: (category, emoji) {
-                        // Do something when emoji is tapped
-                      },
-                      config: const Config(
-                          columns: 7,
-                          emojiSizeMax: 32.0,
-                          verticalSpacing: 0,
-                          horizontalSpacing: 0,
-                          initCategory: Category.RECENT,
-                          bgColor: Color(0xFFF2F2F2),
-                          indicatorColor: Colors.blue,
-                          iconColor: Colors.grey,
-                          iconColorSelected: Colors.blue,
-                          showRecentsTab: true,
-                          recentsLimit: 28,
-                          categoryIcons: CategoryIcons(),
-                          buttonMode: ButtonMode.MATERIAL),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.04,
-                      right: MediaQuery.of(context).size.width * 0.02),
-                  child: InkWell(
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    onTap: () async {
-                      ImagePicker image = ImagePicker();
-                      try {
-                        XFile? filePath =
-                            await image.pickImage(source: ImageSource.camera);
-                        print(filePath);
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                  ),
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //       left: MediaQuery.of(context).size.width * 0.02,
-                //       right: MediaQuery.of(context).size.width * 0.02),
-                //   child: InkWell(
-                //     child: const Icon(
-                //       Icons.image,
-                //       color: Colors.white,
-                //       size: 24,
-                //     ),
-                //     onTap: () async {
-                //       ImagePicker image = ImagePicker();
-                //       try {
-                //         XFile? filePath = await image.pickImage(
-                //             source: ImageSource.gallery);
-                //         print(filePath);
-                //       } catch (e) {
-                //         print(e);
-                //       }
-                //     },
-                //   ),
-                // ),
-              ],
             ),
           ],
         ),

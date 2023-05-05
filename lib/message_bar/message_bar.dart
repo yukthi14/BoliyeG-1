@@ -1,4 +1,6 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 ///Normal Message bar with more actions
 ///
@@ -33,7 +35,6 @@ class MessageBar extends StatefulWidget {
     Key? key,
     this.replying = false,
     this.replyingTo = "",
-    required this.actions,
     this.replyWidgetColor = const Color(0xffF4F4F5),
     this.replyIconColor = Colors.blue,
     this.replyCloseColor = Colors.black12,
@@ -45,7 +46,6 @@ class MessageBar extends StatefulWidget {
   }) : super(key: key);
   final bool replying;
   final String replyingTo;
-  final List<Widget> actions;
   final Color replyWidgetColor;
   final Color replyIconColor;
   final Color replyCloseColor;
@@ -115,8 +115,57 @@ class _MessageBarState extends State<MessageBar> {
                 horizontal: 16,
               ),
               child: Row(
-                children: <Widget>[
-                  //...action,
+                children: [
+                  InkWell(
+                    child: const Icon(
+                      Icons.emoji_emotions_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    onTap: () {
+                      EmojiPicker(
+                        onEmojiSelected: (category, emoji) {
+                          // Do something when emoji is tapped
+                        },
+                        config: const Config(
+                            columns: 7,
+                            emojiSizeMax: 32.0,
+                            verticalSpacing: 0,
+                            horizontalSpacing: 0,
+                            initCategory: Category.RECENT,
+                            bgColor: Color(0xFFF2F2F2),
+                            indicatorColor: Colors.blue,
+                            iconColor: Colors.grey,
+                            iconColorSelected: Colors.blue,
+                            showRecentsTab: true,
+                            recentsLimit: 28,
+                            categoryIcons: CategoryIcons(),
+                            buttonMode: ButtonMode.MATERIAL),
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.04,
+                        right: MediaQuery.of(context).size.width * 0.02),
+                    child: InkWell(
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      onTap: () async {
+                        ImagePicker image = ImagePicker();
+                        try {
+                          XFile? filePath =
+                              await image.pickImage(source: ImageSource.camera);
+                          print(filePath);
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                    ),
+                  ),
                   Expanded(
                     child: TextField(
                       controller: _textController,
