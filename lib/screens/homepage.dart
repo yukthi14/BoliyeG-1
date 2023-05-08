@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: displayHeight(context) * 0.03,
+                          top: displayHeight(context) * 0.024,
                           left: displayWidth(context) * 0.07,
                           right: displayWidth(context) * 0.07),
                       child: TextField(
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.6,
+                      height: displayHeight(context) * 0.58,
                       width: displayHeight(context),
                       child: ListView.separated(
                         itemCount: 100,
