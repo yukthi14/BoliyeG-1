@@ -14,3 +14,5 @@ bool drawer = false;
 bool upperDrawer = false;
 List text = [];
 bool privateKey = false;
+bool openEnvelope = true;
+bool opening = false;

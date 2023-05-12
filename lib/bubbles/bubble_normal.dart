@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const double BUBBLE_RADIUS = 16;
+const double bubbleRadiues = 16;
 
 class BubbleNormal extends StatelessWidget {
   final double bubbleRadius;
@@ -13,10 +13,10 @@ class BubbleNormal extends StatelessWidget {
   final bool seen;
   final TextStyle textStyle;
 
-  BubbleNormal({
+  const BubbleNormal({
     Key? key,
     required this.text,
-    this.bubbleRadius = BUBBLE_RADIUS,
+    this.bubbleRadius = bubbleRadiues,
     this.isSender = true,
     this.color = Colors.white70,
     this.tail = true,
@@ -36,7 +36,7 @@ class BubbleNormal extends StatelessWidget {
     Icon? stateIcon;
     if (sent) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -44,7 +44,7 @@ class BubbleNormal extends StatelessWidget {
     }
     if (delivered) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -52,7 +52,7 @@ class BubbleNormal extends StatelessWidget {
     }
     if (seen) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF92DEDA),
@@ -62,7 +62,7 @@ class BubbleNormal extends StatelessWidget {
     return Row(
       children: <Widget>[
         isSender
-            ? Expanded(
+            ? const Expanded(
                 child: SizedBox(
                   width: 5,
                 ),
@@ -84,20 +84,21 @@ class BubbleNormal extends StatelessWidget {
                       ? isSender
                           ? bubbleRadius
                           : 0
-                      : BUBBLE_RADIUS),
+                      : bubbleRadiues),
                   bottomRight: Radius.circular(tail
                       ? isSender
                           ? 0
                           : bubbleRadius
-                      : BUBBLE_RADIUS),
+                      : bubbleRadiues),
                 ),
               ),
               child: Stack(
                 children: <Widget>[
                   Padding(
                     padding: stateTick
-                        ? EdgeInsets.fromLTRB(12, 6, 28, 6)
-                        : EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                        ? const EdgeInsets.fromLTRB(12, 6, 28, 6)
+                        : const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 12),
                     child: Text(
                       text,
                       style: textStyle,
@@ -110,7 +111,7 @@ class BubbleNormal extends StatelessWidget {
                           right: 6,
                           child: stateIcon,
                         )
-                      : SizedBox(
+                      : const SizedBox(
                           width: 1,
                         ),
                 ],

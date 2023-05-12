@@ -24,15 +24,7 @@ class _PrivateChatState extends State<PrivateChat>
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  @override
-  void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    super.initState();
-  }
+  ScrollController listScrollController = ScrollController();
 
   final _chats = [
     {"isSender": true, "type": 0, "msg": "Hello There"},
@@ -45,95 +37,109 @@ class _PrivateChatState extends State<PrivateChat>
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        backgroundColor: Image.asset(Strings.backGroundImage).color,
-        // resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+      child: Stack(children: [
+        Image.asset(
+          Strings.backGroundImage,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.fitHeight,
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: displayWidth(context) * 0.10,
+                  height: displayHeight(context) * 0.10,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    image:
+                        DecorationImage(image: AssetImage(Strings.avatarImage)),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  Strings.userName,
+                  style: TextStyle(
+                    fontSize: displayWidth(context) * 0.05,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.lock_open_rounded,
+                    size: displayWidth(context) * 0.07,
+                  )),
+            ],
+          ),
+          body: Stack(
             children: [
-              Container(
-                width: displayWidth(context) * 0.10,
-                height: displayHeight(context) * 0.10,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  image:
-                      DecorationImage(image: AssetImage(Strings.avatarImage)),
+              SizedBox(
+                height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
+                    ? displayHeight(context) * 0.831
+                    : displayHeight(context) * 0.46,
+                child: ListView.builder(
+                  itemCount: _chats.length,
+                  controller: listScrollController,
+                  itemBuilder: (context, index) {
+                    final chat = _chats.elementAt(index);
+                    bool isSender = chat['isSender'] as bool;
+                    String msg = chat['msg'] as String;
+                    return InkWell(
+                      onTap: () {
+                        _showMyDialog();
+                      },
+                      child: PrivateEnvelope(
+                        msg: msg,
+                        coverColor: Colors.redAccent,
+                        topCoverColor: Colors.white,
+                        isSender: isSender,
+                        textColor: Colors.black,
+                        fountSize: 15,
+                        envelopeSize: displaySize(context),
+                        sent: false,
+                        delivered: false,
+                        seen: false,
+                      ),
+                    );
+                  },
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                Strings.userName,
-                style: TextStyle(
-                  fontSize: displayWidth(context) * 0.05,
-                  color: Colors.white,
-                ),
+              MessageBar(
+                messageBarColor: Colors.black,
+                sendButtonColor: Colors.white,
+                onSend: (_) {
+                  _chats.add({
+                    "isSender": true,
+                    "type": 0,
+                    "msg": _,
+                  });
+                  setState(() {
+                    final position =
+                        listScrollController.position.maxScrollExtent;
+                    listScrollController.animateTo(position,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.linear);
+                  });
+                },
               ),
             ],
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.lock_open_rounded,
-                  size: displayWidth(context) * 0.07,
-                )),
-          ],
+          // This trailing comma makes auto-formatting nicer for build methods.
         ),
-        body: Stack(
-          children: [
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     image: DecorationImage(
-            //       image: AssetImage(Strings.backGroundImage),
-            //       fit: BoxFit.fill,
-            //     ),
-            //   ),
-            // ),
-            ListView.builder(
-                itemCount: _chats.length,
-                itemBuilder: (context, index) {
-                  final chat = _chats.elementAt(index);
-                  bool isSender = chat['isSender'] as bool;
-                  String msg = chat['msg'] as String;
-                  return RotationTransition(
-                    turns: _animation,
-                    child: PrivateEnvelope(
-                      msg: msg,
-                      coverColor: Colors.redAccent,
-                      topCoverColor: Colors.white,
-                      isSender: isSender,
-                      textColor: Colors.black,
-                      fountSize: 15,
-                      envelopeSize: displaySize(context),
-                      sent: false,
-                      delivered: false,
-                      seen: false,
-                    ),
-                  );
-                }),
-            MessageBar(
-              messageBarColor: Colors.black,
-              sendButtonColor: Colors.white,
-              onSend: (_) {
-                _chats.add({
-                  "isSender": true,
-                  "type": 0,
-                  "msg": _,
-                });
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-        // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+      ]),
     );
   }
 
@@ -210,5 +216,52 @@ class _PrivateChatState extends State<PrivateChat>
         position = const Duration();
       });
     });
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.blueGrey,
+          title: const Center(child: Text('AlertDialog Title')),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                TextField(
+                    maxLength: 4,
+                    keyboardType: TextInputType.number,
+                    cursorColor: Colors.white,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black45,
+                    ))
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Disclose'),
+              onPressed: () {
+                setState(() {
+                  openEnvelope = !openEnvelope;
+                });
+                Future.delayed(
+                  const Duration(milliseconds: 300),
+                ).then((value) {
+                  setState(() {
+                    opening = !opening;
+                  });
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

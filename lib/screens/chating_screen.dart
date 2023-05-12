@@ -24,6 +24,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
+  ScrollController listScrollController = ScrollController();
 
   final _chats = [
     {"isSender": false, "type": 0, "msg": "Hello There"},
@@ -32,6 +33,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -84,31 +86,27 @@ class _ChattingScreenState extends State<ChattingScreen> {
         ),
         body: Stack(
           children: [
-            ListView.builder(
-                itemCount: _chats.length,
-                itemBuilder: (context, index) {
-                  final chat = _chats.elementAt(index);
-                  bool isSender = chat['isSender'] as bool;
-                  String msg = chat['msg'] as String;
-                  // return PrivateEnvelope(
-                  //   msg: msg,
-                  //   coverColor: Colors.redAccent,
-                  //   topCoverColor: Colors.white,
-                  //   isSender: false,
-                  //   textColor: Colors.black,
-                  //   fountSize: 15,
-                  //   envelopeSize: displaySize(context),
-                  //   sent: false,
-                  //   delivered: false,
-                  //   seen: false,
-                  // );
-                  return BubbleSpecialThree(
-                    text: msg,
-                    color: const Color(0xFFE8E8EE),
-                    tail: true,
-                    isSender: isSender,
-                  );
-                }),
+            SizedBox(
+              height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
+                  ? displayHeight(context) * 0.831
+                  : displayHeight(context) * 0.46,
+              child: ListView.builder(
+                  itemCount: _chats.length,
+                  controller: listScrollController,
+                  padding:
+                      EdgeInsets.only(bottom: displayHeight(context) * 0.05),
+                  itemBuilder: (context, index) {
+                    final chat = _chats.elementAt(index);
+                    bool isSender = chat['isSender'] as bool;
+                    String msg = chat['msg'] as String;
+                    return BubbleSpecialThree(
+                      text: msg,
+                      color: const Color(0xFFE8E8EE),
+                      tail: true,
+                      isSender: isSender,
+                    );
+                  }),
+            ),
             MessageBar(
               messageBarColor: Colors.black,
               sendButtonColor: Colors.white,
@@ -118,7 +116,15 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   "type": 0,
                   "msg": _,
                 });
-                setState(() {});
+                setState(() {
+                  final position =
+                      listScrollController.position.maxScrollExtent;
+                  listScrollController.animateTo(
+                    position,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.linear,
+                  );
+                });
               },
             ),
           ],

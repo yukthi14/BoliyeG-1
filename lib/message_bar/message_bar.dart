@@ -65,165 +65,163 @@ class _MessageBarState extends State<MessageBar> {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            widget.replying
-                ? Container(
-                    color: widget.replyWidgetColor,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.reply,
-                          color: widget.replyIconColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          widget.replying
+              ? Container(
+                  color: widget.replyWidgetColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.reply,
+                        color: widget.replyIconColor,
+                        size: 24,
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Re : ${widget.replyingTo}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: widget.onTapCloseReply,
+                        child: Icon(
+                          Icons.close,
+                          color: widget.replyCloseColor,
                           size: 24,
                         ),
-                        Expanded(
-                          child: Container(
-                            child: Text(
-                              'Re : ' + widget.replyingTo,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: widget.onTapCloseReply,
-                          child: Icon(
-                            Icons.close,
-                            color: widget.replyCloseColor,
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    ))
-                : Container(),
-            widget.replying
-                ? Container(
-                    height: 1,
-                    color: Colors.grey.shade300,
-                  )
-                : Container(),
-            Container(
-              color: widget.messageBarColor,
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 16,
-              ),
-              child: Row(
-                children: [
-                  InkWell(
+                      ),
+                    ],
+                  ))
+              : Container(),
+          widget.replying
+              ? Container(
+                  height: 1,
+                  color: Colors.grey.shade300,
+                )
+              : Container(),
+          Container(
+            color: widget.messageBarColor,
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 16,
+            ),
+            child: Row(
+              children: [
+                InkWell(
+                  child: const Icon(
+                    Icons.emoji_emotions_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  onTap: () {
+                    EmojiPicker(
+                      onEmojiSelected: (category, emoji) {
+                        // Do something when emoji is tapped
+                      },
+                      config: const Config(
+                          columns: 7,
+                          emojiSizeMax: 32.0,
+                          verticalSpacing: 0,
+                          horizontalSpacing: 0,
+                          initCategory: Category.RECENT,
+                          bgColor: Color(0xFFF2F2F2),
+                          indicatorColor: Colors.blue,
+                          iconColor: Colors.grey,
+                          iconColorSelected: Colors.blue,
+                          showRecentsTab: true,
+                          recentsLimit: 28,
+                          categoryIcons: CategoryIcons(),
+                          buttonMode: ButtonMode.MATERIAL),
+                    );
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.04,
+                      right: MediaQuery.of(context).size.width * 0.02),
+                  child: InkWell(
                     child: const Icon(
-                      Icons.emoji_emotions_rounded,
+                      Icons.camera_alt,
                       color: Colors.white,
                       size: 24,
                     ),
-                    onTap: () {
-                      EmojiPicker(
-                        onEmojiSelected: (category, emoji) {
-                          // Do something when emoji is tapped
-                        },
-                        config: const Config(
-                            columns: 7,
-                            emojiSizeMax: 32.0,
-                            verticalSpacing: 0,
-                            horizontalSpacing: 0,
-                            initCategory: Category.RECENT,
-                            bgColor: Color(0xFFF2F2F2),
-                            indicatorColor: Colors.blue,
-                            iconColor: Colors.grey,
-                            iconColorSelected: Colors.blue,
-                            showRecentsTab: true,
-                            recentsLimit: 28,
-                            categoryIcons: CategoryIcons(),
-                            buttonMode: ButtonMode.MATERIAL),
-                      );
+                    onTap: () async {
+                      ImagePicker image = ImagePicker();
+                      try {
+                        XFile? filePath =
+                            await image.pickImage(source: ImageSource.camera);
+                        print(filePath);
+                      } catch (e) {
+                        print(e);
+                      }
                     },
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.04,
-                        right: MediaQuery.of(context).size.width * 0.02),
-                    child: InkWell(
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 24,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _textController,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    minLines: 1,
+                    maxLines: 3,
+                    onChanged: widget.onTextChanged,
+                    decoration: InputDecoration(
+                      hintText: "BoliyG",
+                      hintMaxLines: 1,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18.0, vertical: 10),
+                      hintStyle: const TextStyle(
+                        fontSize: 16,
                       ),
-                      onTap: () async {
-                        ImagePicker image = ImagePicker();
-                        try {
-                          XFile? filePath =
-                              await image.pickImage(source: ImageSource.camera);
-                          print(filePath);
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _textController,
-                      keyboardType: TextInputType.multiline,
-                      textCapitalization: TextCapitalization.sentences,
-                      minLines: 1,
-                      maxLines: 3,
-                      onChanged: widget.onTextChanged,
-                      decoration: InputDecoration(
-                        hintText: "BoliyG",
-                        hintMaxLines: 1,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 18.0, vertical: 10),
-                        hintStyle: const TextStyle(
-                          fontSize: 16,
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 0.2,
                         ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 0.2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Colors.black26,
-                            width: 0.2,
-                          ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                          color: Colors.black26,
+                          width: 0.2,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: InkWell(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: InkWell(
+                    child: Container(
                       child: Icon(
                         Icons.send,
                         color: widget.sendButtonColor,
                         size: 24,
                       ),
-                      onTap: () {
-                        if (_textController.text.trim() != '') {
-                          if (widget.onSend != null) {
-                            widget.onSend!(_textController.text.trim());
-                          }
-                          _textController.text = '';
-                        }
-                      },
                     ),
+                    onTap: () {
+                      if (_textController.text.trim() != '') {
+                        if (widget.onSend != null) {
+                          widget.onSend!(_textController.text.trim());
+                        }
+                        _textController.text = '';
+                      }
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
