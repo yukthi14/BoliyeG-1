@@ -7,6 +7,7 @@ class Strings {
   static const String aboutUs = 'About Us';
   static const String setting = 'Setting';
   static const String searchBar = 'Search by name';
+  static const String secretCode = 'Secret Code';
 }
 
 bool showEmoji = false;

@@ -224,21 +224,31 @@ class _PrivateChatState extends State<PrivateChat>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.blueGrey,
-          title: const Center(child: Text('AlertDialog Title')),
+          backgroundColor: Colors.white,
+          title: const Center(
+            child: Text(
+              Strings.secretCode,
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 TextField(
-                    maxLength: 4,
-                    keyboardType: TextInputType.number,
-                    cursorColor: Colors.white,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.black45,
-                    ))
+                  maxLength: 4,
+                  keyboardType: TextInputType.number,
+                  cursorColor: Colors.white,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                )
               ],
             ),
           ),

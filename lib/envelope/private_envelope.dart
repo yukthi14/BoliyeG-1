@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:boliye_g/bubbles/bubble_special_three.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:flutter/material.dart';
@@ -34,21 +36,37 @@ class PrivateEnvelope extends StatefulWidget {
 }
 
 class _PrivateEnvelopeState extends State<PrivateEnvelope>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  late AnimationController _controllerRotation;
+  late Animation<double> _animationRotation;
+  AnimationStatus _status = AnimationStatus.dismissed;
   @override
   void initState() {
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _controller.forward();
     _animation = Tween(begin: -0.75, end: 0.2).animate(_controller);
+    _controllerRotation = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _animationRotation =
+        Tween(end: 1.0, begin: 0.0).animate(_controllerRotation)
+          ..addListener(() {
+            setState(() {});
+          })
+          ..addStatusListener((status) {
+            _status = status;
+          });
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _controllerRotation.dispose();
     super.dispose();
   }
 
@@ -56,6 +74,9 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
   Widget build(BuildContext context) {
     bool stateTick = false;
     Icon? stateIcon;
+    if (opening) {
+      _controllerRotation.forward();
+    }
     if (widget.sent) {
       stateTick = true;
       stateIcon = const Icon(
@@ -80,7 +101,6 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
         color: Color(0xFF92DEDA),
       );
     }
-    print(widget.isSender);
 
     if (openEnvelope) {
       return Padding(
@@ -136,7 +156,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
               Opacity(
                 opacity: opening ? 0.5 : 0.9,
                 child: ClipPath(
-                  clipper: OpenEnvelope(),
+                  clipper: Envelope(),
                   child: Container(
                     alignment: widget.isSender
                         ? Alignment.topRight
@@ -146,13 +166,18 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                   ),
                 ),
               ),
-              Opacity(
-                opacity: opening ? 0.5 : 0.9,
-                child: ClipPath(
-                  clipper: OpenEnvelopeCover(),
-                  child: Container(
-                    color: Colors.blue,
-                    height: 50,
+              Transform(
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateX(pi * _animationRotation.value),
+                child: Opacity(
+                  opacity: opening ? 0.9 : 0.9,
+                  child: ClipPath(
+                    clipper: EnvelopeCover(),
+                    child: Container(
+                      color: Colors.blue,
+                      height: 50,
+                    ),
                   ),
                 ),
               ),
