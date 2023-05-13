@@ -50,16 +50,10 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
     _animation = Tween(begin: -0.75, end: 0.2).animate(_controller);
     _controllerRotation = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 5),
     );
     _animationRotation =
-        Tween(end: 1.0, begin: 0.0).animate(_controllerRotation)
-          ..addListener(() {
-            setState(() {});
-          })
-          ..addStatusListener((status) {
-            _status = status;
-          });
+        Tween<double>(end: pi, begin: 0.0).animate(_controllerRotation);
     super.initState();
   }
 
@@ -166,21 +160,44 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                   ),
                 ),
               ),
-              Transform(
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..rotateX(pi * _animationRotation.value),
-                child: Opacity(
-                  opacity: opening ? 0.9 : 0.9,
-                  child: ClipPath(
-                    clipper: EnvelopeCover(),
-                    child: Container(
-                      color: Colors.blue,
-                      height: 50,
-                    ),
-                  ),
-                ),
-              ),
+              AnimatedBuilder(
+                  animation: _controllerRotation,
+                  builder: (context, child) {
+                    Size size =
+                        Size(displayWidth(context), displayHeight(context));
+                    return Transform(
+                      //alignment: Alignment.topCenter,
+                      origin:
+                          Offset(size.width * 0.0000049, size.height * 0.00009),
+                      transform: Matrix4.identity()
+                        ..rotateX(_animationRotation.value),
+                      child: Opacity(
+                        opacity: opening ? 0.9 : 0.9,
+                        child: ClipPath(
+                          clipper: EnvelopeCover(),
+                          child: Container(
+                            color: Colors.blue,
+                            height: 40,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+              // Transform(
+              //   alignment: Alignment.topCenter,
+              //   transform: Matrix4.identity()
+              //     ..rotateX( _animationRotation.value),
+              //   child: Opacity(
+              //     opacity: opening ? 0.9 : 0.9,
+              //     child: ClipPath(
+              //       clipper: EnvelopeCover(),
+              //       child: Container(
+              //         color: Colors.blue,
+              //         height: 50,
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Opacity(
                 opacity: 0.2,
                 child: ClipPath(

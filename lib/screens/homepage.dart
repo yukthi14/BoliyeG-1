@@ -1,4 +1,3 @@
-import 'package:boliye_g/screens/chating_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
+import 'chating_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
