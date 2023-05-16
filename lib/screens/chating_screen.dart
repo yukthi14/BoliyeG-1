@@ -30,8 +30,12 @@ class _ChattingScreenState extends State<ChattingScreen> {
   final _chats = [
     {"isSender": false, "type": 0, "msg": "Hello There"},
   ];
+  @override
+  void dispose() {
+    online = false;
+    super.dispose();
+  }
 
-  final TextEditingController _textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();

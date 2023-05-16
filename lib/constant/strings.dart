@@ -18,3 +18,5 @@ List text = [];
 bool privateKey = false;
 bool openEnvelope = true;
 bool opening = false;
+bool showCheckIcon = false;
+bool online = false;

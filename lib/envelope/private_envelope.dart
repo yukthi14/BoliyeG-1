@@ -41,13 +41,14 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
   late Animation<double> _animation;
   late AnimationController _controllerRotation;
   late Animation<double> _animationRotation;
-  AnimationStatus _status = AnimationStatus.dismissed;
   @override
   void initState() {
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _controller.forward();
-    _animation = Tween(begin: -0.75, end: 0.2).animate(_controller);
+    _animation = widget.isSender
+        ? Tween(begin: 0.0, end: -0.11).animate(_controller)
+        : Tween(begin: 0.0, end: 0.111).animate(_controller);
     _controllerRotation = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 5),
@@ -150,7 +151,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
               Opacity(
                 opacity: opening ? 0.5 : 0.9,
                 child: ClipPath(
-                  clipper: Envelope(),
+                  clipper: opening ? OpenEnvelope() : Envelope(),
                   child: Container(
                     alignment: widget.isSender
                         ? Alignment.topRight
@@ -160,29 +161,37 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                   ),
                 ),
               ),
-              AnimatedBuilder(
-                  animation: _controllerRotation,
-                  builder: (context, child) {
-                    Size size =
-                        Size(displayWidth(context), displayHeight(context));
-                    return Transform(
-                      //alignment: Alignment.topCenter,
-                      origin:
-                          Offset(size.width * 0.0000049, size.height * 0.00009),
-                      transform: Matrix4.identity()
-                        ..rotateX(_animationRotation.value),
-                      child: Opacity(
-                        opacity: opening ? 0.9 : 0.9,
-                        child: ClipPath(
-                          clipper: EnvelopeCover(),
-                          child: Container(
-                            color: Colors.blue,
-                            height: 40,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+              // AnimatedBuilder(
+              //     animation: _controllerRotation,
+              //     builder: (context, child) {
+              //       Size size =
+              //           Size(displayWidth(context), displayHeight(context));
+              //       return Transform(
+              //         alignment: Alignment.topCenter,
+              //         transform: Matrix4.identity()
+              //           ..rotateX(_animationRotation.value),
+              //         child: Opacity(
+              //           opacity: opening ? 0.9 : 0.9,
+              //           child: ClipPath(
+              //             clipper: EnvelopeCover(),
+              //             child: Container(
+              //               color: Colors.blue,
+              //               height: 40,
+              //             ),
+              //           ),
+              //         ),
+              //       );
+              //     }),
+              Opacity(
+                opacity: opening ? 0.9 : 0.9,
+                child: ClipPath(
+                  clipper: opening ? OpenEnvelopeCover() : EnvelopeCover(),
+                  child: Container(
+                    color: Colors.blue,
+                    height: 50,
+                  ),
+                ),
+              ),
               // Transform(
               //   alignment: Alignment.topCenter,
               //   transform: Matrix4.identity()
@@ -211,13 +220,17 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(right: displayWidth(context) * 0.1),
-          child: BubbleSpecialThree(
-            text: widget.msg,
-            isSender: widget.isSender,
-          ),
-        )
+        opening
+            ? Padding(
+                padding: widget.isSender
+                    ? EdgeInsets.only(right: displayWidth(context) * 0.1)
+                    : EdgeInsets.only(left: displayWidth(context) * 0.12),
+                child: BubbleSpecialThree(
+                  text: widget.msg,
+                  isSender: widget.isSender,
+                ),
+              )
+            : const SizedBox(),
       ]);
     }
   }

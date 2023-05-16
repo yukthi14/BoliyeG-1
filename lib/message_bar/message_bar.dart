@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../constant/strings.dart';
+
 ///Normal Message bar with more actions
 ///
 /// following attributes can be modified
@@ -62,6 +64,11 @@ class MessageBar extends StatefulWidget {
 
 class _MessageBarState extends State<MessageBar> {
   final TextEditingController _textController = TextEditingController();
+  makeIconTilt() {
+    setState(() {
+      showCheckIcon = _textController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,156 +114,153 @@ class _MessageBarState extends State<MessageBar> {
                   color: Colors.grey.shade300,
                 )
               : Container(),
-          Container(
-            //color: widget.messageBarColor,
-            // padding: EdgeInsets.symmetric(
-            //   vertical: displayWidth(context) * 0.01,
-            //   horizontal: 14,
-            // ),
-            child: Row(
-              children: [
-                // InkWell(
-                //   child: const Icon(
-                //     Icons.emoji_emotions_rounded,
-                //     color: Colors.black,
-                //     size: 24,
-                //   ),
-                //   onTap: () {
-                //     EmojiPicker(
-                //       onEmojiSelected: (category, emoji) {
-                //         // Do something when emoji is tapped
-                //       },
-                //       config: const Config(
-                //           columns: 7,
-                //           emojiSizeMax: 32.0,
-                //           verticalSpacing: 0,
-                //           horizontalSpacing: 0,
-                //           initCategory: Category.RECENT,
-                //           bgColor: Color(0xFFF2F2F2),
-                //           indicatorColor: Colors.blue,
-                //           iconColor: Colors.grey,
-                //           iconColorSelected: Colors.blue,
-                //           showRecentsTab: true,
-                //           recentsLimit: 28,
-                //           categoryIcons: CategoryIcons(),
-                //           buttonMode: ButtonMode.MATERIAL),
-                //     );
-                //   },
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //       left: MediaQuery.of(context).size.width * 0.04,
-                //       right: MediaQuery.of(context).size.width * 0.02),
-                //   child: InkWell(
-                //     child: const Icon(
-                //       Icons.camera_alt,
-                //       color: Colors.white,
-                //       size: 24,
-                //     ),
-                //     onTap: () async {
-                //       ImagePicker image = ImagePicker();
-                //       try {
-                //         XFile? filePath =
-                //             await image.pickImage(source: ImageSource.camera);
-                //         print(filePath);
-                //       } catch (e) {
-                //         print(e);
-                //       }
-                //     },
-                //   ),
-                // ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.03,
-                        bottom: displayHeight(context) * 0.005,
-                        top: displayHeight(context) * 0.009,
-                        right: displayHeight(context) * 0.03),
-                    child: TextField(
-                      controller: _textController,
-                      keyboardType: TextInputType.multiline,
-                      cursorColor: Colors.black,
-                      textCapitalization: TextCapitalization.sentences,
-                      minLines: 1,
-                      maxLines: 3,
-                      onChanged: widget.onTextChanged,
-                      decoration: InputDecoration(
-                        prefixIcon: IconButton(
-                          onPressed: () async {},
-                          icon: const Icon(
-                            Icons.mic,
-                            color: Colors.black,
-                          ),
+          Row(
+            children: [
+              // InkWell(
+              //   child: const Icon(
+              //     Icons.emoji_emotions_rounded,
+              //     color: Colors.black,
+              //     size: 24,
+              //   ),
+              //   onTap: () {
+              //     EmojiPicker(
+              //       onEmojiSelected: (category, emoji) {
+              //         // Do something when emoji is tapped
+              //       },
+              //       config: const Config(
+              //           columns: 7,
+              //           emojiSizeMax: 32.0,
+              //           verticalSpacing: 0,
+              //           horizontalSpacing: 0,
+              //           initCategory: Category.RECENT,
+              //           bgColor: Color(0xFFF2F2F2),
+              //           indicatorColor: Colors.blue,
+              //           iconColor: Colors.grey,
+              //           iconColorSelected: Colors.blue,
+              //           showRecentsTab: true,
+              //           recentsLimit: 28,
+              //           categoryIcons: CategoryIcons(),
+              //           buttonMode: ButtonMode.MATERIAL),
+              //     );
+              //   },
+              // ),
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       left: MediaQuery.of(context).size.width * 0.04,
+              //       right: MediaQuery.of(context).size.width * 0.02),
+              //   child: InkWell(
+              //     child: const Icon(
+              //       Icons.camera_alt,
+              //       color: Colors.white,
+              //       size: 24,
+              //     ),
+              //     onTap: () async {
+              //       ImagePicker image = ImagePicker();
+              //       try {
+              //         XFile? filePath =
+              //             await image.pickImage(source: ImageSource.camera);
+              //         print(filePath);
+              //       } catch (e) {
+              //         print(e);
+              //       }
+              //     },
+              //   ),
+              // ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: displayWidth(context) * 0.03,
+                    bottom: displayHeight(context) * 0.005,
+                    top: displayHeight(context) * 0.009,
+                  ),
+                  child: TextField(
+                    controller: _textController,
+                    keyboardType: TextInputType.multiline,
+                    cursorColor: Colors.black,
+                    textCapitalization: TextCapitalization.sentences,
+                    minLines: 1,
+                    maxLines: 3,
+                    onChanged: (_) => {widget.onTextChanged, makeIconTilt()},
+                    decoration: InputDecoration(
+                      prefixIcon: IconButton(
+                        onPressed: () async {},
+                        icon: const Icon(
+                          Icons.mic,
+                          color: Colors.black,
                         ),
-                        suffixIcon: IconButton(
-                          onPressed: () async {
-                            ImagePicker image = ImagePicker();
-                            try {
-                              XFile? filePath = await image.pickImage(
-                                  source: ImageSource.camera);
-                              if (kDebugMode) {
-                                print(filePath);
-                              }
-                            } catch (e) {
-                              if (kDebugMode) {
-                                print(e);
-                              }
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () async {
+                          ImagePicker image = ImagePicker();
+                          try {
+                            XFile? filePath = await image.pickImage(
+                                source: ImageSource.camera);
+                            if (kDebugMode) {
+                              print(filePath);
                             }
-                          },
-                          icon: const Icon(
-                            Icons.camera_alt_rounded,
-                            color: Colors.black,
-                          ),
+                          } catch (e) {
+                            if (kDebugMode) {
+                              print(e);
+                            }
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.camera_alt_rounded,
+                          color: Colors.black,
                         ),
-                        hintText: "BoliyeG",
-                        hintMaxLines: 1,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 18.0, vertical: 10),
-                        hintStyle: const TextStyle(
-                          fontSize: 16,
+                      ),
+                      hintText: "BoliyeG",
+                      hintMaxLines: 1,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18.0, vertical: 10),
+                      hintStyle: const TextStyle(
+                        fontSize: 16,
+                      ),
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 0.2,
                         ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 0.2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Colors.black26,
-                            width: 0.2,
-                          ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                          color: Colors.black26,
+                          width: 0.2,
                         ),
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: displayWidth(context) * 0.02),
-                  child: InkWell(
-                    child: Container(
-                      child: Icon(
-                        Icons.send,
-                        color: widget.sendButtonColor,
-                        size: 24,
-                      ),
+              ),
+              InkWell(
+                child: Container(
+                  height: displayHeight(context) * 0.05,
+                  margin: EdgeInsets.only(
+                      right: displayWidth(context) * 0.04,
+                      left: displayWidth(context) * 0.04),
+                  child: Transform.rotate(
+                    angle: (showCheckIcon) ? -0.55 : 0.0,
+                    child: Icon(
+                      Icons.send,
+                      color: widget.sendButtonColor,
+                      size: 24,
                     ),
-                    onTap: () {
-                      if (_textController.text.trim() != '') {
-                        if (widget.onSend != null) {
-                          widget.onSend!(_textController.text.trim());
-                        }
-                        _textController.text = '';
-                      }
-                    },
                   ),
                 ),
-              ],
-            ),
+                onTap: () {
+                  if (_textController.text.trim() != '') {
+                    if (widget.onSend != null) {
+                      widget.onSend!(_textController.text.trim());
+                    }
+                    _textController.text = '';
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),

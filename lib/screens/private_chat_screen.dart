@@ -27,8 +27,16 @@ class _PrivateChatState extends State<PrivateChat>
   ScrollController listScrollController = ScrollController();
 
   final _chats = [
-    {"isSender": true, "type": 0, "msg": "Hello There"},
+    {"isSender": false, "type": 0, "msg": "Hello There", "animate": false},
   ];
+
+  @override
+  void dispose() {
+    setState(() {
+      online = false;
+    });
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,22 +104,29 @@ class _PrivateChatState extends State<PrivateChat>
                   itemBuilder: (context, index) {
                     final chat = _chats.elementAt(index);
                     bool isSender = chat['isSender'] as bool;
+                    bool animate = chat['animate'] as bool;
                     String msg = chat['msg'] as String;
                     return InkWell(
                       onTap: () {
                         _showMyDialog();
                       },
-                      child: PrivateEnvelope(
-                        msg: msg,
-                        coverColor: Colors.redAccent,
-                        topCoverColor: Colors.white,
-                        isSender: isSender,
-                        textColor: Colors.black,
-                        fountSize: 15,
-                        envelopeSize: displaySize(context),
-                        sent: false,
-                        delivered: false,
-                        seen: false,
+                      child: AnimatedContainer(
+                        margin: EdgeInsets.only(
+                          top: animate ? displayHeight(context) * 0.69 : 0,
+                        ),
+                        duration: const Duration(milliseconds: 300),
+                        child: PrivateEnvelope(
+                          msg: msg,
+                          coverColor: Colors.redAccent,
+                          topCoverColor: Colors.white,
+                          isSender: isSender,
+                          textColor: Colors.black,
+                          fountSize: 15,
+                          envelopeSize: displaySize(context),
+                          sent: false,
+                          delivered: false,
+                          seen: false,
+                        ),
                       ),
                     );
                   },
@@ -121,10 +136,17 @@ class _PrivateChatState extends State<PrivateChat>
                 messageBarColor: Colors.black,
                 sendButtonColor: Colors.white,
                 onSend: (_) {
-                  _chats.add({
-                    "isSender": true,
-                    "type": 0,
-                    "msg": _,
+                  _chats.add(
+                      {"isSender": true, "type": 0, "msg": _, "animate": true});
+                  Future.delayed(const Duration(milliseconds: 300))
+                      .then((value) {
+                    setState(() {
+                      for (var i = 0; i < _chats.length; i++) {
+                        if (_chats[i]["animate"] == true) {
+                          _chats[i]["animate"] = false;
+                        }
+                      }
+                    });
                   });
                   setState(() {
                     final position =
