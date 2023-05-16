@@ -1,16 +1,20 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
+import 'package:boliye_g/firebase/firebase_mass.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../message_bar/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
-  const ChattingScreen({Key? key, this.onSend}) : super(key: key);
+  const ChattingScreen({Key? key, this.onSend, required this.msgToken})
+      : super(key: key);
+  final String msgToken;
   final void Function(String)? onSend;
 
   @override
@@ -27,19 +31,32 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isPause = false;
   ScrollController listScrollController = ScrollController();
 
-  final _chats = [
-    {"isSender": false, "type": 0, "msg": "Hello There"},
-  ];
+  var _chats = [];
+  @override
+  void initState() {
+    getMsg();
+    super.initState();
+  }
+
   @override
   void dispose() {
     online = false;
     super.dispose();
   }
 
+  getMsg() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    _chats = await FirebaseMassage().getChats(widget.msgToken);
+    for (int i = 0; i < _chats.length; i++) {
+      if (_chats[i][Strings.isSender] == prefs.getString(Strings.token)) {
+        _chats[i][Strings.isSender] = true;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -126,8 +143,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
                           bottom: displayHeight(context) * 0.05),
                       itemBuilder: (context, index) {
                         final chat = _chats.elementAt(index);
-                        bool isSender = chat['isSender'] as bool;
-                        String msg = chat['msg'] as String;
+                        bool isSender = chat[Strings.isSender];
+                        String msg = chat[Strings.msg];
                         return BubbleSpecialThree(
                           text: msg,
                           color: const Color(0xFFE8E8EE),
@@ -140,12 +157,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   messageBarColor: Colors.black,
                   sendButtonColor: Colors.white,
                   onSend: (_) {
-                    _chats.add({
-                      "isSender": true,
-                      "type": 0,
-                      "msg": _,
-                    });
-
+                    FirebaseMassage().sendMassage(_, widget.msgToken, 0);
                     setState(() {
                       final position =
                           listScrollController.position.maxScrollExtent;
