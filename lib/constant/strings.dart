@@ -7,11 +7,8 @@ class Strings {
   static const String aboutUs = 'About Us';
   static const String setting = 'Setting';
   static const String searchBar = 'Search by name';
-<<<<<<< Updated upstream
   static const String secretCode = 'Secret Code';
-=======
   static const String textField = 'Type Something ...';
->>>>>>> Stashed changes
 }
 
 bool showEmoji = false;

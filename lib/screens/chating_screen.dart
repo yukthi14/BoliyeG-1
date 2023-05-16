@@ -1,17 +1,17 @@
-import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
+import '../message_bar/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
-  const ChattingScreen({Key? key}) : super(key: key);
+  const ChattingScreen({Key? key, this.onSend}) : super(key: key);
+  final void Function(String)? onSend;
 
   @override
   _ChattingScreenState createState() => _ChattingScreenState();
@@ -32,7 +32,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
   ];
 
   final TextEditingController _textController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -101,10 +100,21 @@ class _ChattingScreenState extends State<ChattingScreen> {
             ),
             body: Stack(
               children: [
+                // BubbleNormalAudio(
+                //   color: Color(0xFFE8E8EE),
+                //   duration: duration.inSeconds.toDouble(),
+                //   position: position.inSeconds.toDouble(),
+                //   isPlaying: isPlaying,
+                //   isLoading: isLoading,
+                //   isPause: isPause,
+                //   onSeekChanged: _changeSeek,
+                //   onPlayPauseButtonClick: _playAudio,
+                //   sent: true,
+                // ),
                 SizedBox(
                   height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
                       ? displayHeight(context) * 0.831
-                      : displayHeight(context) * 0.46,
+                      : displayHeight(context) * 0.54,
                   child: ListView.builder(
                       itemCount: _chats.length,
                       controller: listScrollController,
@@ -122,45 +132,26 @@ class _ChattingScreenState extends State<ChattingScreen> {
                         );
                       }),
                 ),
-                // MessageBar(
-                //   messageBarColor: Colors.black,
-                //   sendButtonColor: Colors.white,
-                //   onSend: (_) {
-                //     _chats.add({
-                //       "isSender": true,
-                //       "type": 0,
-                //       "msg": _,
-                //     });
-                //     setState(() {
-                //       final position =
-                //           listScrollController.position.maxScrollExtent;
-                //       listScrollController.animateTo(
-                //         position,
-                //         duration: const Duration(milliseconds: 300),
-                //         curve: Curves.linear,
-                //       );
-                //     });
-                //   },
-                // ),
-                SizedBox(
-                  child: Column(
-                    children: [
-                      _chatInput(),
-                      if (showEmoji)
-                        SizedBox(
-                          height: displayHeight(context) * 0.31,
-                          child: EmojiPicker(
-                            textEditingController: _textController,
-                            config: Config(
-                              bgColor: Colors.white,
-                              columns: 9,
-                              emojiSizeMax:
-                                  20 * (Platform.isAndroid ? 1.30 : 1.0),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                MessageBar(
+                  messageBarColor: Colors.black,
+                  sendButtonColor: Colors.white,
+                  onSend: (_) {
+                    _chats.add({
+                      "isSender": true,
+                      "type": 0,
+                      "msg": _,
+                    });
+
+                    setState(() {
+                      final position =
+                          listScrollController.position.maxScrollExtent;
+                      listScrollController.animateTo(
+                        position,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.linear,
+                      );
+                    });
+                  },
                 ),
               ],
             ),
@@ -171,181 +162,76 @@ class _ChattingScreenState extends State<ChattingScreen> {
     );
   }
 
-  Widget _chatInput() {
-    return Padding(
-      padding: EdgeInsets.only(top: displayHeight(context) * 0.82),
-      child: Row(
-        children: [
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50)),
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          FocusScope.of(context).unfocus();
-                          showEmoji = !showEmoji;
-                        });
-                      },
-                      icon: const Icon(Icons.emoji_emotions_rounded)),
-                  Expanded(
-                    child: TextField(
-                      controller: _textController,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onTap: () {
-                        if (showEmoji) {
-                          setState(() {
-                            showEmoji = !showEmoji;
-                          });
-                        }
-                      },
-                      decoration: const InputDecoration(
-                        hintText: Strings.textField,
-                        hintStyle: TextStyle(color: Colors.black),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  // IconButton(
-                  //     onPressed: () async {
-                  //       ImagePicker image = ImagePicker();
-                  //       try {
-                  //         XFile? filePath = await image.pickImage(
-                  //             source: ImageSource.gallery);
-                  //         if (kDebugMode) {
-                  //           print(filePath);
-                  //         }
-                  //       } catch (e) {
-                  //         if (kDebugMode) {
-                  //           print(e);
-                  //         }
-                  //       }
-                  //     },
-                  //     icon: const Icon(Icons.photo)),
-                  IconButton(
-                      onPressed: () async {
-                        ImagePicker image = ImagePicker();
-                        try {
-                          XFile? filePath =
-                              await image.pickImage(source: ImageSource.camera);
-                          if (kDebugMode) {
-                            print(filePath);
-                          }
-                        } catch (e) {
-                          if (kDebugMode) {
-                            print(e);
-                          }
-                        }
-                      },
-                      icon: const Icon(Icons.camera_alt_rounded)),
-                  SizedBox(
-                    width: displayWidth(context) * 0.02,
-                  )
-                ],
-              ),
-            ),
-          ),
-          MaterialButton(
-            onPressed: () {
-              _chats.add({
-                "isSender": true,
-                "type": 0,
-                "msg": '',
-              });
-              setState(() {
-                final position = listScrollController.position.maxScrollExtent;
-                listScrollController.animateTo(
-                  position,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.linear,
-                );
-              });
-            },
-            minWidth: 0,
-            padding: EdgeInsets.only(
-                top: displayHeight(context) * 0.01,
-                right: displayWidth(context) * 0.02,
-                left: displayWidth(context) * 0.03,
-                bottom: displayHeight(context) * 0.01),
-            shape: const CircleBorder(),
-            color: Colors.white,
-            child: Icon(
-              Icons.send,
-              size: displayWidth(context) * 0.07,
-            ),
-          )
-        ],
+  // Widget _chatInput() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: displayHeight(context) * 0.82),
+  //     child:
+  //   );
+  // }
+
+  Widget _image() {
+    return Container(
+      constraints: const BoxConstraints(
+        minHeight: 20.0,
+        minWidth: 20.0,
+      ),
+      child: CachedNetworkImage(
+        imageUrl: 'https://i.ibb.co/JCyT1kT/Asset-1.png',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
     );
   }
 
-// Widget _image() {
-//   return Container(
-//     constraints: const BoxConstraints(
-//       minHeight: 20.0,
-//       minWidth: 20.0,
-//     ),
-//     child: CachedNetworkImage(
-//       imageUrl: 'https://i.ibb.co/JCyT1kT/Asset-1.png',
-//       progressIndicatorBuilder: (context, url, downloadProgress) =>
-//           CircularProgressIndicator(value: downloadProgress.progress),
-//       errorWidget: (context, url, error) => const Icon(Icons.error),
-//     ),
-//   );
-// }
+  void _changeSeek(double value) {
+    setState(() {
+      audioPlayer.seek(Duration(seconds: value.toInt()));
+    });
+  }
 
-// void _changeSeek(double value) {
-//   setState(() {
-//     audioPlayer.seek(Duration(seconds: value.toInt()));
-//   });
-// }
+  void _playAudio() async {
+    const url =
+        'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
+    if (isPause) {
+      await audioPlayer.resume();
+      setState(() {
+        isPlaying = true;
+        isPause = false;
+      });
+    } else if (isPlaying) {
+      await audioPlayer.pause();
+      setState(() {
+        isPlaying = false;
+        isPause = true;
+      });
+    } else {
+      setState(() {
+        isLoading = true;
+      });
+      await audioPlayer.play(url);
+      setState(() {
+        isPlaying = true;
+      });
+    }
 
-// void _playAudio() async {
-//   const url =
-//       'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
-//   if (isPause) {
-//     await audioPlayer.resume();
-//     setState(() {
-//       isPlaying = true;
-//       isPause = false;
-//     });
-//   } else if (isPlaying) {
-//     await audioPlayer.pause();
-//     setState(() {
-//       isPlaying = false;
-//       isPause = true;
-//     });
-//   } else {
-//     setState(() {
-//       isLoading = true;
-//     });
-//     await audioPlayer.play(url);
-//     setState(() {
-//       isPlaying = true;
-//     });
-//   }
-//
-//   audioPlayer.onDurationChanged.listen((Duration d) {
-//     setState(() {
-//       duration = d;
-//       isLoading = false;
-//     });
-//   });
-//   audioPlayer.onAudioPositionChanged.listen((Duration p) {
-//     setState(() {
-//       position = p;
-//     });
-//   });
-//   audioPlayer.onPlayerCompletion.listen((event) {
-//     setState(() {
-//       isPlaying = false;
-//       duration = const Duration();
-//       position = const Duration();
-//     });
-//   });
-// }
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      setState(() {
+        duration = d;
+        isLoading = false;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      setState(() {
+        position = p;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        isPlaying = false;
+        duration = const Duration();
+        position = const Duration();
+      });
+    });
+  }
 }
