@@ -45,23 +45,22 @@ class FirebaseMassage {
   }
 
   createChat(String token) async {
+    List msgList = [];
     await ref.child(Strings.msg).get().then((value) async {
       for (var element in value.children) {
-        if (element.key != token) {
-          await ref
-              .child(Strings.msg)
-              .child(token)
-              .set({Strings.timeStamp: now});
-        }
+        msgList.add(element.key);
+      }
+      if (!msgList.contains(token)) {
+        await ref.child(Strings.msg).child(token).child(now.toString()).set(
+            {Strings.msg: '', Strings.contentType: '', Strings.isSender: ''});
       }
     });
   }
 
   sendMassage(String msg, String msgToken, int type) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    ref.child(Strings.msg).child(msgToken).child(Strings.content).set({
+    ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
       Strings.msg: msg,
-      Strings.timeStamp: now,
       Strings.contentType: type,
       Strings.isSender: prefs.get(Strings.token)
     });

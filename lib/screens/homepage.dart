@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     });
     FirebaseMassage().getToken();
     FirebaseMassage().getUserList();
-    print('object');
+
     super.initState();
   }
 
@@ -188,12 +188,10 @@ class _HomePageState extends State<HomePage> {
                                         await SharedPreferences.getInstance();
                                     String msgToken = listUserKey
                                             .elementAt(index)
-                                            .toString()
-                                            .substring(0, 40) +
+                                            .toString() +
                                         pref
                                             .getString(Strings.token)
-                                            .toString()
-                                            .substring(0, 40);
+                                            .toString();
                                     FirebaseMassage().createChat(msgToken);
                                     Navigator.push(
                                         context,
@@ -204,6 +202,9 @@ class _HomePageState extends State<HomePage> {
                                                 PageTransitionType.topToBottom,
                                             child: ChattingScreen(
                                               msgToken: msgToken,
+                                              myToken: pref
+                                                  .getString(Strings.token)
+                                                  .toString(),
                                             )));
                                   },
                                   child: Container(

@@ -3,18 +3,20 @@ import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/firebase/firebase_mass.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../message_bar/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
-  const ChattingScreen({Key? key, this.onSend, required this.msgToken})
+  const ChattingScreen(
+      {Key? key, this.onSend, required this.msgToken, required this.myToken})
       : super(key: key);
   final String msgToken;
+  final String myToken;
   final void Function(String)? onSend;
 
   @override
@@ -30,28 +32,12 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isLoading = false;
   bool isPause = false;
   ScrollController listScrollController = ScrollController();
-
-  var _chats = [];
-  @override
-  void initState() {
-    getMsg();
-    super.initState();
-  }
+  final ref = FirebaseDatabase.instance.ref('message');
 
   @override
   void dispose() {
     online = false;
     super.dispose();
-  }
-
-  getMsg() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    _chats = await FirebaseMassage().getChats(widget.msgToken);
-    for (int i = 0; i < _chats.length; i++) {
-      if (_chats[i][Strings.isSender] == prefs.getString(Strings.token)) {
-        _chats[i][Strings.isSender] = true;
-      }
-    }
   }
 
   @override
@@ -136,21 +122,31 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
                       ? displayHeight(context) * 0.831
                       : displayHeight(context) * 0.54,
-                  child: ListView.builder(
-                      itemCount: _chats.length,
-                      controller: listScrollController,
-                      padding: EdgeInsets.only(
-                          bottom: displayHeight(context) * 0.05),
-                      itemBuilder: (context, index) {
-                        final chat = _chats.elementAt(index);
-                        bool isSender = chat[Strings.isSender];
-                        String msg = chat[Strings.msg];
-                        return BubbleSpecialThree(
-                          text: msg,
-                          color: const Color(0xFFE8E8EE),
-                          tail: true,
-                          isSender: isSender,
-                        );
+                  child: StreamBuilder<DatabaseEvent>(
+                      stream: ref.child(widget.msgToken).onValue,
+                      builder: (context, snapshot) {
+                        List msg = [];
+                        var allChats = snapshot.data?.snapshot.children;
+                        // List<DataSnapshot> sortedList = allChats!.toList()
+                        //   ..sort((a, b) => a.key!.compareTo(b.key!));
+                        allChats?.forEach((element) {
+                          msg.add(element.value);
+                        });
+
+                        return ListView.builder(
+                            itemCount: msg.length,
+                            controller: listScrollController,
+                            padding: EdgeInsets.only(
+                                bottom: displayHeight(context) * 0.05),
+                            itemBuilder: (context, index) {
+                              return BubbleSpecialThree(
+                                text: msg[index][Strings.msg],
+                                color: const Color(0xFFE8E8EE),
+                                tail: true,
+                                isSender: (widget.myToken ==
+                                    msg[index][Strings.isSender]),
+                              );
+                            });
                       }),
                 ),
                 MessageBar(
