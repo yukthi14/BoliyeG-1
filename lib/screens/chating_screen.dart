@@ -13,10 +13,15 @@ import '../message_bar/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
   const ChattingScreen(
-      {Key? key, this.onSend, required this.msgToken, required this.myToken})
+      {Key? key,
+      this.onSend,
+      required this.msgToken,
+      required this.revMsgToken,
+      required this.myToken})
       : super(key: key);
   final String msgToken;
   final String myToken;
+  final String revMsgToken;
   final void Function(String)? onSend;
 
   @override
@@ -123,14 +128,19 @@ class _ChattingScreenState extends State<ChattingScreen> {
                       ? displayHeight(context) * 0.831
                       : displayHeight(context) * 0.54,
                   child: StreamBuilder<DatabaseEvent>(
-                      stream: ref.child(widget.msgToken).onValue,
+                      stream: ref.onValue,
                       builder: (context, snapshot) {
-                        List msg = [];
+                        var msg = [];
                         var allChats = snapshot.data?.snapshot.children;
                         // List<DataSnapshot> sortedList = allChats!.toList()
                         //   ..sort((a, b) => a.key!.compareTo(b.key!));
                         allChats?.forEach((element) {
-                          msg.add(element.value);
+                          if (element.key == widget.msgToken ||
+                              element.key == widget.revMsgToken) {
+                            for (var element in element.children) {
+                              msg.add(element.value);
+                            }
+                          }
                         });
 
                         return ListView.builder(
@@ -139,6 +149,9 @@ class _ChattingScreenState extends State<ChattingScreen> {
                             padding: EdgeInsets.only(
                                 bottom: displayHeight(context) * 0.05),
                             itemBuilder: (context, index) {
+                              // print(msg[index][Strings.isSender]);
+                              // print((widget.myToken ==
+                              //     msg[index][Strings.isSender]));
                               return BubbleSpecialThree(
                                 text: msg[index][Strings.msg],
                                 color: const Color(0xFFE8E8EE),

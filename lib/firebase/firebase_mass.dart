@@ -44,13 +44,13 @@ class FirebaseMassage {
     }
   }
 
-  createChat(String token) async {
+  createChat(String token, String reverseToke) async {
     List msgList = [];
     await ref.child(Strings.msg).get().then((value) async {
       for (var element in value.children) {
         msgList.add(element.key);
       }
-      if (!msgList.contains(token)) {
+      if (!msgList.contains(token) && !msgList.contains(reverseToke)) {
         await ref.child(Strings.msg).child(token).child(now.toString()).set(
             {Strings.msg: '', Strings.contentType: '', Strings.isSender: ''});
       }

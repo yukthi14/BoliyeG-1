@@ -186,13 +186,12 @@ class _HomePageState extends State<HomePage> {
                                   onTap: () async {
                                     final SharedPreferences pref =
                                         await SharedPreferences.getInstance();
-                                    String msgToken = listUserKey
-                                            .elementAt(index)
-                                            .toString() +
-                                        pref
-                                            .getString(Strings.token)
-                                            .toString();
-                                    FirebaseMassage().createChat(msgToken);
+                                    String msgToken =
+                                        '${listUserKey.elementAt(index)}@boliyegUser${pref.getString(Strings.token)}';
+                                    String revToken =
+                                        '${pref.getString(Strings.token)}@boliyegUser${listUserKey.elementAt(index)}';
+                                    // FirebaseMassage()
+                                    //     .createChat(msgToken, revToken);
                                     Navigator.push(
                                         context,
                                         PageTransition(
@@ -202,6 +201,7 @@ class _HomePageState extends State<HomePage> {
                                                 PageTransitionType.topToBottom,
                                             child: ChattingScreen(
                                               msgToken: msgToken,
+                                              revMsgToken: revToken,
                                               myToken: pref
                                                   .getString(Strings.token)
                                                   .toString(),
