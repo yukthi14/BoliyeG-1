@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
       online = true;
     });
     FirebaseMassage().getToken();
+    FirebaseMassage().setToken();
     super.initState();
   }
 
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refresh() async {
-    return await Future.delayed(const Duration(seconds: 4));
+    return await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override
@@ -87,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Container(
-          color: Colors.black45,
+          color: Color(0xff8585a2),
           child: Stack(
             children: [
               Padding(
@@ -148,7 +149,16 @@ class _HomePageState extends State<HomePage> {
                 margin: EdgeInsets.only(top: displayHeight(context) * 0.3),
                 height: displayHeight(context) * 0.7,
                 decoration: const BoxDecoration(
-                    color: Colors.white,
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xffE8E8EC),
+                        Color(0xffacaccb),
+                        Color(0xff858CA6),
+                        // Color(0xff000000),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment(0.8, 2),
+                    ),
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(50),
                         topLeft: Radius.circular(50))),
@@ -159,20 +169,31 @@ class _HomePageState extends State<HomePage> {
                           top: displayHeight(context) * 0.024,
                           left: displayWidth(context) * 0.07,
                           right: displayWidth(context) * 0.07),
-                      child: TextField(
-                        controller: _controllerSearch,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.black45,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: Strings.searchBar,
-                          hintStyle: const TextStyle(color: Colors.white),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 32.0,
+                              offset: Offset(0, 20),
+                            )
+                          ],
+                        ),
+                        child: TextField(
+                          controller: _controllerSearch,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Color(0xffacaccb),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: Strings.searchBar,
+                            hintStyle: const TextStyle(color: Colors.white),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -182,8 +203,8 @@ class _HomePageState extends State<HomePage> {
                       width: displayHeight(context),
                       child: LiquidPullToRefresh(
                         onRefresh: _refresh,
-                        color: Colors.white,
-                        backgroundColor: Colors.black,
+                        color: Colors.transparent,
+                        backgroundColor: Color(0xff8585a2),
                         height: 100,
                         child: StreamBuilder<DatabaseEvent>(
                             stream: ref.onValue,
@@ -198,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                                 }
                               });
                               return (userKey.isNotEmpty)
-                                  ? ListView.separated(
+                                  ? ListView.builder(
                                       itemCount: userKey.length,
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
@@ -221,7 +242,15 @@ class _HomePageState extends State<HomePage> {
                                                     )));
                                           },
                                           child: Container(
-                                            color: Colors.white,
+                                            margin: EdgeInsets.only(bottom: 2),
+                                            decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                                border: Border.all(
+                                                  color: Colors
+                                                      .deepPurple.shade300,
+                                                )),
                                             height:
                                                 displayHeight(context) * 0.075,
                                             child: Stack(
@@ -269,11 +298,6 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         );
                                       },
-                                      separatorBuilder:
-                                          (BuildContext context, int index) =>
-                                              const Divider(
-                                        color: Colors.black,
-                                      ),
                                     )
                                   : const Center(
                                       child: Text('No User'),

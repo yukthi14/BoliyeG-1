@@ -65,6 +65,15 @@ class BubbleSpecialThree extends StatelessWidget {
               alignment: isSender ? Alignment.topRight : Alignment.topLeft,
               tail: tail),
           child: Container(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 30.0,
+                  offset: Offset(0, 20),
+                )
+              ],
+            ),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * .7,
             ),
