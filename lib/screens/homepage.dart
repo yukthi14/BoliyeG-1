@@ -1,6 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   final TextEditingController _controllerSearch = TextEditingController();
+  final ref = FirebaseDatabase.instance.ref('users');
 
   @override
   void initState() {
@@ -24,8 +25,6 @@ class _HomePageState extends State<HomePage> {
       online = true;
     });
     FirebaseMassage().getToken();
-    FirebaseMassage().getUserList();
-
     super.initState();
   }
 
@@ -176,82 +175,98 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: displayHeight(context) * 0.58,
                       width: displayHeight(context),
-                      child: ListView.separated(
-                        itemCount: listName.length,
-                        itemBuilder: (context, index) {
-                          var name = listName.elementAt(index);
-                          String userName = name[Strings.userName];
-                          return (listName.isNotEmpty)
-                              ? GestureDetector(
-                                  onTap: () async {
-                                    final SharedPreferences pref =
-                                        await SharedPreferences.getInstance();
-                                    String msgToken =
-                                        '${listUserKey.elementAt(index)}@boliyegUser${pref.getString(Strings.token)}';
-                                    String revToken =
-                                        '${pref.getString(Strings.token)}@boliyegUser${listUserKey.elementAt(index)}';
-                                    // FirebaseMassage()
-                                    //     .createChat(msgToken, revToken);
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            type:
-                                                PageTransitionType.topToBottom,
-                                            child: ChattingScreen(
-                                              msgToken: msgToken,
-                                              revMsgToken: revToken,
-                                              myToken: pref
-                                                  .getString(Strings.token)
-                                                  .toString(),
-                                            )));
-                                  },
-                                  child: Container(
-                                    color: Colors.white,
-                                    height: displayHeight(context) * 0.075,
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: displayWidth(context) * 0.12,
-                                          height: displayHeight(context) * 0.12,
-                                          margin: EdgeInsets.only(
-                                            left: displayWidth(context) * 0.05,
+                      child: StreamBuilder<DatabaseEvent>(
+                          stream: ref.onValue,
+                          builder: (context, snapshot) {
+                            var allUser = snapshot.data?.snapshot.children;
+                            List userName = [];
+                            List userKey = [];
+                            allUser?.forEach((element) {
+                              if (element.key != deviceToken) {
+                                userName.add(element.value);
+                                userKey.add(element.key);
+                              }
+                            });
+                            return (userKey.isNotEmpty)
+                                ? ListView.separated(
+                                    itemCount: userKey.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          String msgToken =
+                                              '${userKey[index]}@boliyegUser$deviceToken';
+                                          String revToken =
+                                              '$deviceToken@boliyegUser${userKey[index]}';
+                                          Navigator.push(
+                                              context,
+                                              PageTransition(
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                  type: PageTransitionType
+                                                      .topToBottom,
+                                                  child: ChattingScreen(
+                                                    msgToken: msgToken,
+                                                    revMsgToken: revToken,
+                                                    myToken: deviceToken,
+                                                  )));
+                                        },
+                                        child: Container(
+                                          color: Colors.white,
+                                          height:
+                                              displayHeight(context) * 0.075,
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                width: displayWidth(context) *
+                                                    0.12,
+                                                height: displayHeight(context) *
+                                                    0.12,
+                                                margin: EdgeInsets.only(
+                                                  left: displayWidth(context) *
+                                                      0.05,
+                                                ),
+                                                decoration: const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.blueAccent,
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            Strings
+                                                                .avatarImage))),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left:
+                                                        displayWidth(context) *
+                                                            0.2,
+                                                    top:
+                                                        displayHeight(context) *
+                                                            0.025),
+                                                child: Text(
+                                                  userName[index]
+                                                      [Strings.userName],
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.05,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.blueAccent,
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      Strings.avatarImage))),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: displayWidth(context) * 0.2,
-                                              top: displayHeight(context) *
-                                                  0.025),
-                                          child: Text(
-                                            userName,
-                                            style: TextStyle(
-                                              fontSize:
-                                                  displayWidth(context) * 0.05,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                      );
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            const Divider(
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                )
-                              : const Center(
-                                  child: Text('No User'),
-                                );
-                        },
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const Divider(
-                          color: Colors.black,
-                        ),
-                      ),
+                                  )
+                                : const Center(
+                                    child: Text('No User'),
+                                  );
+                          }),
                     )
                   ],
                 ),

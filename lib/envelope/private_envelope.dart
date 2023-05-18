@@ -69,9 +69,9 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
   Widget build(BuildContext context) {
     bool stateTick = false;
     Icon? stateIcon;
-    if (opening) {
-      _controllerRotation.forward();
-    }
+    // if (opening) {
+    //   _controllerRotation.repeat();
+    // }
     if (widget.sent) {
       stateTick = true;
       stateIcon = const Icon(

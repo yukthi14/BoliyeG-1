@@ -247,6 +247,8 @@ class _PrivateChatState extends State<PrivateChat>
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Center(
             child: Text(
               Strings.secretCode,

@@ -29,3 +29,4 @@ bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
+String deviceToken = '';

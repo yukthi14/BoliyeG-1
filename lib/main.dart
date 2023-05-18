@@ -1,3 +1,4 @@
+import 'package:boliye_g/firebase/firebase_mass.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +33,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    FirebaseMassage ob = FirebaseMassage();
+    ob.setToken();
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );

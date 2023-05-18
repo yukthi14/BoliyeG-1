@@ -33,29 +33,24 @@ class FirebaseMassage {
     }
   }
 
-  getUserList() async {
+  setToken() async {
     DataSnapshot userList = await ref.child(Strings.user).get();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    for (var element in userList.children) {
-      if (element.key != prefs.get(Strings.token)) {
-        listName.add(element.value);
-        listUserKey.add(element.key);
-      }
-    }
+    deviceToken = prefs.get(Strings.token).toString();
   }
-
-  createChat(String token, String reverseToke) async {
-    List msgList = [];
-    await ref.child(Strings.msg).get().then((value) async {
-      for (var element in value.children) {
-        msgList.add(element.key);
-      }
-      if (!msgList.contains(token) && !msgList.contains(reverseToke)) {
-        await ref.child(Strings.msg).child(token).child(now.toString()).set(
-            {Strings.msg: '', Strings.contentType: '', Strings.isSender: ''});
-      }
-    });
-  }
+  //
+  // createChat(String token, String reverseToke) async {
+  //   List msgList = [];
+  //   await ref.child(Strings.msg).get().then((value) async {
+  //     for (var element in value.children) {
+  //       msgList.add(element.key);
+  //     }
+  //     if (!msgList.contains(token) && !msgList.contains(reverseToke)) {
+  //       await ref.child(Strings.msg).child(token).child(now.toString()).set(
+  //           {Strings.msg: '', Strings.contentType: '', Strings.isSender: ''});
+  //     }
+  //   });
+  // }
 
   sendMassage(
       String msg, String msgToken, String reverseToken, int type) async {
@@ -80,20 +75,20 @@ class FirebaseMassage {
       }
     });
   }
-
-  Future<List> getChats(String chatToken) async {
-    List contentMassage = [];
-    try {
-      await ref.child(Strings.msg).get().then((value) async {
-        for (var element in value.children) {
-          contentMassage.add(element.child(Strings.content).value);
-        }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
-    }
-    return contentMassage;
-  }
+  //
+  // Future<List> getChats(String chatToken) async {
+  //   List contentMassage = [];
+  //   try {
+  //     await ref.child(Strings.msg).get().then((value) async {
+  //       for (var element in value.children) {
+  //         contentMassage.add(element.child(Strings.content).value);
+  //       }
+  //     });
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e.toString());
+  //     }
+  //   }
+  //   return contentMassage;
+  // }
 }

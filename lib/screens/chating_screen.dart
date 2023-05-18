@@ -112,28 +112,15 @@ class _ChattingScreenState extends State<ChattingScreen> {
             ),
             body: Stack(
               children: [
-                // BubbleNormalAudio(
-                //   color: Color(0xFFE8E8EE),
-                //   duration: duration.inSeconds.toDouble(),
-                //   position: position.inSeconds.toDouble(),
-                //   isPlaying: isPlaying,
-                //   isLoading: isLoading,
-                //   isPause: isPause,
-                //   onSeekChanged: _changeSeek,
-                //   onPlayPauseButtonClick: _playAudio,
-                //   sent: true,
-                // ),
                 SizedBox(
                   height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                      ? displayHeight(context) * 0.831
-                      : displayHeight(context) * 0.54,
+                      ? displayHeight(context) * 0.845
+                      : displayHeight(context) * 0.2,
                   child: StreamBuilder<DatabaseEvent>(
                       stream: ref.onValue,
                       builder: (context, snapshot) {
                         var msg = [];
                         var allChats = snapshot.data?.snapshot.children;
-                        // List<DataSnapshot> sortedList = allChats!.toList()
-                        //   ..sort((a, b) => a.key!.compareTo(b.key!));
                         allChats?.forEach((element) {
                           if (element.key == widget.msgToken ||
                               element.key == widget.revMsgToken) {
@@ -149,16 +136,11 @@ class _ChattingScreenState extends State<ChattingScreen> {
                             }
                           }
                         });
-
                         return ListView.builder(
                             itemCount: msg.length,
                             controller: listScrollController,
-                            padding: EdgeInsets.only(
-                                bottom: displayHeight(context) * 0.05),
+                            padding: EdgeInsets.only(bottom: 1),
                             itemBuilder: (context, index) {
-                              // print(msg[index][Strings.isSender]);
-                              // print((widget.myToken ==
-                              //     msg[index][Strings.isSender]));
                               return BubbleSpecialThree(
                                 text: msg[index][Strings.msg],
                                 color: const Color(0xFFE8E8EE),
