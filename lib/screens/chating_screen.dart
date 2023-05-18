@@ -137,8 +137,11 @@ class _ChattingScreenState extends State<ChattingScreen> {
                         allChats?.forEach((element) {
                           if (element.key == widget.msgToken ||
                               element.key == widget.revMsgToken) {
-                            for (var element in element.children) {
-                              msg.add(element.value);
+                            var childrenArray = element.children.toList();
+                            for (int i = childrenArray.length - 1;
+                                i >= 0;
+                                i--) {
+                              msg.add(childrenArray[i].value);
                             }
                           }
                         });
@@ -166,7 +169,8 @@ class _ChattingScreenState extends State<ChattingScreen> {
                   messageBarColor: Colors.black,
                   sendButtonColor: Colors.white,
                   onSend: (_) {
-                    FirebaseMassage().sendMassage(_, widget.msgToken, 0);
+                    FirebaseMassage()
+                        .sendMassage(_, widget.msgToken, widget.revMsgToken, 0);
                     setState(() {
                       final position =
                           listScrollController.position.maxScrollExtent;

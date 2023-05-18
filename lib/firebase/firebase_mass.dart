@@ -57,12 +57,27 @@ class FirebaseMassage {
     });
   }
 
-  sendMassage(String msg, String msgToken, int type) async {
+  sendMassage(
+      String msg, String msgToken, String reverseToken, int type) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
-      Strings.msg: msg,
-      Strings.contentType: type,
-      Strings.isSender: prefs.get(Strings.token)
+    List msgList = [];
+    await ref.child(Strings.msg).get().then((value) async {
+      for (var element in value.children) {
+        msgList.add(element.key);
+      }
+      if (msgList.contains(msgToken)) {
+        ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
+      } else if (msgList.contains(reverseToken)) {
+        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
+      }
     });
   }
 
