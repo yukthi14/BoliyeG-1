@@ -138,10 +138,14 @@ class _ChattingScreenState extends State<ChattingScreen> {
                           if (element.key == widget.msgToken ||
                               element.key == widget.revMsgToken) {
                             var childrenArray = element.children.toList();
-                            for (int i = childrenArray.length - 1;
-                                i >= 0;
-                                i--) {
-                              msg.add(childrenArray[i].value);
+                            childrenArray.sort((a, b) {
+                              String key1 = a.key.toString();
+                              String key2 = b.key.toString();
+                              return key1.compareTo(key2);
+                            });
+                            for (var element in childrenArray) {
+                              msg.add(element.value);
+                              //                             print(childrenArray[i].value);
                             }
                           }
                         });
