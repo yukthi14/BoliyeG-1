@@ -1,3 +1,4 @@
+import 'package:boliye_g/constant/color.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Container(
-          color: Color(0xff8585a2),
+          color: AppColors.profileCardColor,
           child: Stack(
             children: [
               Padding(
@@ -150,12 +151,7 @@ class _HomePageState extends State<HomePage> {
                 height: displayHeight(context) * 0.7,
                 decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        Color(0xffE8E8EC),
-                        Color(0xffacaccb),
-                        Color(0xff858CA6),
-                        // Color(0xff000000),
-                      ],
+                      colors: AppColors.backgroundColor,
                       begin: Alignment.topCenter,
                       end: Alignment(0.8, 2),
                     ),
@@ -170,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                           left: displayWidth(context) * 0.07,
                           right: displayWidth(context) * 0.07),
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black26,
@@ -183,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                           controller: _controllerSearch,
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Color(0xffacaccb),
+                            fillColor: AppColors.textFieldColor,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
                               borderSide: BorderSide.none,
@@ -204,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                       child: LiquidPullToRefresh(
                         onRefresh: _refresh,
                         color: Colors.transparent,
-                        backgroundColor: Color(0xff8585a2),
+                        backgroundColor: AppColors.refresherColor,
                         height: 100,
                         child: StreamBuilder<DatabaseEvent>(
                             stream: ref.onValue,
@@ -225,9 +221,9 @@ class _HomePageState extends State<HomePage> {
                                         return GestureDetector(
                                           onTap: () async {
                                             String msgToken =
-                                                '${userKey[index]}@boliyegUser$deviceToken';
+                                                '${userKey[index]}${Strings.middleOfMessageToken}$deviceToken';
                                             String revToken =
-                                                '$deviceToken@boliyegUser${userKey[index]}';
+                                                '$deviceToken${Strings.middleOfMessageToken}${userKey[index]}';
                                             Navigator.push(
                                                 context,
                                                 PageTransition(
@@ -242,7 +238,8 @@ class _HomePageState extends State<HomePage> {
                                                     )));
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.only(bottom: 2),
+                                            margin: const EdgeInsets.only(
+                                                bottom: 2),
                                             decoration: BoxDecoration(
                                                 color: Colors.transparent,
                                                 borderRadius:

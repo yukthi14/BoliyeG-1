@@ -1,3 +1,5 @@
+import 'dart:async';
+
 class Strings {
   static const String tittleName = 'BoliyeG';
   static const String avatarImage = 'assets/avatar.webp';
@@ -17,7 +19,10 @@ class Strings {
   static const String secretCode = 'Secret Code';
   static const String textField = 'Type Something ...';
   static const String error = 'Error in generate token';
+  static const String middleOfMessageToken = '@boliyegUser';
 }
+
+StreamController<bool> streamController = StreamController<bool>();
 
 bool showEmoji = false;
 bool drawer = false;

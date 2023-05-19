@@ -17,7 +17,9 @@ Future<void> main() async {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.notification,
       ].request();
-      print(statuses);
+      if (kDebugMode) {
+        print(statuses);
+      }
     }
   } catch (e) {
     if (kDebugMode) {
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseMassage ob = FirebaseMassage();
     ob.setToken();
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );

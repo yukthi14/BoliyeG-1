@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
+import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/firebase/firebase_mass.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
@@ -9,6 +12,7 @@ import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
+import '../key_board_visibility/visiblity.dart';
 import '../message_bar/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
@@ -36,13 +40,23 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isPlaying = false;
   bool isLoading = false;
   bool isPause = false;
+  bool isKeyboardVisible = false;
   ScrollController listScrollController = ScrollController();
   final ref = FirebaseDatabase.instance.ref('message');
+  late KeyBoard _keyBoard;
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(_keyBoard);
     online = false;
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    _keyBoard = KeyBoard(context);
+    WidgetsBinding.instance.addObserver(_keyBoard);
+    super.initState();
   }
 
   @override
@@ -65,9 +79,9 @@ class _ChattingScreenState extends State<ChattingScreen> {
             }
           },
           child: Scaffold(
-            backgroundColor: Color(0xff626294),
+            backgroundColor: AppColors.scaffoldColor,
             appBar: AppBar(
-              backgroundColor: Color(0xffacaccb),
+              backgroundColor: AppColors.appBarColor,
               iconTheme: const IconThemeData(color: Colors.black),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -113,50 +127,44 @@ class _ChattingScreenState extends State<ChattingScreen> {
             body: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Color(0xffE8E8EC),
-                    Color(0xffacaccb),
-                    Color(0xff626294),
-                    // Color(0xff000000),
-                  ],
+                  colors: AppColors.backgroundColor,
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: Stack(
+              child: Column(
                 children: [
-                  SizedBox(
-                    height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                        ? displayHeight(context) * 0.845
-                        : displayHeight(context) * 0.2,
+                  Expanded(
                     child: StreamBuilder<DatabaseEvent>(
                         stream: ref.onValue,
                         builder: (context, snapshot) {
                           var msg = [];
                           var allChats = snapshot.data?.snapshot.children;
-                          allChats?.forEach((element) {
-                            if (element.key == widget.msgToken ||
-                                element.key == widget.revMsgToken) {
-                              var childrenArray = element.children.toList();
-                              childrenArray.sort((a, b) {
-                                String key1 = a.key.toString();
-                                String key2 = b.key.toString();
-                                return key1.compareTo(key2);
-                              });
-                              for (var element in childrenArray) {
-                                msg.add(element.value);
-                                //                             print(childrenArray[i].value);
+                          allChats?.forEach(
+                            (element) {
+                              if (element.key == widget.msgToken ||
+                                  element.key == widget.revMsgToken) {
+                                var childrenArray = element.children.toList();
+                                childrenArray.sort((a, b) {
+                                  String key1 = a.key.toString();
+                                  String key2 = b.key.toString();
+                                  return key1.compareTo(key2);
+                                });
+                                for (var element in childrenArray) {
+                                  msg.add(element.value);
+                                  //                             print(childrenArray[i].value);
+                                }
                               }
-                            }
-                          });
+                            },
+                          );
                           return ListView.builder(
                               itemCount: msg.length,
                               controller: listScrollController,
-                              padding: EdgeInsets.only(bottom: 1),
+                              padding: const EdgeInsets.only(bottom: 1),
                               itemBuilder: (context, index) {
                                 return BubbleSpecialThree(
                                   text: msg[index][Strings.msg],
-                                  color: const Color(0xFFE8E8EE),
+                                  color: AppColors.bubbleSpecialThreeColor,
                                   tail: true,
                                   isSender: (widget.myToken ==
                                       msg[index][Strings.isSender]),
@@ -170,24 +178,25 @@ class _ChattingScreenState extends State<ChattingScreen> {
                     onSend: (_) {
                       FirebaseMassage().sendMassage(
                           _, widget.msgToken, widget.revMsgToken, 0);
-                      setState(() {
-                        final position =
-                            listScrollController.position.maxScrollExtent;
-                        listScrollController.animateTo(
-                          position,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.linear,
-                        );
-                      });
+
+                      _scrollList();
                     },
                   ),
                 ],
               ),
             ),
-            // This trailing comma makes auto-formatting nicer for build methods.
           ),
         ),
       ),
+    );
+  }
+
+  _scrollList() {
+    final position = listScrollController.position.maxScrollExtent;
+    listScrollController.animateTo(
+      position,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
     );
   }
 

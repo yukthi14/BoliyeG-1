@@ -72,6 +72,12 @@ class FirebaseMassage {
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)
         });
+      } else {
+        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
       }
     });
   }
