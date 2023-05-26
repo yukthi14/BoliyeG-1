@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/customPainter/shadowPaint.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
@@ -78,7 +78,7 @@ class _ChattingScreenState extends State<ChattingScreen>
     });
   }
 
-  Offset dragGesturePosition = Offset(0.0, 0.0);
+  Offset dragGesturePosition = const Offset(0.0, 0.0);
 
   @override
   Widget build(BuildContext context) {
@@ -161,51 +161,29 @@ class _ChattingScreenState extends State<ChattingScreen>
               ),
               child: Stack(children: [
                 Container(
+                  height: displayHeight(context) * 0.2,
+                  width: displayWidth(context) * 0.2,
+                  margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.39,
+                      left: displayWidth(context) * 0.4),
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      scale: 1,
+                      image: AssetImage('assets/Ellipse8.png'),
+                    ),
+                  ),
+                ),
+                Container(
                   height: displayHeight(context) * 0.3,
                   width: displayWidth(context) * 0.5,
                   margin: EdgeInsets.only(
-                      top: displayHeight(context) * 0.25,
-                      left: displayWidth(context) * 0.25),
+                    top: displayHeight(context) * 0.25,
+                    left: displayWidth(context) * 0.25,
+                  ),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       scale: 2,
                       image: AssetImage('assets/backGround.png'),
-                    ),
-                  ),
-                ),
-                // Container(
-                //   height: displayHeight(context) * 0.05,
-                //   width: displayWidth(context) * 0.2,
-                //   margin: EdgeInsets.only(
-                //       top: displayHeight(context) * 0.25,
-                //       left: displayWidth(context) * 0.3),
-                //   decoration: const BoxDecoration(
-                //       color: Colors.black54,
-                //       borderRadius: BorderRadius.horizontal(
-                //           left: Radius.elliptical(300.0, 300.0),
-                //           right: Radius.elliptical(300.0, 300.0))),
-                // ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: displayHeight(context) * 0.5,
-                      left: displayWidth(context) * 0.26),
-                  child: Opacity(
-                    opacity: 0.9,
-                    child: ClipPath(
-                      clipper: BackGroundShadow(),
-                      child: Container(
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 32.0,
-                              spreadRadius: 100,
-                              offset: Offset(0, 50),
-                            )
-                          ],
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -247,6 +225,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                   height: displayHeight(context) * 0.04,
                                 );
                               }
+
                               return Column(
                                 crossAxisAlignment: (widget.myToken ==
                                         msg[index][Strings.isSender])
@@ -264,6 +243,8 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     isSender: (widget.myToken ==
                                         msg[index][Strings.isSender]),
                                   ),
+                                  BubbleNormalImage(
+                                      id: index.toString(), image: _image()),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         top: 5.0,

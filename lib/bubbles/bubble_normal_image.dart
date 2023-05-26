@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constant/color.dart';
+
 const double BUBBLE_RADIUS_IMAGE = 16;
 
 ///basic image bubble type
@@ -54,7 +56,7 @@ class BubbleNormalImage extends StatelessWidget {
     Icon? stateIcon;
     if (sent) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -62,7 +64,7 @@ class BubbleNormalImage extends StatelessWidget {
     }
     if (delivered) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF97AD8E),
@@ -70,7 +72,7 @@ class BubbleNormalImage extends StatelessWidget {
     }
     if (seen) {
       stateTick = true;
-      stateIcon = Icon(
+      stateIcon = const Icon(
         Icons.done_all,
         size: 18,
         color: Color(0xFF92DEDA),
@@ -93,6 +95,15 @@ class BubbleNormalImage extends StatelessWidget {
                 maxWidth: MediaQuery.of(context).size.width * .5,
                 maxHeight: MediaQuery.of(context).size.width * .5),
             child: GestureDetector(
+                onTap: onTap ??
+                    () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return _DetailScreen(
+                          tag: id,
+                          image: image,
+                        );
+                      }));
+                    },
                 child: Hero(
                   tag: id,
                   child: Stack(
@@ -129,21 +140,12 @@ class BubbleNormalImage extends StatelessWidget {
                               right: 6,
                               child: stateIcon,
                             )
-                          : SizedBox(
+                          : const SizedBox(
                               width: 1,
                             ),
                     ],
                   ),
-                ),
-                onTap: onTap ??
-                    () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return _DetailScreen(
-                          tag: id,
-                          image: image,
-                        );
-                      }));
-                    }),
+                )),
           ),
         )
       ],
@@ -179,10 +181,19 @@ class _DetailScreenState extends State<_DetailScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Scaffold(
-        body: Center(
-          child: Hero(
-            tag: widget.tag,
-            child: widget.image,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: AppColors.backgroundColor,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: Hero(
+              tag: widget.tag,
+              child: widget.image,
+            ),
           ),
         ),
       ),
