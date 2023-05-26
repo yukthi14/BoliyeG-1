@@ -38,22 +38,12 @@ class FirebaseMassage {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     deviceToken = prefs.get(Strings.token).toString();
   }
-  //
-  // createChat(String token, String reverseToke) async {
-  //   List msgList = [];
-  //   await ref.child(Strings.msg).get().then((value) async {
-  //     for (var element in value.children) {
-  //       msgList.add(element.key);
-  //     }
-  //     if (!msgList.contains(token) && !msgList.contains(reverseToke)) {
-  //       await ref.child(Strings.msg).child(token).child(now.toString()).set(
-  //           {Strings.msg: '', Strings.contentType: '', Strings.isSender: ''});
-  //     }
-  //   });
-  // }
 
   sendMassage(
-      String msg, String msgToken, String reverseToken, int type) async {
+      {required String msg,
+      required String msgToken,
+      required String reverseToken,
+      required int type}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
     await ref.child(Strings.msg).get().then((value) async {
@@ -81,20 +71,37 @@ class FirebaseMassage {
       }
     });
   }
-  //
-  // Future<List> getChats(String chatToken) async {
-  //   List contentMassage = [];
-  //   try {
-  //     await ref.child(Strings.msg).get().then((value) async {
-  //       for (var element in value.children) {
-  //         contentMassage.add(element.child(Strings.content).value);
-  //       }
-  //     });
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e.toString());
-  //     }
-  //   }
-  //   return contentMassage;
-  // }
+
+  sendPrivateMassage(
+      {required String msg,
+      required String msgToken,
+      required String reverseToken,
+      required int type}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List msgList = [];
+    await ref.child(Strings.privateMsg).get().then((value) async {
+      for (var element in value.children) {
+        msgList.add(element.key);
+      }
+      if (msgList.contains(msgToken)) {
+        ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
+      } else if (msgList.contains(reverseToken)) {
+        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
+      } else {
+        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+          Strings.msg: msg,
+          Strings.contentType: type,
+          Strings.isSender: prefs.get(Strings.token)
+        });
+      }
+    });
+  }
 }

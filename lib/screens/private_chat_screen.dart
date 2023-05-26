@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
-import '../envelope/private_envelope.dart';
+import '../customPainter/private_envelope.dart';
 import '../message_bar/message_bar.dart';
 
 class PrivateChat extends StatefulWidget {

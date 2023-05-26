@@ -8,6 +8,7 @@ class Strings {
   static const String userName = 'userName';
   static const String user = 'users';
   static const String msg = 'message';
+  static const String privateMsg = 'PrivateMessage';
   static const String profile = 'Profile';
   static const String aboutUs = 'About Us';
   static const String setting = 'Setting';
@@ -34,4 +35,5 @@ bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
+bool magniFire = false;
 String deviceToken = '';

@@ -1,4 +1,5 @@
 import 'package:boliye_g/constant/color.dart';
+import 'package:boliye_g/dataBase/is_internet_connected.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -6,7 +7,6 @@ import 'package:page_transition/page_transition.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
-import '../firebase/firebase_mass.dart';
 import 'chating_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,8 +26,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       online = true;
     });
-    FirebaseMassage().getToken();
-    FirebaseMassage().setToken();
+
+    Network().checkConnection();
     super.initState();
   }
 
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                             BoxShadow(
                               color: Colors.black26,
                               blurRadius: 32.0,
-                              offset: Offset(0, 20),
+                              // offset: Offset(0, 20),
                             )
                           ],
                         ),
