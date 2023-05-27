@@ -43,10 +43,11 @@ dependencies:
   firebase_core: ^2.10.0
   firebase_database: ^10.1.1
   shared_preferences: ^2.1.0
-  firebase_messaging: ^14.4.1
+  firebase_messaging: ^14.6.1
   permission_handler: ^10.2.0
   liquid_pull_to_refresh: ^3.0.1
   encrypt: ^5.0.1
+  flutter_native_image: ^0.0.6+1
 
 dev_dependencies:
   flutter_test:

@@ -12,10 +12,12 @@ Future<void> main() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     await FirebaseMessaging.instance.getInitialMessage();
-    var status = await Permission.notification.status;
-    if (status.isDenied) {
+    PermissionStatus notificationStatus = await Permission.notification.status;
+    final PermissionStatus galleryStatus = await Permission.photos.request();
+    if (notificationStatus.isDenied && galleryStatus.isDenied) {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.notification,
+        Permission.photos,
       ].request();
       if (kDebugMode) {
         print(statuses);

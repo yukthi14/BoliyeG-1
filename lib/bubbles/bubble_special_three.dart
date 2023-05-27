@@ -68,8 +68,8 @@ class BubbleSpecialThree extends StatelessWidget {
             decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 30.0,
+                  color: Colors.black54,
+                  blurRadius: 50.0,
                   offset: Offset(0, 20),
                 )
               ],

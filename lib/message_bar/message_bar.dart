@@ -1,7 +1,6 @@
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:flutter/foundation.dart';
+import 'package:boliye_g/screens/camera_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../constant/strings.dart';
 
@@ -191,18 +190,16 @@ class _MessageBarState extends State<MessageBar> {
                       ),
                       suffixIcon: IconButton(
                         onPressed: () async {
-                          ImagePicker image = ImagePicker();
-                          try {
-                            XFile? filePath = await image.pickImage(
-                                source: ImageSource.camera);
-                            if (kDebugMode) {
-                              print(filePath);
-                            }
-                          } catch (e) {
-                            if (kDebugMode) {
-                              print(e);
-                            }
-                          }
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PhotoPicker()));
+                          // Navigator.push(
+                          //     context,
+                          //     PageTransition(
+                          //         duration: const Duration(milliseconds: 300),
+                          //         type: PageTransitionType.bottomToTop,
+                          //         child: const PhotoPicker()));
                         },
                         icon: const Icon(
                           Icons.camera_alt_rounded,

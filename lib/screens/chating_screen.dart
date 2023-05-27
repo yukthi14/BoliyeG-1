@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
@@ -59,8 +58,6 @@ class _ChattingScreenState extends State<ChattingScreen>
   @override
   void initState() {
     Network().checkConnection();
-    listScrollController = ScrollController(
-        initialScrollOffset: listScrollController.position.maxScrollExtent);
     _keyBoard = KeyBoard(context);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -204,12 +201,13 @@ class _ChattingScreenState extends State<ChattingScreen>
                                   element.key == widget.revMsgToken) {
                                 var childrenArray = element.children.toList();
                                 childrenArray.sort(
-                                  (a, b) {
+                                  (b, a) {
                                     String key1 = a.key.toString();
                                     String key2 = b.key.toString();
                                     return key1.compareTo(key2);
                                   },
                                 );
+
                                 for (var element in childrenArray) {
                                   msgTime.add(element.key);
                                   msg.add(element.value);
@@ -220,6 +218,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                           return ListView.builder(
                             itemCount: msg.length + 1,
                             controller: listScrollController,
+                            reverse: true,
                             padding: const EdgeInsets.only(bottom: 1),
                             itemBuilder: (context, index) {
                               if (index == msg.length) {
@@ -245,8 +244,6 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     isSender: (widget.myToken ==
                                         msg[index][Strings.isSender]),
                                   ),
-                                  BubbleNormalImage(
-                                      id: index.toString(), image: _image()),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         top: 5.0,
@@ -280,7 +277,6 @@ class _ChattingScreenState extends State<ChattingScreen>
                           reverseToken: widget.revMsgToken,
                           type: 0,
                         );
-
                         _scrollList();
                       },
                     ),
