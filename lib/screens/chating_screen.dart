@@ -45,7 +45,7 @@ class _ChattingScreenState extends State<ChattingScreen>
   bool isLoading = false;
   bool isPause = false;
   bool isKeyboardVisible = false;
-  late ScrollController listScrollController= ;
+  late ScrollController listScrollController = ScrollController();
   final ref = FirebaseDatabase.instance.ref('message');
   late KeyBoard _keyBoard;
 

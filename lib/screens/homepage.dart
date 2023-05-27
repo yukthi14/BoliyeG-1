@@ -1,8 +1,8 @@
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
+import 'package:boliye_g/screens/profile_page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../constant/sizer.dart';
@@ -20,13 +20,13 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   final TextEditingController _controllerSearch = TextEditingController();
   final ref = FirebaseDatabase.instance.ref('users');
-
+  List userName = [];
+  List userKey = [];
   @override
   void initState() {
     setState(() {
       online = true;
     });
-
     Network().checkConnection();
     super.initState();
   }
@@ -39,8 +39,18 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Future<void> _refresh() async {
-    return await Future.delayed(const Duration(milliseconds: 300));
+  Future<void> _refresh(
+      bool reload, AsyncSnapshot<DatabaseEvent> snapshot) async {
+    userName.clear();
+    userKey.clear();
+    var allUser = snapshot.data?.snapshot.children;
+    allUser?.forEach((element) {
+      if (element.key != deviceToken) {
+        userName.add(element.value);
+        userKey.add(element.key);
+      }
+    });
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override
@@ -54,38 +64,83 @@ class _HomePageState extends State<HomePage> {
         key: _globalKey,
         drawer: Drawer(
           width: displayWidth(context) * 0.5,
-          backgroundColor: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.only(top: displayHeight(context) * 0.1),
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  title: const Text(Strings.profile),
-                  onTap: () {
-                    // Navigator.pop(context);
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(50),
+                  bottomRight: Radius.circular(50))),
+          backgroundColor: const Color(0xffbcbcd1),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: displayHeight(context) * 0.05),
+                width: displayWidth(context) * 0.3,
+                height: displayHeight(context) * 0.15,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blueAccent,
+                    image: DecorationImage(
+                        image: AssetImage(Strings.avatarImage))),
+              ),
+              ListTile(
+                title: const Text(Strings.profile),
+                leading: const Icon(
+                  Icons.people,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          duration: const Duration(milliseconds: 300),
+                          type: PageTransitionType.rightToLeft,
+                          child: const ProfilePage()));
+                  // Navigator.pop(context);
+                },
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 0.2,
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.settings_suggest_rounded,
+                  color: Colors.black,
+                ),
+                title: const Text(Strings.setting),
+                onTap: () {
+                  // Navigator.pop(context);
+                },
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 0.2,
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.launch,
+                  color: Colors.black,
+                ),
+                title: const Text(Strings.aboutUs),
+                onTap: () async {},
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: displayHeight(context) * 0.5),
+                child: ListTile(
+                  trailing: const Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    Strings.logOut,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(context);
                   },
                 ),
-                const Divider(
-                  color: Colors.black,
-                  thickness: 0.2,
-                ),
-                ListTile(
-                  title: const Text(Strings.setting),
-                  onTap: () {
-                    // Navigator.pop(context);
-                  },
-                ),
-                const Divider(
-                  color: Colors.black,
-                  thickness: 0.2,
-                ),
-                ListTile(
-                  title: const Text(Strings.aboutUs),
-                  onTap: () async {},
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         body: Container(
@@ -197,24 +252,25 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: displayHeight(context) * 0.58,
                       width: displayHeight(context),
-                      child: LiquidPullToRefresh(
-                        onRefresh: _refresh,
-                        color: Colors.transparent,
-                        backgroundColor: AppColors.refresherColor,
-                        height: 100,
-                        child: StreamBuilder<DatabaseEvent>(
-                            stream: ref.onValue,
-                            builder: (context, snapshot) {
-                              var allUser = snapshot.data?.snapshot.children;
-                              List userName = [];
-                              List userKey = [];
-                              allUser?.forEach((element) {
-                                if (element.key != deviceToken) {
-                                  userName.add(element.value);
-                                  userKey.add(element.key);
-                                }
-                              });
-                              return (userKey.isNotEmpty)
+                      child: StreamBuilder<DatabaseEvent>(
+                          stream: ref.onValue,
+                          builder: (context, snapshot) {
+                            userName.clear();
+                            userKey.clear();
+                            var allUser = snapshot.data?.snapshot.children;
+                            allUser?.forEach((element) {
+                              if (element.key != deviceToken) {
+                                userName.add(element.value);
+                                userKey.add(element.key);
+                              }
+                            });
+                            return RefreshIndicator(
+                              onRefresh: () async {
+                                await _refresh(true, snapshot);
+                              },
+                              color: Colors.black,
+                              backgroundColor: AppColors.refresherColor,
+                              child: (userKey.isNotEmpty)
                                   ? ListView.builder(
                                       itemCount: userKey.length,
                                       itemBuilder: (context, index) {
@@ -298,9 +354,9 @@ class _HomePageState extends State<HomePage> {
                                     )
                                   : const Center(
                                       child: Text('No User'),
-                                    );
-                            }),
-                      ),
+                                    ),
+                            );
+                          }),
                     )
                   ],
                 ),
@@ -311,51 +367,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-// Widget openDrawer(BuildContext context) {
-//   return Drawer(
-//     backgroundColor: Colors.transparent,
-//     child: Padding(
-//       padding:  EdgeInsets.only(top: displayHeight(context)*0.1),
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: [
-//
-//           ListTile(
-//             title: const Text('Profile'),
-//             onTap: () {
-//               // Navigator.pop(context);
-//             },
-//           ),
-//           const Divider(
-//             color: Colors.black,
-//             thickness: 0.2,
-//           ),
-//           ListTile(
-//             title: const Text('Records'),
-//             onTap: () {
-//             },
-//           ),
-//           const Divider(
-//             color: Colors.black,
-//             thickness: 0.2,
-//           ),
-//           ListTile(
-//             title: const Text('About Us'),
-//             onTap: () async {
-//             },
-//           ),
-//           const Divider(
-//             color: Colors.black,
-//             thickness: 0.2,
-//           ),
-//           ListTile(
-//             title: const Text('More app'),
-//             onTap: () {
-//             },
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
 }
