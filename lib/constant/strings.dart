@@ -40,4 +40,5 @@ bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
 bool magniFire = false;
+bool animate = false;
 String deviceToken = '';

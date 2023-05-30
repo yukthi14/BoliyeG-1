@@ -15,9 +15,11 @@ class PrivateChat extends StatefulWidget {
     Key? key,
     required this.msgToken,
     required this.revMsgToken,
+    required this.myToken,
   }) : super(key: key);
   final String msgToken;
   final String revMsgToken;
+  final String myToken;
 
   @override
   _PrivateChatState createState() => _PrivateChatState();
@@ -37,7 +39,7 @@ class _PrivateChatState extends State<PrivateChat>
   final _chats = [
     {"isSender": false, "type": 0, "msg": "Hello There", "animate": false},
   ];
-  final ref = FirebaseDatabase.instance.ref('message');
+  final ref = FirebaseDatabase.instance.ref(Strings.privateMsg);
   @override
   void dispose() {
     setState(() {
@@ -124,7 +126,6 @@ class _PrivateChatState extends State<PrivateChat>
                                 return key1.compareTo(key2);
                               },
                             );
-
                             for (var element in childrenArray) {
                               msgTime.add(element.key);
                               msg.add(element.value);
@@ -132,19 +133,16 @@ class _PrivateChatState extends State<PrivateChat>
                           }
                         },
                       );
+
                       return ListView.builder(
-                        itemCount: _chats.length,
+                        itemCount: msg.length + 1,
                         controller: listScrollController,
                         itemBuilder: (context, index) {
-                          if (index == _chats.length) {
+                          if (index == msg.length) {
                             return SizedBox(
                               height: displayHeight(context) * 0.04,
                             );
                           }
-                          final chat = _chats.elementAt(index);
-                          bool isSender = chat['isSender'] as bool;
-                          bool animate = chat['animate'] as bool;
-                          String msg = chat['msg'] as String;
                           return InkWell(
                             onTap: () {
                               _showMyDialog();
@@ -156,10 +154,11 @@ class _PrivateChatState extends State<PrivateChat>
                               ),
                               duration: const Duration(milliseconds: 300),
                               child: PrivateEnvelope(
-                                msg: msg,
+                                msg: msg[index][Strings.msg],
                                 coverColor: Colors.redAccent,
                                 topCoverColor: Colors.white,
-                                isSender: isSender,
+                                isSender: (widget.myToken ==
+                                    msg[index][Strings.isSender]),
                                 textColor: Colors.black,
                                 fountSize: 15,
                                 envelopeSize: displaySize(context),
@@ -217,16 +216,13 @@ class _PrivateChatState extends State<PrivateChat>
                     reverseToken: widget.revMsgToken,
                     type: 0,
                   );
-                  _chats.add(
-                      {"isSender": true, "type": 0, "msg": _, "animate": true});
+                  setState(() {
+                    animate = true;
+                  });
                   Future.delayed(const Duration(milliseconds: 300))
                       .then((value) {
                     setState(() {
-                      for (var i = 0; i < _chats.length; i++) {
-                        if (_chats[i]["animate"] == true) {
-                          _chats[i]["animate"] = false;
-                        }
-                      }
+                      animate = false;
                     });
                   });
                   setState(() {

@@ -145,6 +145,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                               child: PrivateChat(
                                 msgToken: widget.msgToken,
                                 revMsgToken: widget.revMsgToken,
+                                myToken: deviceToken,
                               )));
                     },
                     icon: Icon(
