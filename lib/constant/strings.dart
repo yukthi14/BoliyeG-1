@@ -11,8 +11,11 @@ class Strings {
   static const String privateMsg = 'PrivateMessage';
   static const String profile = 'Profile';
   static const String aboutUs = 'About Us';
+  static const String link = 'https://selfieera.com/#about';
+  static const String setPassword = 'Set Password';
   static const String logOut = 'Log Out';
   static const String setting = 'Settings';
+  static const String personalDetail = 'Personal Details';
   static const String timeStamp = 'TimeStamp';
   static const String content = 'content';
   static const String isSender = 'isSender';

@@ -1,9 +1,11 @@
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
 import 'package:boliye_g/screens/profile_page.dart';
+import 'package:boliye_g/screens/setting_page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final ref = FirebaseDatabase.instance.ref('users');
   List userName = [];
   List userKey = [];
+
   @override
   void initState() {
     setState(() {
@@ -52,6 +55,23 @@ class _HomePageState extends State<HomePage> {
     });
     await Future.delayed(const Duration(milliseconds: 300));
   }
+
+  final Uri _url = Uri.parse(Strings.link);
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
+  // _launcherUrl() async {
+  //   var url = Uri.parse(Strings.link);
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw "NO url";
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +129,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 title: const Text(Strings.setting),
                 onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          duration: const Duration(milliseconds: 300),
+                          type: PageTransitionType.rightToLeft,
+                          child: const SettingPage()));
                   // Navigator.pop(context);
                 },
               ),
@@ -122,7 +148,9 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                 ),
                 title: const Text(Strings.aboutUs),
-                onTap: () async {},
+                onTap: () {
+                  _launchUrl();
+                },
               ),
               Padding(
                 padding: EdgeInsets.only(top: displayHeight(context) * 0.5),

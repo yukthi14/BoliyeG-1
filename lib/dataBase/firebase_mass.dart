@@ -84,19 +84,31 @@ class FirebaseMassage {
         msgList.add(element.key);
       }
       if (msgList.contains(msgToken)) {
-        ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
+        ref
+            .child(Strings.privateMsg)
+            .child(msgToken)
+            .child(now.toString())
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)
         });
       } else if (msgList.contains(reverseToken)) {
-        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+        ref
+            .child(Strings.privateMsg)
+            .child(reverseToken)
+            .child(now.toString())
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)
         });
       } else {
-        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+        ref
+            .child(Strings.privateMsg)
+            .child(reverseToken)
+            .child(now.toString())
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)

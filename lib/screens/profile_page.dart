@@ -12,19 +12,26 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.appBarColor,
-        title: const Text('Profile'),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: AppColors.backgroundColor,
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        appBar: AppBar(
+          backgroundColor: AppColors.appBarColor,
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Text(
+            'Profile',
+            style: TextStyle(color: Colors.black),
           ),
         ),
-      ),
-    );
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: AppColors.backgroundColor,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }

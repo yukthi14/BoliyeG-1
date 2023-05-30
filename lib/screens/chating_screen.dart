@@ -142,7 +142,10 @@ class _ChattingScreenState extends State<ChattingScreen>
                               duration: const Duration(milliseconds: 300),
                               alignment: Alignment.center,
                               type: PageTransitionType.rotate,
-                              child: const PrivateChat()));
+                              child: PrivateChat(
+                                msgToken: widget.msgToken,
+                                revMsgToken: widget.revMsgToken,
+                              )));
                     },
                     icon: Icon(
                       Icons.lock_outline_rounded,

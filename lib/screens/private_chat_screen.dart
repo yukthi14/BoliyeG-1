@@ -1,15 +1,23 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../customPainter/private_envelope.dart';
+import '../dataBase/firebase_mass.dart';
 import '../message_bar/message_bar.dart';
 
 class PrivateChat extends StatefulWidget {
-  const PrivateChat({Key? key}) : super(key: key);
+  const PrivateChat({
+    Key? key,
+    required this.msgToken,
+    required this.revMsgToken,
+  }) : super(key: key);
+  final String msgToken;
+  final String revMsgToken;
 
   @override
   _PrivateChatState createState() => _PrivateChatState();
@@ -29,7 +37,7 @@ class _PrivateChatState extends State<PrivateChat>
   final _chats = [
     {"isSender": false, "type": 0, "msg": "Hello There", "animate": false},
   ];
-
+  final ref = FirebaseDatabase.instance.ref('message');
   @override
   void dispose() {
     setState(() {
@@ -95,47 +103,120 @@ class _PrivateChatState extends State<PrivateChat>
           body: Stack(
             children: [
               SizedBox(
-                height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                    ? displayHeight(context) * 0.831
-                    : displayHeight(context) * 0.46,
-                child: ListView.builder(
-                  itemCount: _chats.length,
-                  controller: listScrollController,
-                  itemBuilder: (context, index) {
-                    final chat = _chats.elementAt(index);
-                    bool isSender = chat['isSender'] as bool;
-                    bool animate = chat['animate'] as bool;
-                    String msg = chat['msg'] as String;
-                    return InkWell(
-                      onTap: () {
-                        _showMyDialog();
-                      },
-                      child: AnimatedContainer(
-                        margin: EdgeInsets.only(
-                          top: animate ? displayHeight(context) * 0.69 : 0,
-                        ),
-                        duration: const Duration(milliseconds: 300),
-                        child: PrivateEnvelope(
-                          msg: msg,
-                          coverColor: Colors.redAccent,
-                          topCoverColor: Colors.white,
-                          isSender: isSender,
-                          textColor: Colors.black,
-                          fountSize: 15,
-                          envelopeSize: displaySize(context),
-                          sent: false,
-                          delivered: false,
-                          seen: false,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                  height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
+                      ? displayHeight(context) * 0.831
+                      : displayHeight(context) * 0.46,
+                  child: StreamBuilder<DatabaseEvent>(
+                    stream: ref.onValue,
+                    builder: (context, snapshot) {
+                      var msg = [];
+                      var msgTime = [];
+                      var allChats = snapshot.data?.snapshot.children;
+                      allChats?.forEach(
+                        (element) {
+                          if (element.key == widget.msgToken ||
+                              element.key == widget.revMsgToken) {
+                            var childrenArray = element.children.toList();
+                            childrenArray.sort(
+                              (b, a) {
+                                String key1 = a.key.toString();
+                                String key2 = b.key.toString();
+                                return key1.compareTo(key2);
+                              },
+                            );
+
+                            for (var element in childrenArray) {
+                              msgTime.add(element.key);
+                              msg.add(element.value);
+                            }
+                          }
+                        },
+                      );
+                      return ListView.builder(
+                        itemCount: _chats.length,
+                        controller: listScrollController,
+                        itemBuilder: (context, index) {
+                          if (index == _chats.length) {
+                            return SizedBox(
+                              height: displayHeight(context) * 0.04,
+                            );
+                          }
+                          final chat = _chats.elementAt(index);
+                          bool isSender = chat['isSender'] as bool;
+                          bool animate = chat['animate'] as bool;
+                          String msg = chat['msg'] as String;
+                          return InkWell(
+                            onTap: () {
+                              _showMyDialog();
+                            },
+                            child: AnimatedContainer(
+                              margin: EdgeInsets.only(
+                                top:
+                                    animate ? displayHeight(context) * 0.69 : 0,
+                              ),
+                              duration: const Duration(milliseconds: 300),
+                              child: PrivateEnvelope(
+                                msg: msg,
+                                coverColor: Colors.redAccent,
+                                topCoverColor: Colors.white,
+                                isSender: isSender,
+                                textColor: Colors.black,
+                                fountSize: 15,
+                                envelopeSize: displaySize(context),
+                                sent: false,
+                                delivered: false,
+                                seen: false,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  )
+                  // ListView.builder(
+                  //   itemCount: _chats.length,
+                  //   controller: listScrollController,
+                  //   itemBuilder: (context, index) {
+                  //     final chat = _chats.elementAt(index);
+                  //     bool isSender = chat['isSender'] as bool;
+                  //     bool animate = chat['animate'] as bool;
+                  //     String msg = chat['msg'] as String;
+                  //     return InkWell(
+                  //       onTap: () {
+                  //         _showMyDialog();
+                  //       },
+                  //       child: AnimatedContainer(
+                  //         margin: EdgeInsets.only(
+                  //           top: animate ? displayHeight(context) * 0.69 : 0,
+                  //         ),
+                  //         duration: const Duration(milliseconds: 300),
+                  //         child: PrivateEnvelope(
+                  //           msg: msg,
+                  //           coverColor: Colors.redAccent,
+                  //           topCoverColor: Colors.white,
+                  //           isSender: isSender,
+                  //           textColor: Colors.black,
+                  //           fountSize: 15,
+                  //           envelopeSize: displaySize(context),
+                  //           sent: false,
+                  //           delivered: false,
+                  //           seen: false,
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  ),
               MessageBar(
                 messageBarColor: Colors.black,
                 sendButtonColor: Colors.white,
                 onSend: (_) {
+                  FirebaseMassage().sendPrivateMassage(
+                    msg: _,
+                    msgToken: widget.msgToken,
+                    reverseToken: widget.revMsgToken,
+                    type: 0,
+                  );
                   _chats.add(
                       {"isSender": true, "type": 0, "msg": _, "animate": true});
                   Future.delayed(const Duration(milliseconds: 300))
