@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+
 class Strings {
   static const String tittleName = 'BoliyeG';
   static const String avatarImage = 'assets/avatar.webp';
@@ -39,5 +41,7 @@ bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
-bool magniFire = false;
+bool magnyFire = false;
 String deviceToken = '';
+ValueNotifier<bool> startAudioChat = ValueNotifier(false);
+int radius = 20;

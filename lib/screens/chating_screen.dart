@@ -5,6 +5,7 @@ import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
+import 'package:boliye_g/neonButton/neonButtons.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -81,8 +82,6 @@ class _ChattingScreenState extends State<ChattingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -184,7 +183,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                   ),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      scale: 2,
+                      scale: 3,
                       image: AssetImage('assets/backGround.png'),
                     ),
                   ),
@@ -270,17 +269,24 @@ class _ChattingScreenState extends State<ChattingScreen>
                         },
                       ),
                     ),
-                    MessageBar(
-                      messageBarColor: Colors.black,
-                      sendButtonColor: Colors.white,
-                      onSend: (_) {
-                        FirebaseMassage().sendMassage(
-                          msg: _,
-                          msgToken: widget.msgToken,
-                          reverseToken: widget.revMsgToken,
-                          type: 0,
-                        );
-                        _scrollList();
+                    ValueListenableBuilder(
+                      valueListenable: startAudioChat,
+                      builder: (context, value, _) {
+                        return value
+                            ? const NeonButton()
+                            : MessageBar(
+                                messageBarColor: Colors.black,
+                                sendButtonColor: Colors.white,
+                                onSend: (_) {
+                                  FirebaseMassage().sendMassage(
+                                    msg: _,
+                                    msgToken: widget.msgToken,
+                                    reverseToken: widget.revMsgToken,
+                                    type: 0,
+                                  );
+                                  _scrollList();
+                                },
+                              );
                       },
                     ),
                   ],

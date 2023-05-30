@@ -50,6 +50,9 @@ dependencies:
   flutter_native_image: ^0.0.6+1
   url_launcher: ^6.1.11
   http: ^0.13.6
+  vibration: ^1.7.7
+
+
 
 dev_dependencies:
   flutter_test:
