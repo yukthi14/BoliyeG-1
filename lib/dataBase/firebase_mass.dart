@@ -34,7 +34,7 @@ class FirebaseMassage {
   }
 
   setToken() async {
-    DataSnapshot userList = await ref.child(Strings.user).get();
+    // DataSnapshot userList = await ref.child(Strings.user).get();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     deviceToken = prefs.get(Strings.token).toString();
   }

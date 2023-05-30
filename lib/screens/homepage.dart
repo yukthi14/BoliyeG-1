@@ -5,7 +5,6 @@ import 'package:boliye_g/screens/setting_page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -57,12 +56,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   final Uri _url = Uri.parse(Strings.link);
-
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
-  }
+  //
+  // Future<void> _launchUrl() async {
+  //   if (!await launchUrl(_url)) {
+  //     throw Exception('Could not launch $_url');
+  //   }
+  // }
 
   // _launcherUrl() async {
   //   var url = Uri.parse(Strings.link);
@@ -149,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 title: const Text(Strings.aboutUs),
                 onTap: () {
-                  _launchUrl();
+                  // _launchUrl();
                 },
               ),
               Padding(

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 class AppColors {
   static const List<Color> backgroundColor = [
@@ -14,3 +14,5 @@ class AppColors {
   static const Color refresherColor = Color(0xff8585a2);
   static const Color textFieldColor = Color(0xffacaccb);
 }
+
+Color audioColor = Colors.red;
