@@ -24,6 +24,8 @@ class Strings {
   static const String contentType = 'type';
   static const String searchBar = 'Search by name';
   static const String secretCode = 'Secret Code';
+  static const String secretCodeKey = 'secretCode';
+  static const String setSecretCode = 'Set Secret Code';
   static const String textField = 'Type Something ...';
   static const String error = 'Error in generate token';
   static const String middleOfMessageToken = '@boliyegUser';
@@ -32,20 +34,14 @@ class Strings {
 StreamController<bool> streamController = StreamController<bool>();
 
 bool showEmoji = false;
-bool drawer = false;
-bool upperDrawer = false;
-List listName = [];
-List listUserKey = [];
 bool privateKey = false;
 bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
 
-bool magniFire = false;
 bool animate = false;
 
-bool magnyFire = false;
 String deviceToken = '';
 ValueNotifier<bool> startAudioChat = ValueNotifier(false);
 int radius = 20;

@@ -1,8 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
+import 'package:boliye_g/encryption/encrypt_decrypt.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
@@ -36,9 +38,6 @@ class _PrivateChatState extends State<PrivateChat>
   bool isPause = false;
   ScrollController listScrollController = ScrollController();
 
-  final _chats = [
-    {"isSender": false, "type": 0, "msg": "Hello There", "animate": false},
-  ];
   final ref = FirebaseDatabase.instance.ref(Strings.privateMsg);
   @override
   void dispose() {
@@ -107,7 +106,7 @@ class _PrivateChatState extends State<PrivateChat>
               SizedBox(
                   height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
                       ? displayHeight(context) * 0.831
-                      : displayHeight(context) * 0.46,
+                      : displayHeight(context) * 0.54,
                   child: StreamBuilder<DatabaseEvent>(
                     stream: ref.onValue,
                     builder: (context, snapshot) {
@@ -135,6 +134,7 @@ class _PrivateChatState extends State<PrivateChat>
                       );
 
                       return ListView.builder(
+                        reverse: true,
                         itemCount: msg.length + 1,
                         controller: listScrollController,
                         itemBuilder: (context, index) {
@@ -143,75 +143,76 @@ class _PrivateChatState extends State<PrivateChat>
                               height: displayHeight(context) * 0.04,
                             );
                           }
-                          return InkWell(
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: AnimatedContainer(
-                              margin: EdgeInsets.only(
-                                top:
-                                    animate ? displayHeight(context) * 0.69 : 0,
+
+                          return Column(
+                            crossAxisAlignment:
+                                (widget.myToken == msg[index][Strings.isSender])
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
+                            mainAxisAlignment:
+                                (widget.myToken == msg[index][Strings.isSender])
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  _showMyDialog();
+                                },
+                                child: AnimatedContainer(
+                                  margin: EdgeInsets.only(
+                                    top: animate
+                                        ? displayHeight(context) * 0.69
+                                        : 0,
+                                  ),
+                                  duration: const Duration(milliseconds: 300),
+                                  child: PrivateEnvelope(
+                                    msg: MessageEncryption()
+                                        .decryptText(msg[index][Strings.msg]),
+                                    coverColor: Colors.red,
+                                    topCoverColor: Colors.white,
+                                    isSender: (widget.myToken ==
+                                        msg[index][Strings.isSender]),
+                                    textColor: Colors.black,
+                                    fountSize: 15,
+                                    envelopeSize: displaySize(context),
+                                    sent: false,
+                                    delivered: false,
+                                    seen: false,
+                                  ),
+                                ),
                               ),
-                              duration: const Duration(milliseconds: 300),
-                              child: PrivateEnvelope(
-                                msg: msg[index][Strings.msg],
-                                coverColor: Colors.redAccent,
-                                topCoverColor: Colors.white,
-                                isSender: (widget.myToken ==
-                                    msg[index][Strings.isSender]),
-                                textColor: Colors.black,
-                                fountSize: 15,
-                                envelopeSize: displaySize(context),
-                                sent: false,
-                                delivered: false,
-                                seen: false,
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 5.0,
+                                        right: 10,
+                                        left: 13,
+                                        bottom: 15),
+                                    child: Text(
+                                      DateFormat('jm').format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              int.parse(msgTime[index]))),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize:
+                                              displayWidth(context) * 0.03),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
+                            ],
                           );
                         },
                       );
                     },
-                  )
-                  // ListView.builder(
-                  //   itemCount: _chats.length,
-                  //   controller: listScrollController,
-                  //   itemBuilder: (context, index) {
-                  //     final chat = _chats.elementAt(index);
-                  //     bool isSender = chat['isSender'] as bool;
-                  //     bool animate = chat['animate'] as bool;
-                  //     String msg = chat['msg'] as String;
-                  //     return InkWell(
-                  //       onTap: () {
-                  //         _showMyDialog();
-                  //       },
-                  //       child: AnimatedContainer(
-                  //         margin: EdgeInsets.only(
-                  //           top: animate ? displayHeight(context) * 0.69 : 0,
-                  //         ),
-                  //         duration: const Duration(milliseconds: 300),
-                  //         child: PrivateEnvelope(
-                  //           msg: msg,
-                  //           coverColor: Colors.redAccent,
-                  //           topCoverColor: Colors.white,
-                  //           isSender: isSender,
-                  //           textColor: Colors.black,
-                  //           fountSize: 15,
-                  //           envelopeSize: displaySize(context),
-                  //           sent: false,
-                  //           delivered: false,
-                  //           seen: false,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-                  ),
+                  )),
               MessageBar(
                 messageBarColor: Colors.black,
                 sendButtonColor: Colors.white,
                 onSend: (_) {
                   FirebaseMassage().sendPrivateMassage(
-                    msg: _,
+                    msg: MessageEncryption().encryptText(_).base64,
                     msgToken: widget.msgToken,
                     reverseToken: widget.revMsgToken,
                     type: 0,
@@ -235,8 +236,7 @@ class _PrivateChatState extends State<PrivateChat>
                 },
               ),
             ],
-          ),
-          // This trailing comma makes auto-formatting nicer for build methods.
+          ), // This trailing comma makes auto-formatting nicer for build methods.
         ),
       ]),
     );
@@ -323,7 +323,7 @@ class _PrivateChatState extends State<PrivateChat>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xff8585a2),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Center(
@@ -338,12 +338,12 @@ class _PrivateChatState extends State<PrivateChat>
                 TextField(
                   maxLength: 4,
                   keyboardType: TextInputType.number,
-                  cursorColor: Colors.white,
+                  cursorColor: Colors.black,
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.grey,
+                    fillColor: const Color(0xff626294),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide.none,
@@ -355,7 +355,10 @@ class _PrivateChatState extends State<PrivateChat>
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Disclose'),
+              child: const Text(
+                'Disclose',
+                style: TextStyle(color: Colors.black),
+              ),
               onPressed: () {
                 setState(() {
                   openEnvelope = !openEnvelope;

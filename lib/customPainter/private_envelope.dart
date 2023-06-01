@@ -115,7 +115,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                     alignment: widget.isSender
                         ? Alignment.topRight
                         : Alignment.topLeft,
-                    color: Colors.red,
+                    color: Color(0xff626294),
                     height: 50,
                   ),
                 ),
@@ -125,7 +125,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                 child: ClipPath(
                   clipper: EnvelopeCover(),
                   child: Container(
-                    color: Colors.blue,
+                    color: Color(0xffacaccb),
                     height: 50,
                   ),
                 ),
@@ -153,7 +153,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                     alignment: widget.isSender
                         ? Alignment.topRight
                         : Alignment.topLeft,
-                    color: Colors.red,
+                    color: Color(0xff626294),
                     height: 50,
                   ),
                 ),
@@ -184,7 +184,7 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                 child: ClipPath(
                   clipper: opening ? OpenEnvelopeCover() : EnvelopeCover(),
                   child: Container(
-                    color: Colors.blue,
+                    color: Color(0xffacaccb),
                     height: 50,
                   ),
                 ),

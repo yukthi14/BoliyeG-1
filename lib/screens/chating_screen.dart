@@ -5,6 +5,7 @@ import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
+import 'package:boliye_g/encryption/encrypt_decrypt.dart';
 import 'package:boliye_g/neonButton/neonButtons.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
@@ -80,6 +82,7 @@ class _ChattingScreenState extends State<ChattingScreen>
 
   Offset dragGesturePosition = const Offset(0.0, 0.0);
 
+  final TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -146,6 +149,11 @@ class _ChattingScreenState extends State<ChattingScreen>
                                 revMsgToken: widget.revMsgToken,
                                 myToken: deviceToken,
                               )));
+                      setState(() {
+                        if (privateKey = true) {
+                          _showMyDialog();
+                        }
+                      });
                     },
                     icon: Icon(
                       Icons.lock_outline_rounded,
@@ -380,5 +388,62 @@ class _ChattingScreenState extends State<ChattingScreen>
         position = const Duration();
       });
     });
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xff8585a2),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Center(
+            child: Text(
+              Strings.setSecretCode,
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: controller,
+                  maxLength: 4,
+                  keyboardType: TextInputType.number,
+                  cursorColor: Colors.black,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xff626294),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Submit',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () async {
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                prefs.setString(Strings.secretCodeKey,
+                    MessageEncryption().encryptText(controller.text).base64);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
