@@ -44,4 +44,5 @@ bool animate = false;
 
 String deviceToken = '';
 ValueNotifier<bool> startAudioChat = ValueNotifier(false);
+ValueNotifier<bool> shoeEmoji = ValueNotifier(false);
 int radius = 20;

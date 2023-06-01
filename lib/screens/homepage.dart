@@ -56,21 +56,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   final Uri _url = Uri.parse(Strings.link);
-  //
-  // Future<void> _launchUrl() async {
-  //   if (!await launchUrl(_url)) {
-  //     throw Exception('Could not launch $_url');
-  //   }
-  // }
-
-  // _launcherUrl() async {
-  //   var url = Uri.parse(Strings.link);
-  //   if (await canLaunchUrl(url)) {
-  //     await launchUrl(url);
-  //   } else {
-  //     throw "NO url";
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

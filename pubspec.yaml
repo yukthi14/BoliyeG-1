@@ -48,9 +48,10 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   encrypt: ^5.0.1
   flutter_native_image: ^0.0.6+1
-  url_launcher: ^6.1.11
-  http: ^0.13.6
   vibration: ^1.7.7
+  record: ^4.4.4
+  path_provider: ^2.0.15
+  firebase_storage: ^11.2.2
 
 
 

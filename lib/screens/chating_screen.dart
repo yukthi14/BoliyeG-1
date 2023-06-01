@@ -48,7 +48,6 @@ class _ChattingScreenState extends State<ChattingScreen>
   bool isPause = false;
   bool isKeyboardVisible = false;
   late ScrollController listScrollController = ScrollController();
-  final ref = FirebaseDatabase.instance.ref('message');
   late KeyBoard _keyBoard;
 
   @override
@@ -170,47 +169,23 @@ class _ChattingScreenState extends State<ChattingScreen>
                 ),
               ),
               child: Stack(children: [
-                Container(
-                  height: displayHeight(context) * 0.2,
-                  width: displayWidth(context) * 0.2,
-                  margin: EdgeInsets.only(
-                      top: displayHeight(context) * 0.39,
-                      left: displayWidth(context) * 0.4),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      scale: 1,
-                      image: AssetImage('assets/Ellipse8.png'),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: displayHeight(context) * 0.3,
-                  width: displayWidth(context) * 0.5,
-                  margin: EdgeInsets.only(
-                    top: displayHeight(context) * 0.25,
-                    left: displayWidth(context) * 0.25,
-                  ),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      scale: 3,
-                      image: AssetImage('assets/backGround.png'),
-                    ),
-                  ),
-                ),
                 Column(
                   children: [
                     Expanded(
                       child: StreamBuilder<DatabaseEvent>(
-                        stream: ref.onValue,
+                        stream:
+                            FirebaseDatabase.instance.ref(Strings.msg).onValue,
                         builder: (context, snapshot) {
-                          var msg = [];
-                          var msgTime = [];
-                          var allChats = snapshot.data?.snapshot.children;
+                          List<dynamic> msg = [];
+                          List<dynamic> msgTime = [];
+                          Iterable<DataSnapshot>? allChats =
+                              snapshot.data?.snapshot.children;
                           allChats?.forEach(
                             (element) {
                               if (element.key == widget.msgToken ||
                                   element.key == widget.revMsgToken) {
-                                var childrenArray = element.children.toList();
+                                List<DataSnapshot> childrenArray =
+                                    element.children.toList();
                                 childrenArray.sort(
                                   (b, a) {
                                     String key1 = a.key.toString();
@@ -218,7 +193,6 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     return key1.compareTo(key2);
                                   },
                                 );
-
                                 for (var element in childrenArray) {
                                   msgTime.add(element.key);
                                   msg.add(element.value);
@@ -226,55 +200,86 @@ class _ChattingScreenState extends State<ChattingScreen>
                               }
                             },
                           );
-                          return ListView.builder(
-                            itemCount: msg.length + 1,
-                            controller: listScrollController,
-                            reverse: true,
-                            padding: const EdgeInsets.only(bottom: 1),
-                            itemBuilder: (context, index) {
-                              if (index == msg.length) {
-                                return SizedBox(
-                                  height: displayHeight(context) * 0.04,
-                                );
-                              }
-
-                              return Column(
-                                crossAxisAlignment: (widget.myToken ==
-                                        msg[index][Strings.isSender])
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
-                                mainAxisAlignment: (widget.myToken ==
-                                        msg[index][Strings.isSender])
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  BubbleSpecialThree(
-                                    text: msg[index][Strings.msg],
-                                    color: AppColors.bubbleSpecialThreeColor,
-                                    tail: true,
-                                    isSender: (widget.myToken ==
-                                        msg[index][Strings.isSender]),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 5.0,
-                                        right: 10,
-                                        left: 13,
-                                        bottom: 15),
-                                    child: Text(
-                                      DateFormat('jm').format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              int.parse(msgTime[index]))),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize:
-                                              displayWidth(context) * 0.03),
+                          if (msgTime.isNotEmpty) {
+                            return ListView.builder(
+                              itemCount: msg.length + 1,
+                              controller: listScrollController,
+                              reverse: true,
+                              padding: const EdgeInsets.only(bottom: 1),
+                              itemBuilder: (context, index) {
+                                if (index == msg.length) {
+                                  return SizedBox(
+                                    height: displayHeight(context) * 0.04,
+                                  );
+                                }
+                                return Column(
+                                  crossAxisAlignment: (widget.myToken ==
+                                          msg[index][Strings.isSender])
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  mainAxisAlignment: (widget.myToken ==
+                                          msg[index][Strings.isSender])
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
+                                  children: [
+                                    BubbleSpecialThree(
+                                      text: msg[index][Strings.msg],
+                                      color: AppColors.bubbleSpecialThreeColor,
+                                      tail: true,
+                                      isSender: (widget.myToken ==
+                                          msg[index][Strings.isSender]),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5.0,
+                                          right: 10,
+                                          left: 13,
+                                          bottom: 15),
+                                      child: Text(
+                                        DateFormat('jm').format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                int.parse(msgTime[index]))),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize:
+                                                displayWidth(context) * 0.03),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            return Stack(children: [
+                              Container(
+                                height: displayHeight(context) * 0.2,
+                                width: displayWidth(context) * 0.2,
+                                margin: EdgeInsets.only(
+                                    top: displayHeight(context) * 0.39,
+                                    left: displayWidth(context) * 0.16),
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    scale: 1,
+                                    image: AssetImage('assets/Ellipse8.png'),
                                   ),
-                                ],
-                              );
-                            },
-                          );
+                                ),
+                              ),
+                              Container(
+                                height: displayHeight(context) * 0.3,
+                                width: displayWidth(context) * 0.5,
+                                margin: EdgeInsets.only(
+                                  top: displayHeight(context) * 0.25,
+                                  left: displayWidth(context) * 0.01,
+                                ),
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    scale: 3,
+                                    image: AssetImage('assets/backGround.png'),
+                                  ),
+                                ),
+                              ),
+                            ]);
+                          }
                         },
                       ),
                     ),

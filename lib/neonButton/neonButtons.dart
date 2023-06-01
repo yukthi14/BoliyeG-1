@@ -1,6 +1,12 @@
+import 'dart:io';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/strings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import 'package:vibration/vibration.dart';
 
 import '../constant/sizer.dart';
@@ -50,16 +56,43 @@ class _NeonButtonState extends State<NeonButton> with TickerProviderStateMixin {
           ),
         ),
         GestureDetector(
-          onLongPress: () {
+          onLongPress: () async {
             setState(() {
               audioColor = Colors.green;
             });
-            Vibration.vibrate(duration: 200);
+            final record = Record();
+            try {
+              if (await record.hasPermission()) {
+                Directory appDir = await getApplicationDocumentsDirectory();
+                String appDirPath = appDir.path;
+                String audioFilePath =
+                    '$appDirPath/audio_${DateTime.now().millisecondsSinceEpoch}.mp3';
+                await record.start();
+              }
+              Vibration.vibrate(duration: 200);
+            } catch (e) {
+              if (kDebugMode) {
+                print(e.toString());
+              }
+            }
           },
-          onLongPressEnd: (LongPressEndDetails details) {
+          onLongPressEnd: (LongPressEndDetails details) async {
+            final record = Record();
+
             setState(() {
               audioColor = Colors.red;
             });
+            try {
+              if (await record.isRecording()) {
+                String? path = await record.stop();
+                final playStation = AudioPlayer(playerId: 'playAudio');
+                playStation.play(path!, isLocal: true);
+              }
+            } catch (e) {
+              if (kDebugMode) {
+                print(e.toString());
+              }
+            }
           },
           child: Container(
             height: 90,
