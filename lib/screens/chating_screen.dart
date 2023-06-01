@@ -399,11 +399,17 @@ class _ChattingScreenState extends State<ChattingScreen>
           backgroundColor: Color(0xff8585a2),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Center(
-            child: Text(
-              Strings.setSecretCode,
-              style: TextStyle(color: Colors.black),
-            ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Center(
+                child: Text(
+                  Strings.setSecretCode,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              Icon(Icons.clear),
+            ],
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -423,7 +429,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                       borderSide: BorderSide.none,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
