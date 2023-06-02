@@ -1,1 +1,1 @@
-class FirebaseStorage {}
+class FirebaseVoiceMa {}
