@@ -25,7 +25,11 @@ class Strings {
   static const String searchBar = 'Search by name';
   static const String secretCode = 'Secret Code';
   static const String secretCodeKey = 'secretCode';
+  static const String submittedSecretCodeKey = 'submittedSecretCode';
   static const String setSecretCode = 'Set Secret Code';
+  static const String submitButton = 'Submit';
+  static const String openEnvelope = 'Open';
+  static const String changePwd = 'Change Password';
   static const String textField = 'Type Something ...';
   static const String error = 'Error in generate token';
   static const String middleOfMessageToken = '@boliyegUser';
@@ -34,7 +38,6 @@ class Strings {
 StreamController<bool> streamController = StreamController<bool>();
 
 bool showEmoji = false;
-bool privateKey = false;
 bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;

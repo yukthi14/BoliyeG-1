@@ -52,6 +52,7 @@ dependencies:
   record: ^4.4.4
   path_provider: ^2.0.15
   firebase_storage: ^11.2.2
+  clay_containers: ^0.3.2
 
 
 

@@ -5,11 +5,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../customPainter/private_envelope.dart';
 import '../dataBase/firebase_mass.dart';
+import '../dialogBox/alert_dialog_box.dart';
 import '../message_bar/message_bar.dart';
 
 class PrivateChat extends StatefulWidget {
@@ -49,7 +51,6 @@ class _PrivateChatState extends State<PrivateChat>
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -156,7 +157,18 @@ class _PrivateChatState extends State<PrivateChat>
                             children: [
                               InkWell(
                                 onTap: () {
-                                  _showMyDialog();
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          alignment: Alignment.center,
+                                          type: PageTransitionType.rotate,
+                                          child: const AlertDialogBox(
+                                            title: Strings.secretCode,
+                                            buttonString: Strings.openEnvelope,
+                                            suggestionString: Strings.changePwd,
+                                          )));
                                 },
                                 child: AnimatedContainer(
                                   margin: EdgeInsets.only(
@@ -315,67 +327,5 @@ class _PrivateChatState extends State<PrivateChat>
         position = const Duration();
       });
     });
-  }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff8585a2),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Center(
-            child: Text(
-              Strings.secretCode,
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                TextField(
-                  maxLength: 4,
-                  keyboardType: TextInputType.number,
-                  cursorColor: Colors.black,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xff626294),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'Disclose',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () {
-                setState(() {
-                  openEnvelope = !openEnvelope;
-                });
-                Future.delayed(
-                  const Duration(milliseconds: 300),
-                ).then((value) {
-                  setState(() {
-                    opening = !opening;
-                  });
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

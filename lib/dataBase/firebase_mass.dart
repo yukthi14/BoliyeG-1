@@ -71,6 +71,15 @@ class FirebaseMassage {
     });
   }
 
+  setPrivatePassword({required String pwd}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await ref
+        .child(Strings.user)
+        .child(prefs.get(Strings.token).toString())
+        .update({Strings.secretCodeKey: pwd});
+  }
+
   sendPrivateMassage(
       {required String msg,
       required String msgToken,
@@ -116,3 +125,5 @@ class FirebaseMassage {
     });
   }
 }
+
+final FirebaseMassage firebaseMassage = FirebaseMassage();

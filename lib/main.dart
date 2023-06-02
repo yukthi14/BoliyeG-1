@@ -13,11 +13,9 @@ Future<void> main() async {
     await Firebase.initializeApp();
     await FirebaseMessaging.instance.getInitialMessage();
     PermissionStatus notificationStatus = await Permission.notification.status;
-    final PermissionStatus galleryStatus = await Permission.photos.request();
-    if (notificationStatus.isDenied && galleryStatus.isDenied) {
+    if (notificationStatus.isDenied) {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.notification,
-        Permission.photos,
       ].request();
       if (kDebugMode) {
         print(statuses);

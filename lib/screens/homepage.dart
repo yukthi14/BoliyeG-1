@@ -1,7 +1,7 @@
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
-import 'package:boliye_g/screens/profile_page.dart';
-import 'package:boliye_g/screens/setting_page.dart';
+import 'package:boliye_g/screens/profile_screen.dart';
+import 'package:boliye_g/screens/setting_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';

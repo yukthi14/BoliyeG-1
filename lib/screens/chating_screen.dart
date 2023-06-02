@@ -5,7 +5,6 @@ import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
-import 'package:boliye_g/encryption/encrypt_decrypt.dart';
 import 'package:boliye_g/neonButton/neonButtons.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -17,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
+import '../dialogBox/alert_dialog_box.dart';
 import '../key_board_visibility/visiblity.dart';
 import '../message_bar/message_bar.dart';
 
@@ -136,23 +136,35 @@ class _ChattingScreenState extends State<ChattingScreen>
               ),
               actions: [
                 IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                              duration: const Duration(milliseconds: 300),
-                              alignment: Alignment.center,
-                              type: PageTransitionType.rotate,
-                              child: PrivateChat(
-                                msgToken: widget.msgToken,
-                                revMsgToken: widget.revMsgToken,
-                                myToken: deviceToken,
-                              )));
-                      setState(() {
-                        if (privateKey = true) {
-                          _showMyDialog();
-                        }
-                      });
+                    onPressed: () async {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      if (prefs.getBool(Strings.submittedSecretCodeKey) ==
+                          null) {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                duration: const Duration(milliseconds: 300),
+                                alignment: Alignment.center,
+                                type: PageTransitionType.rotate,
+                                child: const AlertDialogBox(
+                                  title: Strings.setSecretCode,
+                                  buttonString: Strings.submitButton,
+                                  suggestionString: Strings.changePwd,
+                                )));
+                      } else {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                duration: const Duration(milliseconds: 300),
+                                alignment: Alignment.center,
+                                type: PageTransitionType.rotate,
+                                child: PrivateChat(
+                                  msgToken: widget.msgToken,
+                                  revMsgToken: widget.revMsgToken,
+                                  myToken: deviceToken,
+                                )));
+                      }
                     },
                     icon: Icon(
                       Icons.lock_outline_rounded,
@@ -393,68 +405,5 @@ class _ChattingScreenState extends State<ChattingScreen>
         position = const Duration();
       });
     });
-  }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xff8585a2),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Center(
-                child: Text(
-                  Strings.setSecretCode,
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              Icon(Icons.clear),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                TextField(
-                  controller: controller,
-                  maxLength: 4,
-                  keyboardType: TextInputType.number,
-                  cursorColor: Colors.black,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xff626294),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'Submit',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () async {
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                prefs.setString(Strings.secretCodeKey,
-                    MessageEncryption().encryptText(controller.text).base64);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }
