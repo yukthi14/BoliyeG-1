@@ -33,6 +33,7 @@ class Strings {
   static const String textField = 'Type Something ...';
   static const String error = 'Error in generate token';
   static const String middleOfMessageToken = '@boliyegUser';
+  static const String voice = 'VoiceRecording';
 }
 
 StreamController<bool> streamController = StreamController<bool>();
@@ -42,6 +43,7 @@ bool openEnvelope = true;
 bool opening = false;
 bool showCheckIcon = false;
 bool online = false;
+bool isOpenAlertDialogBox = true;
 
 bool animate = false;
 

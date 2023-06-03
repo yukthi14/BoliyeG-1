@@ -73,7 +73,7 @@ class _ChattingScreenState extends State<ChattingScreen>
       setState(() {
         isKeyboardVisible = keyboardHeight > 0;
       });
-      if (isKeyboardVisible) {
+      if (isKeyboardVisible && isOpenAlertDialogBox) {
         _scrollList();
       }
     });

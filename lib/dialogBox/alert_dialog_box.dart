@@ -24,6 +24,15 @@ class AlertDialogBox extends StatefulWidget {
 
 class _AlertDialogBoxState extends State<AlertDialogBox> {
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    setState(() {
+      isOpenAlertDialogBox = false;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
