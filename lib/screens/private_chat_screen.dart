@@ -223,7 +223,7 @@ class _PrivateChatState extends State<PrivateChat>
                 messageBarColor: Colors.black,
                 sendButtonColor: Colors.white,
                 onSend: (_) {
-                  FirebaseMassage().sendPrivateMassage(
+                  FirebaseMassage().sendPrivateMessage(
                     msg: MessageEncryption().encryptText(_).base64,
                     msgToken: widget.msgToken,
                     reverseToken: widget.revMsgToken,

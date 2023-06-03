@@ -30,7 +30,7 @@ class FirebaseVoiceMessage {
             .child(prefs.get(Strings.token).toString())
             .child(timeStamp);
         recUrl = await voiceRec.getDownloadURL();
-        firebaseMassage.sendMassage(
+        firebaseMassage.sendMessage(
           timeStamp: timeStamp,
           msg: recUrl,
           msgToken: msgTokenAudio,

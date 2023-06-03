@@ -349,7 +349,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                 messageBarColor: Colors.black,
                                 sendButtonColor: Colors.white,
                                 onSend: (_) {
-                                  FirebaseMassage().sendMassage(
+                                  FirebaseMassage().sendMessage(
                                     msg: _,
                                     msgToken: widget.msgToken,
                                     reverseToken: widget.revMsgToken,

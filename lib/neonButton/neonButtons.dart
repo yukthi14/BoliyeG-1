@@ -131,7 +131,7 @@ class _NeonButtonState extends State<NeonButton> with TickerProviderStateMixin {
             });
           },
           icon: const Icon(
-            Icons.keyboard,
+            Icons.send_outlined,
             color: Colors.white,
           ),
         ),

@@ -40,7 +40,7 @@ class FirebaseMassage {
     deviceToken = prefs.get(Strings.token).toString();
   }
 
-  sendMassage({
+  sendMessage({
     required String msg,
     required String msgToken,
     String timeStamp = '',
@@ -111,7 +111,7 @@ class FirebaseMassage {
     return password;
   }
 
-  sendPrivateMassage(
+  sendPrivateMessage(
       {required String msg,
       required String msgToken,
       required String reverseToken,
