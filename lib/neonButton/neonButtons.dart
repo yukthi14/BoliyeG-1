@@ -21,6 +21,7 @@ class NeonButton extends StatefulWidget {
 class _NeonButtonState extends State<NeonButton> with TickerProviderStateMixin {
   late AnimationController _buttonController;
   late Animation _buttonAnimation;
+
   @override
   void initState() {
     _buttonController =
@@ -74,19 +75,20 @@ class _NeonButtonState extends State<NeonButton> with TickerProviderStateMixin {
           },
           onLongPressEnd: (LongPressEndDetails details) async {
             final record = Record();
-
             setState(() {
               audioColor = Colors.red;
             });
             try {
               if (await record.isRecording()) {
+                int now = DateTime.now().millisecondsSinceEpoch;
                 String? path = await record.stop();
                 if (path!.isNotEmpty) {
                   firebaseVoiceMessage.sendAudio(
                       path: path,
                       msgTokenAudio: widget.msgToken,
                       reverseTokenAudio: widget.revMsgToken,
-                      typeAudio: Integers.audioType);
+                      typeAudio: Integers.audioType,
+                      timeStamp: now.toString());
                 }
                 // final playStation = AudioPlayer(playerId: 'playAudio');
                 // playStation.play(path!, isLocal: true);

@@ -1,49 +1,12 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:boliye_g/constant/color.dart';
 import 'package:flutter/material.dart';
 
 const double BUBBLE_RADIUS_AUDIO = 16;
 
-///basic chat bubble type audio message widget
-///
-/// [onSeekChanged] double pass function to take actions on seek changes
-/// [onPlayPauseButtonClick] void function to handle play pause button click
-/// [isPlaying],[isPause] parameters to handle playing state
-///[duration] is the duration of the audio message in seconds
-///[position is the current position of the audio message playing in seconds
-///[isLoading] is the loading state of the audio
-///ex:- fetching from internet or loading from local storage
-///chat bubble [BorderRadius] can be customized using [bubbleRadius]
-///chat bubble color can be customized using [color]
-///chat bubble tail can be customized  using [tail]
-///message sender can be changed using [isSender]
-///[sent],[delivered] and [seen] can be used to display the message state
-///chat bubble [TextStyle] can be customized using [textStyle]
-
-class BubbleNormalAudio extends StatelessWidget {
-  final void Function(double value) onSeekChanged;
-  final void Function() onPlayPauseButtonClick;
-  final bool isPlaying;
-  final bool isPause;
-  final double? duration;
-  final double? position;
-  final bool isLoading;
-  final double bubbleRadius;
-  final bool isSender;
-  final Color color;
-  final bool tail;
-  final bool sent;
-  final bool delivered;
-  final bool seen;
-  final TextStyle textStyle;
-
-  const BubbleNormalAudio({
+class AudioBar extends StatefulWidget {
+  const AudioBar({
     Key? key,
-    required this.onSeekChanged,
-    required this.onPlayPauseButtonClick,
-    this.isPlaying = false,
-    this.isPause = false,
-    this.duration,
-    this.position,
-    this.isLoading = true,
     this.bubbleRadius = BUBBLE_RADIUS_AUDIO,
     this.isSender = true,
     this.color = Colors.white70,
@@ -55,14 +18,33 @@ class BubbleNormalAudio extends StatelessWidget {
       color: Colors.black87,
       fontSize: 12,
     ),
+    required this.audioUrl,
   }) : super(key: key);
+  final double bubbleRadius;
+  final bool isSender;
+  final Color color;
+  final bool tail;
+  final bool sent;
+  final bool delivered;
+  final String audioUrl;
+  final bool seen;
+  final TextStyle textStyle;
+  @override
+  State<AudioBar> createState() => _AudioBarState();
+}
 
-  ///chat bubble builder method
+class _AudioBarState extends State<AudioBar> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  Duration duration = const Duration();
+  Duration position = const Duration();
+  bool isPlaying = false;
+  bool isLoading = false;
+  bool isPause = false;
   @override
   Widget build(BuildContext context) {
     bool stateTick = false;
     Icon? stateIcon;
-    if (sent) {
+    if (widget.sent) {
       stateTick = true;
       stateIcon = const Icon(
         Icons.done,
@@ -70,7 +52,7 @@ class BubbleNormalAudio extends StatelessWidget {
         color: Color(0xFF97AD8E),
       );
     }
-    if (delivered) {
+    if (widget.delivered) {
       stateTick = true;
       stateIcon = const Icon(
         Icons.done_all,
@@ -78,7 +60,7 @@ class BubbleNormalAudio extends StatelessWidget {
         color: Color(0xFF97AD8E),
       );
     }
-    if (seen) {
+    if (widget.seen) {
       stateTick = true;
       stateIcon = const Icon(
         Icons.done_all,
@@ -89,7 +71,7 @@ class BubbleNormalAudio extends StatelessWidget {
 
     return Row(
       children: <Widget>[
-        isSender
+        widget.isSender
             ? const Expanded(
                 child: SizedBox(
                   width: 5,
@@ -104,19 +86,19 @@ class BubbleNormalAudio extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: Container(
               decoration: BoxDecoration(
-                color: color,
+                color: widget.color,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(bubbleRadius),
-                  topRight: Radius.circular(bubbleRadius),
-                  bottomLeft: Radius.circular(tail
-                      ? isSender
-                          ? bubbleRadius
+                  topLeft: Radius.circular(widget.bubbleRadius),
+                  topRight: Radius.circular(widget.bubbleRadius),
+                  bottomLeft: Radius.circular(widget.tail
+                      ? widget.isSender
+                          ? widget.bubbleRadius
                           : 0
                       : BUBBLE_RADIUS_AUDIO),
-                  bottomRight: Radius.circular(tail
-                      ? isSender
+                  bottomRight: Radius.circular(widget.tail
+                      ? widget.isSender
                           ? 0
-                          : bubbleRadius
+                          : widget.bubbleRadius
                       : BUBBLE_RADIUS_AUDIO),
                 ),
               ),
@@ -125,7 +107,7 @@ class BubbleNormalAudio extends StatelessWidget {
                   Row(
                     children: [
                       RawMaterialButton(
-                        onPressed: onPlayPauseButtonClick,
+                        onPressed: _playAudio,
                         elevation: 1.0,
                         fillColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
@@ -150,9 +132,12 @@ class BubbleNormalAudio extends StatelessWidget {
                       Expanded(
                         child: Slider(
                           min: 0.0,
-                          max: duration ?? 0.0,
-                          value: position ?? 0.0,
-                          onChanged: onSeekChanged,
+                          max: duration.inSeconds.toDouble(),
+                          value: position.inSeconds.toDouble(),
+                          activeColor: Colors.deepPurpleAccent,
+                          inactiveColor: AppColors.scaffoldColor,
+                          thumbColor: Colors.black,
+                          onChanged: _changeSeek,
                         ),
                       ),
                     ],
@@ -161,8 +146,9 @@ class BubbleNormalAudio extends StatelessWidget {
                     bottom: 8,
                     right: 25,
                     child: Text(
-                      audioTimer(duration ?? 0.0, position ?? 0.0),
-                      style: textStyle,
+                      audioTimer(duration.inSeconds.toDouble(),
+                          position.inSeconds.toDouble()),
+                      style: widget.textStyle,
                     ),
                   ),
                   stateIcon != null && stateTick
@@ -181,6 +167,55 @@ class BubbleNormalAudio extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _changeSeek(double value) {
+    setState(() {
+      audioPlayer.seek(Duration(seconds: value.toInt()));
+    });
+  }
+
+  void _playAudio() async {
+    if (isPause) {
+      await audioPlayer.resume();
+      setState(() {
+        isPlaying = true;
+        isPause = false;
+      });
+    } else if (isPlaying) {
+      await audioPlayer.pause();
+      setState(() {
+        isPlaying = false;
+        isPause = true;
+      });
+    } else {
+      setState(() {
+        isLoading = true;
+      });
+      await audioPlayer.play(widget.audioUrl);
+      setState(() {
+        isPlaying = true;
+      });
+    }
+
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      setState(() {
+        duration = d;
+        isLoading = false;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      setState(() {
+        position = p;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        isPlaying = false;
+        duration = const Duration();
+        position = const Duration();
+      });
+    });
   }
 
   String audioTimer(double duration, double position) {
