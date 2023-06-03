@@ -1,6 +1,7 @@
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,18 +19,21 @@ class AlertDialogBox extends StatefulWidget {
   final String title;
   final String buttonString;
   final String suggestionString;
+
   @override
   State<AlertDialogBox> createState() => _AlertDialogBoxState();
 }
 
 class _AlertDialogBoxState extends State<AlertDialogBox> {
   final TextEditingController _controller = TextEditingController();
+  bool _passwordVisible = true;
 
   @override
   void initState() {
     setState(() {
       isOpenAlertDialogBox = false;
     });
+    _passwordVisible = false;
     super.initState();
   }
 
@@ -83,6 +87,7 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
         ),
       ),
       content: TextField(
+        obscureText: !_passwordVisible,
         maxLength: 4,
         controller: _controller,
         keyboardType: TextInputType.number,
@@ -90,13 +95,23 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
-          filled: true,
-          fillColor: const Color(0xff626294),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30.0),
-            borderSide: BorderSide.none,
-          ),
-        ),
+            filled: true,
+            fillColor: Colors.white60,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: BorderSide.none,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            )),
       ),
       actions: <Widget>[
         Row(
@@ -143,8 +158,8 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                   final SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   if (widget.buttonString == Strings.openEnvelope) {
-                    if (_controller.text ==
-                        prefs.getString(Strings.secretCodeKey)) {
+                    String code = await firebaseMassage.getPrivatePassword();
+                    if (_controller.text == (code)) {
                       setState(() {
                         openEnvelope = !openEnvelope;
                         Future.delayed(
@@ -153,6 +168,14 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                           opening = !opening;
                         });
                       });
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: Strings.invalidPwdToast,
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
                     }
                   } else {
                     firebaseMassage.setPrivatePassword(pwd: _controller.text);

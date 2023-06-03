@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/strings.dart';
@@ -77,6 +79,26 @@ class FirebaseMassage {
         .child(Strings.user)
         .child(prefs.get(Strings.token).toString())
         .update({Strings.secretCodeKey: pwd});
+    Fluttertoast.showToast(
+      msg: Strings.pwdToast,
+      gravity: ToastGravity.TOP,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  Future<String> getPrivatePassword() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userData = await ref
+        .child(Strings.user)
+        .child(prefs.get(Strings.token).toString())
+        .get();
+    String password = userData.children
+        .firstWhere((element) => element.key == Strings.secretCodeKey)
+        .value
+        .toString();
+    return password;
   }
 
   sendPrivateMassage(
