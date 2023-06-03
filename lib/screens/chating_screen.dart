@@ -144,28 +144,32 @@ class _ChattingScreenState extends State<ChattingScreen>
                       if (prefs.getBool(Strings.submittedSecretCodeKey) ==
                           null) {
                         Navigator.push(
-                            context,
-                            PageTransition(
-                                duration: const Duration(milliseconds: 300),
-                                alignment: Alignment.center,
-                                type: PageTransitionType.rotate,
-                                child: const AlertDialogBox(
-                                  title: Strings.setSecretCode,
-                                  buttonString: Strings.submitButton,
-                                  suggestionString: Strings.changePwd,
-                                )));
+                          context,
+                          PageTransition(
+                            duration: const Duration(milliseconds: 300),
+                            alignment: Alignment.center,
+                            type: PageTransitionType.rotate,
+                            child: const AlertDialogBox(
+                              title: Strings.setSecretCode,
+                              buttonString: Strings.submitButton,
+                              suggestionString: Strings.changePwd,
+                            ),
+                          ),
+                        );
                       } else {
                         Navigator.push(
-                            context,
-                            PageTransition(
-                                duration: const Duration(milliseconds: 300),
-                                alignment: Alignment.center,
-                                type: PageTransitionType.rotate,
-                                child: PrivateChat(
-                                  msgToken: widget.msgToken,
-                                  revMsgToken: widget.revMsgToken,
-                                  myToken: deviceToken,
-                                )));
+                          context,
+                          PageTransition(
+                            duration: const Duration(milliseconds: 300),
+                            alignment: Alignment.center,
+                            type: PageTransitionType.rotate,
+                            child: PrivateChat(
+                              msgToken: widget.msgToken,
+                              revMsgToken: widget.revMsgToken,
+                              myToken: deviceToken,
+                            ),
+                          ),
+                        );
                       }
                     },
                     icon: Icon(

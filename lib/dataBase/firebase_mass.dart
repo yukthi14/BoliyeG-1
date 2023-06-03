@@ -88,13 +88,14 @@ class FirebaseMassage {
     await ref
         .child(Strings.user)
         .child(prefs.get(Strings.token).toString())
-        .update({Strings.secretCodeKey: pwd});
-    Fluttertoast.showToast(
-      msg: Strings.pwdToast,
-      gravity: ToastGravity.TOP,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 16.0,
+        .update({Strings.secretCodeKey: pwd}).whenComplete(
+      () => Fluttertoast.showToast(
+        msg: Strings.pwdToast,
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      ),
     );
   }
 

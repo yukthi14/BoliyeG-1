@@ -43,9 +43,9 @@ class _PrivateChatState extends State<PrivateChat>
   final ref = FirebaseDatabase.instance.ref(Strings.privateMsg);
   @override
   void dispose() {
-    setState(() {
-      online = false;
-    });
+    online = false;
+    openEnvelope = false;
+    opening = false;
     super.dispose();
   }
 
@@ -94,6 +94,10 @@ class _PrivateChatState extends State<PrivateChat>
             actions: [
               IconButton(
                   onPressed: () {
+                    setState(() {
+                      openEnvelope = false;
+                      opening = false;
+                    });
                     Navigator.pop(context);
                   },
                   icon: Icon(

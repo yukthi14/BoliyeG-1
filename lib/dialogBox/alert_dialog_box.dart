@@ -161,6 +161,8 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                   if (widget.buttonString == Strings.openEnvelope) {
                     String code = await firebaseMassage.getPrivatePassword();
                     if (_controller.text == (code)) {
+                      Navigator.pop(context);
+
                       setState(() {
                         openEnvelope = !openEnvelope;
                         Future.delayed(
@@ -179,10 +181,21 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                       );
                     }
                   } else {
-                    firebaseMassage.setPrivatePassword(pwd: _controller.text);
-                    prefs.setBool(Strings.submittedSecretCodeKey, true);
+                    if (_controller.text.length == 4) {
+                      firebaseMassage.setPrivatePassword(pwd: _controller.text);
+                      prefs
+                          .setBool(Strings.submittedSecretCodeKey, true)
+                          .whenComplete(() => Navigator.of(context).pop());
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: Strings.pwdSuggestion,
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    }
                   }
-                  Navigator.of(context).pop();
                 },
               ),
             ),
