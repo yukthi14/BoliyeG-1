@@ -73,7 +73,6 @@ class FirebaseMassage {
 
   setPrivatePassword({required String pwd}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     await ref
         .child(Strings.user)
         .child(prefs.get(Strings.token).toString())

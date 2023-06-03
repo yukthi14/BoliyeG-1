@@ -36,6 +36,13 @@ class Strings {
   static const String voice = 'VoiceRecording';
 }
 
+class Integers {
+  static const int audioType = 1;
+  static const int textType = 0;
+  static const int imgType = 2;
+  static const int videoType = 3;
+}
+
 StreamController<bool> streamController = StreamController<bool>();
 
 bool showEmoji = false;

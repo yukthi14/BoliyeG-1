@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:boliye_g/bubbles/bubble_normal_audio.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/dataBase/firebase_mass.dart';
@@ -47,6 +48,7 @@ class _ChattingScreenState extends State<ChattingScreen>
   bool isLoading = false;
   bool isPause = false;
   bool isKeyboardVisible = false;
+  String audioUrl = '';
   late ScrollController listScrollController = ScrollController();
   late KeyBoard _keyBoard;
 
@@ -224,41 +226,88 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     height: displayHeight(context) * 0.04,
                                   );
                                 }
-                                return Column(
-                                  crossAxisAlignment: (widget.myToken ==
-                                          msg[index][Strings.isSender])
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start,
-                                  mainAxisAlignment: (widget.myToken ==
-                                          msg[index][Strings.isSender])
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                                  children: [
-                                    BubbleSpecialThree(
-                                      text: msg[index][Strings.msg],
-                                      color: AppColors.bubbleSpecialThreeColor,
-                                      tail: true,
-                                      isSender: (widget.myToken ==
-                                          msg[index][Strings.isSender]),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 5.0,
-                                          right: 10,
-                                          left: 13,
-                                          bottom: 15),
-                                      child: Text(
-                                        DateFormat('jm').format(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                int.parse(msgTime[index]))),
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize:
-                                                displayWidth(context) * 0.03),
+                                if (msg[index][Strings.contentType] ==
+                                    Integers.textType) {
+                                  return Column(
+                                    crossAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    mainAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    children: [
+                                      BubbleSpecialThree(
+                                        text: msg[index][Strings.msg],
+                                        color:
+                                            AppColors.bubbleSpecialThreeColor,
+                                        tail: true,
+                                        isSender: (widget.myToken ==
+                                            msg[index][Strings.isSender]),
                                       ),
-                                    ),
-                                  ],
-                                );
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0,
+                                            right: 10,
+                                            left: 13,
+                                            bottom: 15),
+                                        child: Text(
+                                          DateFormat('jm').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(msgTime[index]))),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  displayWidth(context) * 0.03),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else if (msg[index][Strings.contentType] ==
+                                    Integers.audioType) {
+                                  audioUrl = msg[index][Strings.msg];
+
+                                  return Column(
+                                    crossAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    mainAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    children: [
+                                      BubbleNormalAudio(
+                                        color: const Color(0xFFE8E8EE),
+                                        duration: duration.inSeconds.toDouble(),
+                                        position: position.inSeconds.toDouble(),
+                                        isPlaying: isPlaying,
+                                        isPause: isPause,
+                                        isLoading: isLoading,
+                                        tail: true,
+                                        onSeekChanged: _changeSeek,
+                                        onPlayPauseButtonClick: _playAudio,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0,
+                                            right: 10,
+                                            left: 13,
+                                            bottom: 15),
+                                        child: Text(
+                                          DateFormat('jm').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(msgTime[index]))),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  displayWidth(context) * 0.03),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
                               },
                             );
                           } else {
@@ -299,7 +348,9 @@ class _ChattingScreenState extends State<ChattingScreen>
                       valueListenable: startAudioChat,
                       builder: (context, value, _) {
                         return value
-                            ? const NeonButton()
+                            ? NeonButton(
+                                msgToken: widget.msgToken,
+                                revMsgToken: widget.revMsgToken)
                             : MessageBar(
                                 messageBarColor: Colors.black,
                                 sendButtonColor: Colors.white,
@@ -363,8 +414,7 @@ class _ChattingScreenState extends State<ChattingScreen>
   }
 
   void _playAudio() async {
-    const url =
-        'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
+    print('helllollllllllllllllllllllllll');
     if (isPause) {
       await audioPlayer.resume();
       setState(() {
@@ -381,7 +431,8 @@ class _ChattingScreenState extends State<ChattingScreen>
       setState(() {
         isLoading = true;
       });
-      await audioPlayer.play(url);
+      print(audioUrl);
+      await audioPlayer.play(audioUrl);
       setState(() {
         isPlaying = true;
       });
