@@ -134,11 +134,12 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                   height: displayHeight(context) * 0.03,
                   borderRadius: 10,
                   color: const Color(0xff8585a2),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       Strings.changePwd,
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                          color: Colors.red.shade400,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
