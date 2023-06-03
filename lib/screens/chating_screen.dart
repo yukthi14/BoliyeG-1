@@ -266,8 +266,6 @@ class _ChattingScreenState extends State<ChattingScreen>
                                   );
                                 } else if (msg[index][Strings.contentType] ==
                                     Integers.audioType) {
-                                  audioUrl = msg[index][Strings.msg];
-
                                   return Column(
                                     crossAxisAlignment: (widget.myToken ==
                                             msg[index][Strings.isSender])
@@ -278,16 +276,12 @@ class _ChattingScreenState extends State<ChattingScreen>
                                         ? MainAxisAlignment.end
                                         : MainAxisAlignment.start,
                                     children: [
-                                      BubbleNormalAudio(
+                                      AudioBar(
                                         color: const Color(0xFFE8E8EE),
-                                        duration: duration.inSeconds.toDouble(),
-                                        position: position.inSeconds.toDouble(),
-                                        isPlaying: isPlaying,
-                                        isPause: isPause,
-                                        isLoading: isLoading,
                                         tail: true,
-                                        onSeekChanged: _changeSeek,
-                                        onPlayPauseButtonClick: _playAudio,
+                                        isSender: (widget.myToken ==
+                                            msg[index][Strings.isSender]),
+                                        audioUrl: msg[index][Strings.msg],
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
@@ -361,7 +355,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     reverseToken: widget.revMsgToken,
                                     type: 0,
                                   );
-                                  _scrollList();
+                                  // _scrollList();
                                 },
                               );
                       },

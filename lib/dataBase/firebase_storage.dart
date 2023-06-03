@@ -8,13 +8,15 @@ import 'firebase_mass.dart';
 
 class FirebaseVoiceMessage {
   Reference references = FirebaseStorage.instance.ref();
+  int now = DateTime.now().millisecondsSinceEpoch;
+
   sendAudio(
       {required String path,
       required String msgTokenAudio,
       required String reverseTokenAudio,
+      required String timeStamp,
       required int typeAudio}) async {
     File file = File(path);
-    String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
     String recUrl = '';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
@@ -29,10 +31,12 @@ class FirebaseVoiceMessage {
             .child(timeStamp);
         recUrl = await voiceRec.getDownloadURL();
         firebaseMassage.sendMassage(
-            msg: recUrl,
-            msgToken: msgTokenAudio,
-            reverseToken: reverseTokenAudio,
-            type: typeAudio);
+          timeStamp: timeStamp,
+          msg: recUrl,
+          msgToken: msgTokenAudio,
+          reverseToken: reverseTokenAudio,
+          type: typeAudio,
+        );
       });
     } catch (e) {
       print(e.toString());

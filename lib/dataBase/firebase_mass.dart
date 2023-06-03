@@ -38,11 +38,13 @@ class FirebaseMassage {
     deviceToken = prefs.get(Strings.token).toString();
   }
 
-  sendMassage(
-      {required String msg,
-      required String msgToken,
-      required String reverseToken,
-      required int type}) async {
+  sendMassage({
+    required String msg,
+    required String msgToken,
+    String timeStamp = '',
+    required String reverseToken,
+    required int type,
+  }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
     await ref.child(Strings.msg).get().then((value) async {
@@ -50,13 +52,21 @@ class FirebaseMassage {
         msgList.add(element.key);
       }
       if (msgList.contains(msgToken)) {
-        ref.child(Strings.msg).child(msgToken).child(now.toString()).set({
+        ref
+            .child(Strings.msg)
+            .child(msgToken)
+            .child((timeStamp == '') ? now.toString() : timeStamp)
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)
         });
       } else if (msgList.contains(reverseToken)) {
-        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+        ref
+            .child(Strings.msg)
+            .child(reverseToken)
+            .child((timeStamp == '') ? now.toString() : timeStamp)
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: prefs.get(Strings.token)
