@@ -166,7 +166,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                             child: PrivateChat(
                               msgToken: widget.msgToken,
                               revMsgToken: widget.revMsgToken,
-                              myToken: deviceToken,
+                              myToken: deviceToken.value,
                             ),
                           ),
                         );
@@ -383,13 +383,6 @@ class _ChattingScreenState extends State<ChattingScreen>
     );
   }
 
-  // Widget _chatInput() {
-  //   return Padding(
-  //     padding: EdgeInsets.only(top: displayHeight(context) * 0.82),
-  //     child:
-  //   );
-  // }
-
   Widget _image() {
     return Container(
       constraints: const BoxConstraints(
@@ -403,56 +396,5 @@ class _ChattingScreenState extends State<ChattingScreen>
         errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
     );
-  }
-
-  void _changeSeek(double value) {
-    setState(() {
-      audioPlayer.seek(Duration(seconds: value.toInt()));
-    });
-  }
-
-  void _playAudio() async {
-    print('helllollllllllllllllllllllllll');
-    if (isPause) {
-      await audioPlayer.resume();
-      setState(() {
-        isPlaying = true;
-        isPause = false;
-      });
-    } else if (isPlaying) {
-      await audioPlayer.pause();
-      setState(() {
-        isPlaying = false;
-        isPause = true;
-      });
-    } else {
-      setState(() {
-        isLoading = true;
-      });
-      print(audioUrl);
-      await audioPlayer.play(audioUrl);
-      setState(() {
-        isPlaying = true;
-      });
-    }
-
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      setState(() {
-        duration = d;
-        isLoading = false;
-      });
-    });
-    audioPlayer.onAudioPositionChanged.listen((Duration p) {
-      setState(() {
-        position = p;
-      });
-    });
-    audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() {
-        isPlaying = false;
-        duration = const Duration();
-        position = const Duration();
-      });
-    });
   }
 }

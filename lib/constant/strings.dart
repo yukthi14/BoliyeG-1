@@ -22,6 +22,7 @@ class Strings {
   static const String content = 'content';
   static const String isSender = 'isSender';
   static const String contentType = 'type';
+  static const String errorMsg = 'Something went wrong';
   static const String searchBar = 'Search by name';
   static const String secretCode = 'Secret Code';
   static const String secretCodeKey = 'secretCode';
@@ -57,7 +58,8 @@ bool isOpenAlertDialogBox = true;
 
 bool animate = false;
 
-String deviceToken = '';
 ValueNotifier<bool> startAudioChat = ValueNotifier(false);
 ValueNotifier<bool> shoeEmoji = ValueNotifier(false);
 int radius = 20;
+
+ValueNotifier<String> deviceToken = ValueNotifier('');

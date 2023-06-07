@@ -1,4 +1,5 @@
 import 'package:boliye_g/constant/color.dart';
+import 'package:boliye_g/dataBase/firebase_mass.dart';
 import 'package:boliye_g/dataBase/is_internet_connected.dart';
 import 'package:boliye_g/screens/profile_screen.dart';
 import 'package:boliye_g/screens/setting_screen.dart';
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       online = true;
     });
+    FirebaseMassage().setToken();
     Network().checkConnection();
     super.initState();
   }
@@ -47,15 +49,13 @@ class _HomePageState extends State<HomePage> {
     userKey.clear();
     var allUser = snapshot.data?.snapshot.children;
     allUser?.forEach((element) {
-      if (element.key != deviceToken) {
+      if (element.key != deviceToken.value) {
         userName.add(element.value);
         userKey.add(element.key);
       }
     });
     await Future.delayed(const Duration(milliseconds: 300));
   }
-
-  final Uri _url = Uri.parse(Strings.link);
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                             userKey.clear();
                             var allUser = snapshot.data?.snapshot.children;
                             allUser?.forEach((element) {
-                              if (element.key != deviceToken) {
+                              if (element.key != deviceToken.value) {
                                 userName.add(element.value);
                                 userKey.add(element.key);
                               }
@@ -289,9 +289,9 @@ class _HomePageState extends State<HomePage> {
                                         return GestureDetector(
                                           onTap: () async {
                                             String msgToken =
-                                                '${userKey[index]}${Strings.middleOfMessageToken}$deviceToken';
+                                                '${userKey[index]}${Strings.middleOfMessageToken}${deviceToken.value}';
                                             String revToken =
-                                                '$deviceToken${Strings.middleOfMessageToken}${userKey[index]}';
+                                                '${deviceToken.value}${Strings.middleOfMessageToken}${userKey[index]}';
                                             Navigator.push(
                                                 context,
                                                 PageTransition(
@@ -302,7 +302,8 @@ class _HomePageState extends State<HomePage> {
                                                     child: ChattingScreen(
                                                       msgToken: msgToken,
                                                       revMsgToken: revToken,
-                                                      myToken: deviceToken,
+                                                      myToken:
+                                                          deviceToken.value,
                                                     )));
                                           },
                                           child: Container(

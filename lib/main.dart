@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseMassage().getToken();
-    FirebaseMassage().setToken();
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),

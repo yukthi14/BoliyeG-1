@@ -44,11 +44,12 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.09,
-                  right: displayWidth(context) * 0.1),
+                left: displayWidth(context) * 0.1,
+              ),
               child: ClayContainer(
                 width: displayWidth(context) * 0.4,
                 height: displayHeight(context) * 0.05,

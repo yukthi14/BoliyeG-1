@@ -16,15 +16,20 @@ class FirebaseMassage {
       try {
         await FirebaseMessaging.instance.getToken().then((tokenValue) async {
           if (tokenValue.toString().isEmpty) {
-            if (kDebugMode) {
-              print(Strings.error);
-            }
+            Fluttertoast.showToast(
+              msg: Strings.errorMsg,
+              gravity: ToastGravity.TOP,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
           } else {
             prefs.setString(Strings.token, tokenValue!);
             await ref
                 .child(Strings.user)
                 .child(tokenValue)
-                .set({Strings.userName: 'vishwajeet'});
+                .set({Strings.userName: 'vishwajeet'}).whenComplete(() =>
+                    deviceToken.value = prefs.get(Strings.token).toString());
           }
         });
       } catch (e) {
@@ -37,7 +42,7 @@ class FirebaseMassage {
 
   setToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    deviceToken = prefs.get(Strings.token).toString();
+    deviceToken.value = prefs.get(Strings.token).toString();
   }
 
   sendMessage({
