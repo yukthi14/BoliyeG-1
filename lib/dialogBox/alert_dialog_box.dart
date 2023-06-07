@@ -15,10 +15,12 @@ class AlertDialogBox extends StatefulWidget {
     required this.title,
     required this.buttonString,
     required this.suggestionString,
+    required this.myToken,
   }) : super(key: key);
   final String title;
   final String buttonString;
   final String suggestionString;
+  final String myToken;
 
   @override
   State<AlertDialogBox> createState() => _AlertDialogBoxState();
@@ -102,6 +104,10 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: BorderSide.none,
             ),
+            prefixIcon: IconButton(
+              icon: Icon(Icons.abc_rounded),
+              onPressed: () {},
+            ),
             suffixIcon: IconButton(
               icon: Icon(
                 _passwordVisible ? Icons.visibility : Icons.visibility_off,
@@ -160,7 +166,8 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                   final SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   if (widget.buttonString == Strings.openEnvelope) {
-                    String code = await firebaseMassage.getPrivatePassword();
+                    String code = await firebaseMassage.getPrivatePassword(
+                        deviceToken: widget.myToken);
                     if (_controller.text == (code)) {
                       Navigator.pop(context);
 
@@ -183,10 +190,17 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                     }
                   } else {
                     if (_controller.text.length == 4) {
-                      firebaseMassage.setPrivatePassword(pwd: _controller.text);
-                      prefs
-                          .setBool(Strings.submittedSecretCodeKey, true)
-                          .whenComplete(() => Navigator.of(context).pop());
+                      if (widget.myToken == '') {
+                        Fluttertoast.showToast(msg: Strings.errorMsg);
+                      } else {
+                        firebaseMassage.setPrivatePassword(
+                          pwd: _controller.text,
+                          deviceToken: widget.myToken,
+                        );
+                        prefs
+                            .setBool(Strings.submittedSecretCodeKey, true)
+                            .whenComplete(() => Navigator.of(context).pop());
+                      }
                     } else {
                       Fluttertoast.showToast(
                         msg: Strings.pwdSuggestion,

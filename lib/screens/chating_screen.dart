@@ -149,10 +149,11 @@ class _ChattingScreenState extends State<ChattingScreen>
                             duration: const Duration(milliseconds: 300),
                             alignment: Alignment.center,
                             type: PageTransitionType.rotate,
-                            child: const AlertDialogBox(
+                            child: AlertDialogBox(
                               title: Strings.setSecretCode,
                               buttonString: Strings.submitButton,
                               suggestionString: Strings.changePwd,
+                              myToken: deviceToken.value,
                             ),
                           ),
                         );
@@ -166,7 +167,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                             child: PrivateChat(
                               msgToken: widget.msgToken,
                               revMsgToken: widget.revMsgToken,
-                              myToken: deviceToken.value,
+                              myToken: widget.myToken,
                             ),
                           ),
                         );
@@ -348,7 +349,9 @@ class _ChattingScreenState extends State<ChattingScreen>
                         return value
                             ? NeonButton(
                                 msgToken: widget.msgToken,
-                                revMsgToken: widget.revMsgToken)
+                                revMsgToken: widget.revMsgToken,
+                                myToken: widget.myToken,
+                              )
                             : MessageBar(
                                 messageBarColor: Colors.black,
                                 sendButtonColor: Colors.white,
@@ -358,6 +361,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                     msgToken: widget.msgToken,
                                     reverseToken: widget.revMsgToken,
                                     type: 0,
+                                    deviceToken: widget.myToken,
                                   );
                                   // _scrollList();
                                 },

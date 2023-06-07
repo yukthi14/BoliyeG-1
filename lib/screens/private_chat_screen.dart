@@ -168,10 +168,11 @@ class _PrivateChatState extends State<PrivateChat>
                                               const Duration(milliseconds: 300),
                                           alignment: Alignment.center,
                                           type: PageTransitionType.rotate,
-                                          child: const AlertDialogBox(
+                                          child: AlertDialogBox(
                                             title: Strings.secretCode,
                                             buttonString: Strings.openEnvelope,
                                             suggestionString: Strings.changePwd,
+                                            myToken: widget.myToken,
                                           )));
                                 },
                                 child: AnimatedContainer(
@@ -232,6 +233,7 @@ class _PrivateChatState extends State<PrivateChat>
                     msgToken: widget.msgToken,
                     reverseToken: widget.revMsgToken,
                     type: 0,
+                    myToken: widget.myToken,
                   );
                   setState(() {
                     animate = true;
