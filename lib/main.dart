@@ -1,4 +1,4 @@
-import 'package:boliye_g/dataBase/firebase_mass.dart';
+import 'package:boliye_g/services/firebase_mass.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';

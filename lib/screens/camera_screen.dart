@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../constant/color.dart';
-import '../customPainter/bottomDrawer.dart';
+import '../utils/bottomDrawer.dart';
 
 class PhotoPicker extends StatefulWidget {
   const PhotoPicker({Key? key}) : super(key: key);

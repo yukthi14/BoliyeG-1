@@ -1,8 +1,8 @@
 import 'package:boliye_g/constant/color.dart';
-import 'package:boliye_g/dataBase/firebase_mass.dart';
-import 'package:boliye_g/dataBase/is_internet_connected.dart';
 import 'package:boliye_g/screens/profile_screen.dart';
 import 'package:boliye_g/screens/setting_screen.dart';
+import 'package:boliye_g/services/firebase_mass.dart';
+import 'package:boliye_g/services/is_internet_connected.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -274,11 +274,8 @@ class _HomePageState extends State<HomePage> {
                             var allUser = snapshot.data?.snapshot.children;
                             allUser?.forEach((element) {
                               if (element.key != deviceToken.value) {
-                                print('cccccccccccccccccccccccccccccccccccccc');
                                 userName.add(element.value);
                                 userKey.add(element.key);
-                                print(element.value);
-                                print(element.key);
                               }
                             });
                             return RefreshIndicator(

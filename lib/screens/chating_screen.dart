@@ -4,10 +4,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/bubbles/bubble_normal_audio.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/dataBase/firebase_mass.dart';
-import 'package:boliye_g/dataBase/is_internet_connected.dart';
-import 'package:boliye_g/neonButton/neonButtons.dart';
 import 'package:boliye_g/screens/private_chat_screen.dart';
+import 'package:boliye_g/services/firebase_mass.dart';
+import 'package:boliye_g/services/is_internet_connected.dart';
+import 'package:boliye_g/utils/neonButtons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
-import '../dialogBox/alert_dialog_box.dart';
-import '../key_board_visibility/visiblity.dart';
-import '../message_bar/message_bar.dart';
+import '../services/visiblity.dart';
+import '../utils/alert_dialog_box.dart';
+import '../utils/message_bar.dart';
 
 class ChattingScreen extends StatefulWidget {
   const ChattingScreen(

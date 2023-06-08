@@ -6,8 +6,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/strings.dart';
-import '../dataBase/firebase_mass.dart';
 import '../screens/setting_screen.dart';
+import '../services/firebase_mass.dart';
 
 class AlertDialogBox extends StatefulWidget {
   const AlertDialogBox({

@@ -4,34 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../constant/strings.dart';
 
-///Normal Message bar with more actions
-///
-/// following attributes can be modified
-///
-///
-/// # BOOLEANS
-/// [replying] is additional reply widget top of the message bar
-///
-/// # STRINGS
-/// [replyingTo] is a string to tag the replying message
-///
-/// # WIDGETS
-/// [actions] are the additional leading action buttons like camera
-/// and file select
-///
-/// # COLORS
-/// [replyWidgetColor] is reply widget color
-/// [replyIconColor] is the reply icon color on the left side of reply widget
-/// [replyCloseColor] is the close icon color on the right side of the reply
-/// widget
-/// [messageBarColor] is the color of the message bar
-/// [sendButtonColor] is the color of the send button
-///
-/// # METHODS
-/// [onTextChanged] is function which triggers after text every text change
-/// [onSend] is send button action
-/// [onTapCloseReply] is close button action of the close button on the
-/// reply widget usually change [replying] attribute to `false`
 class MessageBar extends StatefulWidget {
   const MessageBar({
     Key? key,

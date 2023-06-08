@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/encryption/encrypt_decrypt.dart';
+import 'package:boliye_g/services/encrypt_decrypt.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +9,10 @@ import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
-import '../customPainter/private_envelope.dart';
-import '../dataBase/firebase_mass.dart';
-import '../dialogBox/alert_dialog_box.dart';
-import '../message_bar/message_bar.dart';
+import '../services/firebase_mass.dart';
+import '../utils/alert_dialog_box.dart';
+import '../utils/message_bar.dart';
+import '../utils/private_envelope.dart';
 
 class PrivateChat extends StatefulWidget {
   const PrivateChat({

@@ -1,6 +1,6 @@
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/strings.dart';
-import 'package:boliye_g/dataBase/firebase_storage.dart';
+import 'package:boliye_g/services/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
