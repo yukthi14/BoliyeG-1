@@ -15,6 +15,7 @@ class FirebaseVoiceMessage {
       required String msgTokenAudio,
       required String reverseTokenAudio,
       required String timeStamp,
+      required String myToken,
       required int typeAudio}) async {
     File file = File(path);
     String recUrl = '';
@@ -36,6 +37,7 @@ class FirebaseVoiceMessage {
           msgToken: msgTokenAudio,
           reverseToken: reverseTokenAudio,
           type: typeAudio,
+          deviceToken: myToken,
         );
       });
     } catch (e) {

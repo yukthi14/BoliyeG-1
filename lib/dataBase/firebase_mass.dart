@@ -51,6 +51,7 @@ class FirebaseMassage {
     String timeStamp = '',
     required String reverseToken,
     required int type,
+    required String deviceToken,
   }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
@@ -66,7 +67,7 @@ class FirebaseMassage {
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: deviceToken,
         });
       } else if (msgList.contains(reverseToken)) {
         ref
@@ -76,23 +77,23 @@ class FirebaseMassage {
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: deviceToken
         });
       } else {
         ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: deviceToken
         });
       }
     });
   }
 
-  setPrivatePassword({required String pwd}) async {
+  setPrivatePassword({required String pwd, required String deviceToken}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await ref
         .child(Strings.user)
-        .child(prefs.get(Strings.token).toString())
+        .child(deviceToken)
         .update({Strings.secretCodeKey: pwd}).whenComplete(
       () => Fluttertoast.showToast(
         msg: Strings.pwdToast,
@@ -104,23 +105,26 @@ class FirebaseMassage {
     );
   }
 
-  Future<String> getPrivatePassword() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userData = await ref
-        .child(Strings.user)
-        .child(prefs.get(Strings.token).toString())
-        .get();
-    String password = userData.children
-        .firstWhere((element) => element.key == Strings.secretCodeKey)
-        .value
-        .toString();
-    return password;
+  getPrivatePassword({required String deviceToken}) async {
+    try {
+      var userData = await ref.child(Strings.user).child(deviceToken).get();
+      String password = userData.children
+          .firstWhere((element) => element.key == Strings.secretCodeKey)
+          .value
+          .toString();
+      return password;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   sendPrivateMessage(
       {required String msg,
       required String msgToken,
       required String reverseToken,
+      required String myToken,
       required int type}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
@@ -136,7 +140,7 @@ class FirebaseMassage {
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: myToken,
         });
       } else if (msgList.contains(reverseToken)) {
         ref
@@ -146,7 +150,7 @@ class FirebaseMassage {
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: myToken,
         });
       } else {
         ref
@@ -156,7 +160,7 @@ class FirebaseMassage {
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
-          Strings.isSender: prefs.get(Strings.token)
+          Strings.isSender: myToken,
         });
       }
     });
