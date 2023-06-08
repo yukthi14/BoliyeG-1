@@ -8,10 +8,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'screens/homepage.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.getInitialMessage();
+  runApp(const MyApp());
   try {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
-    await FirebaseMessaging.instance.getInitialMessage();
     PermissionStatus notificationStatus = await Permission.notification.status;
     if (notificationStatus.isDenied) {
       Map<Permission, PermissionStatus> statuses = await [
@@ -26,8 +27,6 @@ Future<void> main() async {
       print(e.toString());
     }
   }
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

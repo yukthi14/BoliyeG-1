@@ -30,7 +30,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       online = true;
     });
+
     FirebaseMassage().setToken();
+
     Network().checkConnection();
     super.initState();
   }
