@@ -274,8 +274,11 @@ class _HomePageState extends State<HomePage> {
                             var allUser = snapshot.data?.snapshot.children;
                             allUser?.forEach((element) {
                               if (element.key != deviceToken.value) {
+                                print('cccccccccccccccccccccccccccccccccccccc');
                                 userName.add(element.value);
                                 userKey.add(element.key);
+                                print(element.value);
+                                print(element.key);
                               }
                             });
                             return RefreshIndicator(

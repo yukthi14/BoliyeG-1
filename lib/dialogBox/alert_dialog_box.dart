@@ -105,7 +105,7 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
               borderSide: BorderSide.none,
             ),
             prefixIcon: IconButton(
-              icon: Icon(Icons.abc_rounded),
+              icon: const Icon(Icons.abc_rounded),
               onPressed: () {},
             ),
             suffixIcon: IconButton(
