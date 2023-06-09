@@ -136,7 +136,9 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: displayWidth(context) * 0.02),
+              padding: EdgeInsets.only(
+                  left: displayWidth(context) * 0.01,
+                  top: displayHeight(context) * 0.015),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -148,7 +150,7 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                 },
                 child: ClayContainer(
                   width: displayWidth(context) * 0.39,
-                  height: displayHeight(context) * 0.03,
+                  height: displayHeight(context) * 0.04,
                   borderRadius: 10,
                   color: const Color(0xff8585a2),
                   child: const Center(
@@ -161,66 +163,69 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                 ),
               ),
             ),
-            ClayContainer(
-              width: displayWidth(context) * 0.2,
-              height: displayHeight(context) * 0.05,
-              borderRadius: 40,
-              color: const Color(0xff8585a2),
-              child: TextButton(
-                child: Text(
-                  widget.buttonString,
-                  style: const TextStyle(color: Colors.black),
-                ),
-                onPressed: () async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  if (widget.buttonString == Strings.openEnvelope) {
-                    String code = await firebaseMassage.getPrivatePassword(
-                      deviceToken: widget.myToken,
-                    );
-                    if (_controller.text == (code)) {
-                      Navigator.pop(context);
-                      setState(() {
-                        openEnvelope = !openEnvelope;
-                        Future.delayed(
-                          const Duration(milliseconds: 300),
-                        ).then((value) {
-                          opening = !opening;
-                        });
-                      });
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: Strings.invalidPwdToast,
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
+            Padding(
+              padding: EdgeInsets.only(top: displayHeight(context) * 0.01),
+              child: ClayContainer(
+                width: displayWidth(context) * 0.2,
+                height: displayHeight(context) * 0.045,
+                borderRadius: 40,
+                color: const Color(0xff8585a2),
+                child: TextButton(
+                  child: Text(
+                    widget.buttonString,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () async {
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    if (widget.buttonString == Strings.openEnvelope) {
+                      String code = await firebaseMassage.getPrivatePassword(
+                        deviceToken: widget.myToken,
                       );
-                    }
-                  } else {
-                    if (_controller.text.length == 4) {
-                      if (widget.myToken == '') {
-                        Fluttertoast.showToast(msg: Strings.errorMsg);
+                      if (_controller.text == (code)) {
+                        Navigator.pop(context);
+                        setState(() {
+                          openEnvelope = !openEnvelope;
+                          Future.delayed(
+                            const Duration(milliseconds: 300),
+                          ).then((value) {
+                            opening = !opening;
+                          });
+                        });
                       } else {
-                        firebaseMassage.setPrivatePassword(
-                          pwd: _controller.text,
-                          deviceToken: widget.myToken,
+                        Fluttertoast.showToast(
+                          msg: Strings.invalidPwdToast,
+                          gravity: ToastGravity.TOP,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
                         );
-                        prefs
-                            .setBool(Strings.submittedSecretCodeKey, true)
-                            .whenComplete(() => Navigator.of(context).pop());
                       }
                     } else {
-                      Fluttertoast.showToast(
-                        msg: Strings.pwdSuggestion,
-                        gravity: ToastGravity.TOP,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        fontSize: 16.0,
-                      );
+                      if (_controller.text.length == 4) {
+                        if (widget.myToken == '') {
+                          Fluttertoast.showToast(msg: Strings.errorMsg);
+                        } else {
+                          firebaseMassage.setPrivatePassword(
+                            pwd: _controller.text,
+                            deviceToken: widget.myToken,
+                          );
+                          prefs
+                              .setBool(Strings.submittedSecretCodeKey, true)
+                              .whenComplete(() => Navigator.of(context).pop());
+                        }
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: Strings.pwdSuggestion,
+                          gravity: ToastGravity.TOP,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ],

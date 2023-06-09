@@ -108,6 +108,14 @@ class FirebaseMassage {
     );
   }
 
+  setProfileImage(
+      {required String imgLink, required String deviceToken}) async {
+    await ref
+        .child(Strings.user)
+        .child(deviceToken)
+        .update({Strings.profileImg: imgLink});
+  }
+
   getPrivatePassword({required String deviceToken}) async {
     try {
       var userData = await ref.child(Strings.user).child(deviceToken).get();

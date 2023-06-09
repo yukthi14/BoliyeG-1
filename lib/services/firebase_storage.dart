@@ -58,6 +58,24 @@ class FirebaseVoiceMessage {
     }
   }
 
+  setProfileImage({
+    required String path,
+    required String myToken,
+  }) async {
+    File file = File(path);
+    String imgUrl = '';
+    try {
+      Reference imgRef = references.child(Strings.profileImg);
+      await imgRef.child(myToken).putFile(file).whenComplete(() async {
+        var imageReference = imgRef.child(myToken);
+        imgUrl = await imageReference.getDownloadURL();
+        firebaseMassage.setProfileImage(imgLink: imgUrl, deviceToken: myToken);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   sendImage({
     required String path,
     required String msgTokenImage,

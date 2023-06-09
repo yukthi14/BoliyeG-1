@@ -45,6 +45,13 @@ class Strings {
   static const String profileName = 'Enter Your Name';
   static const String profileUserName = '@UserName';
   static const String profileMsgError = 'Please Enter UserName';
+  static const String selectOption = 'Select Option';
+  static const String cameraText = 'Camera';
+  static const String galleryText = 'Gallery';
+  static const String errorInternetMsg = 'No Internet Connection';
+  static const String sadImg = 'assets/sad_img.gif';
+  static const String shadow = 'assets/Ellipse8.png';
+  static const String profileImg = 'profileImg';
 }
 
 class Integers {

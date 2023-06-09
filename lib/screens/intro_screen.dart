@@ -29,7 +29,19 @@ class IntroScreen extends StatefulWidget {
   _WithBuilder createState() => _WithBuilder();
 }
 
-class _WithBuilder extends State<IntroScreen> {
+class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
+  late final AnimationController controller = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  )..repeat(reverse: true);
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: controller,
+    curve: Curves.elasticIn,
+  ));
+
   int page = 0;
   late LiquidController liquidController;
   late UpdateType updateType;
@@ -47,6 +59,12 @@ class _WithBuilder extends State<IntroScreen> {
   void initState() {
     liquidController = LiquidController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Widget _buildDot(int index) {
@@ -284,7 +302,10 @@ class _WithBuilder extends State<IntroScreen> {
                   );
           },
           positionSlideIcon: 0.8,
-          slideIconWidget: const Icon(Icons.arrow_back_ios),
+          slideIconWidget: SlideTransition(
+            position: _offsetAnimation,
+            child: const Icon(Icons.arrow_back_ios),
+          ),
           onPageChangeCallback: pageChangeCallback,
           waveType: WaveType.liquidReveal,
           liquidController: liquidController,

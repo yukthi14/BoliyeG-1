@@ -3,8 +3,11 @@ import 'package:boliye_g/screens/profile_screen.dart';
 import 'package:boliye_g/screens/setting_screen.dart';
 import 'package:boliye_g/services/firebase_mass.dart';
 import 'package:boliye_g/services/is_internet_connected.dart';
+import 'package:boliye_g/utils/preview_imd.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../constant/sizer.dart';
@@ -83,6 +86,22 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.blueAccent,
                     image: DecorationImage(
                         image: AssetImage(Strings.avatarImage))),
+                child: Container(
+                  margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.12,
+                      left: displayWidth(context) * 0.35,
+                      right: displayWidth(context) * 0.02),
+                  decoration: BoxDecoration(
+                    color: AppColors.profileCardColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: MaterialButton(
+                    child: const Icon(Icons.edit),
+                    onPressed: () {
+                      showCustomDialog(context);
+                    },
+                  ),
+                ),
               ),
               ListTile(
                 title: const Text(Strings.profile),
@@ -124,19 +143,9 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.black,
                 thickness: 0.2,
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.launch,
-                  color: Colors.black,
-                ),
-                title: const Text(Strings.aboutUs),
-                onTap: () {
-                  // _launchUrl();
-                },
-              ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: displayHeight(context) * 0.5,
+                  top: displayHeight(context) * 0.55,
                 ),
                 child: ListTile(
                   trailing: const Icon(
@@ -185,18 +194,36 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w500),
                 )),
               ),
-              Container(
-                width: displayWidth(context) * 0.25,
-                height: displayHeight(context) * 0.25,
-                margin: EdgeInsets.only(
-                    left: displayWidth(context) * 0.38,
-                    top: displayHeight(context) * 0.04),
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    image: DecorationImage(
-                        image: AssetImage(Strings.avatarImage))),
-              ),
+              StreamBuilder(
+                  stream: FirebaseDatabase.instance
+                      .ref(
+                          "${Strings.user}/${deviceToken.value}/${Strings.profileImg}")
+                      .onValue,
+                  builder: (context, snapshot) {
+                    var image = snapshot.data?.snapshot.value;
+                    return Container(
+                      width: displayWidth(context) * 0.3,
+                      height: displayHeight(context) * 0.3,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.35,
+                          top: displayHeight(context) * 0.02),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: AppColors.scaffoldColor, width: 2),
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        image: (image.toString().isEmpty)
+                            ? const DecorationImage(
+                                image: AssetImage(Strings.avatarImage),
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(
+                                  image.toString(),
+                                ),
+                              ),
+                      ),
+                    );
+                  }),
               Container(
                 width: displayWidth(context) * 0.4,
                 height: displayWidth(context) * 0.08,
@@ -369,8 +396,38 @@ class _HomePageState extends State<HomePage> {
                                         );
                                       },
                                     )
-                                  : const Center(
-                                      child: Text('No User'),
+                                  : Column(
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: displayHeight(context) *
+                                                    0.1),
+                                            width: displayWidth(context) * 0.4,
+                                            height:
+                                                displayHeight(context) * 0.2,
+                                            decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage(
+                                                        Strings.sadImg),
+                                                    fit: BoxFit.fill)),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: displayWidth(context) * 1,
+                                          height: displayHeight(context) * 0.05,
+                                          decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: AssetImage(
+                                                      Strings.shadow))),
+                                        ),
+                                        const Text(
+                                          Strings.errorInternetMsg,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.redAccent),
+                                        )
+                                      ],
                                     ),
                             );
                           }),
@@ -384,4 +441,67 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void showCustomDialog(BuildContext context) => showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            backgroundColor: AppColors.profileCardColor,
+            title: const Text(Strings.selectOption),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.symmetric(
+                  horizontal: displayWidth(context) * 0.06,
+                  vertical: displayWidth(context) * 0.04,
+                ),
+                onPressed: () async {
+                  ImagePicker image = ImagePicker();
+                  try {
+                    XFile? filePath =
+                        await image.pickImage(source: ImageSource.camera);
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
+                },
+                child: const Text(
+                  Strings.cameraText,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.symmetric(
+                  horizontal: displayWidth(context) * 0.06,
+                  vertical: displayWidth(context) * 0.04,
+                ),
+                onPressed: () async {
+                  ImagePicker image = ImagePicker();
+                  try {
+                    XFile? filePath =
+                        await image.pickImage(source: ImageSource.gallery);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewImage(
+                                  path: filePath!.path,
+                                  myToken: deviceToken.value,
+                                )));
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
+                },
+                child: const Text(
+                  Strings.galleryText,
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+            ],
+          );
+        },
+      );
 }
