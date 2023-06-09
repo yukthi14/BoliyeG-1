@@ -6,14 +6,14 @@ import 'package:boliye_g/services/is_internet_connected.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
 import 'chating_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, required this.name}) : super(key: key);
+  final String name;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   final ref = FirebaseDatabase.instance.ref('users');
   List userName = [];
   List userKey = [];
-  String? name = '';
 
   @override
   void initState() {
@@ -34,11 +33,6 @@ class _HomePageState extends State<HomePage> {
 
     Network().checkConnection();
     super.initState();
-  }
-
-  getUserName() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    name = preferences.getString(Strings.userName);
   }
 
   @override
@@ -63,7 +57,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    getUserName();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -212,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                     top: displayHeight(context) * 0.24),
                 child: Center(
                   child: Text(
-                    (name! == '') ? Strings.userName : name!,
+                    (widget.name == '') ? Strings.userName : widget.name,
                     style: TextStyle(
                       fontSize: displayWidth(context) * 0.05,
                       color: Colors.white,
@@ -280,6 +273,7 @@ class _HomePageState extends State<HomePage> {
                             allUser?.forEach((element) {
                               if (element.key != deviceToken.value) {
                                 userName.add(element.value);
+
                                 userKey.add(element.key);
                               }
                             });
@@ -310,6 +304,8 @@ class _HomePageState extends State<HomePage> {
                                                   msgToken: msgToken,
                                                   revMsgToken: revToken,
                                                   myToken: deviceToken.value,
+                                                  name: userName[index]
+                                                      [Strings.userName],
                                                 ),
                                               ),
                                             );

@@ -9,5 +9,6 @@ class IntroPage extends ChatState {
 }
 
 class HomeState extends ChatState {
-  HomeState();
+  String name;
+  HomeState({required this.name});
 }

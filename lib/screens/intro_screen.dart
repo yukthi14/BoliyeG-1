@@ -85,7 +85,7 @@ class _WithBuilder extends State<IntroScreen> {
               if (state is IntroPage) {
                 return body(context);
               } else if (state is HomeState) {
-                return const HomePage();
+                return HomePage(name: state.name);
               } else {
                 return splash(context);
               }

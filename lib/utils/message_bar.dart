@@ -1,9 +1,13 @@
+import 'package:boliye_g/bloc/bloc.dart';
+import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/sizer.dart';
+import 'package:clay_containers/widgets/clay_container.dart';
+import 'package:clay_containers/widgets/clay_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../constant/strings.dart';
-import 'image_alert_dialog.dart';
 
 class MessageBar extends StatefulWidget {
   const MessageBar({
@@ -18,7 +22,16 @@ class MessageBar extends StatefulWidget {
     this.onTextChanged,
     this.onSend,
     this.onTapCloseReply,
+    required this.myToken,
+    required this.msgTokenImage,
+    required this.revMsgTokenImage,
+    required this.isPrivate,
   }) : super(key: key);
+  final String myToken;
+  final String msgTokenImage;
+  final String revMsgTokenImage;
+  final bool isPrivate;
+
   final bool replying;
   final String replyingTo;
   final Color replyWidgetColor;
@@ -36,6 +49,7 @@ class MessageBar extends StatefulWidget {
 
 class _MessageBarState extends State<MessageBar> {
   final TextEditingController _textController = TextEditingController();
+  final ChatBlocks _chatBlocks = ChatBlocks();
   makeIconTilt() {
     setState(() {
       showCheckIcon = _textController.text.isNotEmpty;
@@ -167,23 +181,7 @@ class _MessageBarState extends State<MessageBar> {
                       ),
                       suffixIcon: IconButton(
                         onPressed: () async {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  duration: const Duration(milliseconds: 100),
-                                  type: PageTransitionType.topToBottom,
-                                  child: const ImageDialogBox()));
-                          // try {
-                          //   ImagePicker pick = ImagePicker();
-                          //   XFile? path = await pick.pickImage(
-                          //       source: ImageSource.camera);
-                          // } catch (e) {
-                          //   print(e.toString());
-                          // }
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => const PhotoPicker()));
+                          _bottomSheet(context);
                         },
                         icon: const Icon(
                           Icons.camera_alt_rounded,
@@ -245,6 +243,126 @@ class _MessageBarState extends State<MessageBar> {
           ),
         ],
       ),
+    );
+  }
+
+  _bottomSheet(context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xff8585a2),
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  try {
+                    int now = DateTime.now().millisecondsSinceEpoch;
+                    ImagePicker pick = ImagePicker();
+                    XFile? path =
+                        await pick.pickImage(source: ImageSource.camera);
+                    if (path != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            tag: path!.path ?? '',
+                            image: path.path ?? '',
+                            isNetwork: false,
+                            isPrivate: widget.isPrivate,
+                            msgTokenImage: widget.msgTokenImage,
+                            revMsgTokenImage: widget.revMsgTokenImage,
+                            timeStamp: now.toString(),
+                            myToken: widget.myToken,
+                            isDetailShow: false,
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e.toString());
+                    }
+                  }
+                },
+                child: ClayContainer(
+                  width: displayWidth(context) * 0.35,
+                  height: displayHeight(context) * 0.05,
+                  borderRadius: 10,
+                  color: const Color(0xff8585a2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Icon(Icons.camera),
+                      ClayText(
+                        'Camera',
+                        size: displayWidth(context) * 0.05,
+                        emboss: true,
+                        color: Colors.black,
+                        parentColor: const Color(0xff626294),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  try {
+                    ImagePicker pick = ImagePicker();
+                    int now = DateTime.now().millisecondsSinceEpoch;
+                    XFile? path =
+                        await pick.pickImage(source: ImageSource.gallery);
+                    if (path != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            tag: path!.path,
+                            image: path.path,
+                            isNetwork: false,
+                            isPrivate: widget.isPrivate,
+                            msgTokenImage: widget.msgTokenImage,
+                            revMsgTokenImage: widget.revMsgTokenImage,
+                            timeStamp: now.toString(),
+                            myToken: widget.myToken,
+                            isDetailShow: false,
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e.toString());
+                    }
+                  }
+                },
+                child: ClayContainer(
+                  width: displayWidth(context) * 0.35,
+                  height: displayHeight(context) * 0.05,
+                  borderRadius: 10,
+                  color: const Color(0xff8585a2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Icon(Icons.image_rounded),
+                      ClayText(
+                        'Gallery',
+                        size: displayWidth(context) * 0.05,
+                        emboss: true,
+                        color: Colors.black,
+                        parentColor: const Color(0xff626294),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )),
+        );
+      },
     );
   }
 }

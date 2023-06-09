@@ -39,6 +39,7 @@ class Strings {
   static const String noAudio = 'Please Record Audio';
   static const String middleOfMessageToken = '@boliyegUser';
   static const String voice = 'VoiceRecording';
+  static const String image = 'images';
   static const String logoMsg = 'Powered By ';
   static const String nextTextButton = 'Next';
   static const String profileName = 'Enter Your Name';

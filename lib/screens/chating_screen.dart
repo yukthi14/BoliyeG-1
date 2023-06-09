@@ -8,13 +8,13 @@ import 'package:boliye_g/screens/private_chat_screen.dart';
 import 'package:boliye_g/services/firebase_mass.dart';
 import 'package:boliye_g/services/is_internet_connected.dart';
 import 'package:boliye_g/utils/neonButtons.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../bubbles/bubble_normal_image.dart';
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../services/visiblity.dart';
@@ -27,11 +27,13 @@ class ChattingScreen extends StatefulWidget {
       this.onSend,
       required this.msgToken,
       required this.revMsgToken,
-      required this.myToken})
+      required this.myToken,
+      required this.name})
       : super(key: key);
   final String msgToken;
   final String myToken;
   final String revMsgToken;
+  final String name;
   final void Function(String)? onSend;
 
   @override
@@ -128,7 +130,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                     width: 10,
                   ),
                   Text(
-                    Strings.userName,
+                    widget.name,
                     style: TextStyle(
                       fontSize: displayWidth(context) * 0.05,
                       color: Colors.black,
@@ -308,6 +310,83 @@ class _ChattingScreenState extends State<ChattingScreen>
                                       ),
                                     ],
                                   );
+                                } else if (msg[index][Strings.contentType] ==
+                                    Integers.textType) {
+                                  return Column(
+                                    crossAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    mainAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    children: [
+                                      BubbleSpecialThree(
+                                        text: msg[index][Strings.msg],
+                                        color:
+                                            AppColors.bubbleSpecialThreeColor,
+                                        tail: true,
+                                        isSender: (widget.myToken ==
+                                            msg[index][Strings.isSender]),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0,
+                                            right: 10,
+                                            left: 13,
+                                            bottom: 15),
+                                        child: Text(
+                                          DateFormat('jm').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(msgTime[index]))),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  displayWidth(context) * 0.03),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else if (msg[index][Strings.contentType] ==
+                                    Integers.imgType) {
+                                  return Column(
+                                    crossAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    mainAxisAlignment: (widget.myToken ==
+                                            msg[index][Strings.isSender])
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    children: [
+                                      BubbleNormalImage(
+                                        id: msg[index][Strings.msg],
+                                        imgLink: msg[index][Strings.msg],
+                                        isSender: (widget.myToken ==
+                                            msg[index][Strings.isSender]),
+                                        tail: true,
+                                        myToken: widget.myToken,
+                                        isPrivate: false,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0,
+                                            right: 10,
+                                            left: 13,
+                                            bottom: 15),
+                                        child: Text(
+                                          DateFormat('jm').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(msgTime[index]))),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  displayWidth(context) * 0.03),
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 }
                               },
                             );
@@ -368,6 +447,10 @@ class _ChattingScreenState extends State<ChattingScreen>
                                   );
                                   // _scrollList();
                                 },
+                                myToken: widget.myToken,
+                                isPrivate: false,
+                                msgTokenImage: widget.msgToken,
+                                revMsgTokenImage: widget.revMsgToken,
                               );
                       },
                     ),
@@ -387,21 +470,6 @@ class _ChattingScreenState extends State<ChattingScreen>
       position,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
-    );
-  }
-
-  Widget _image() {
-    return Container(
-      constraints: const BoxConstraints(
-        minHeight: 20.0,
-        minWidth: 20.0,
-      ),
-      child: CachedNetworkImage(
-        imageUrl: 'https://i.ibb.co/JCyT1kT/Asset-1.png',
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
     );
   }
 }

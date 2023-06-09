@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../bubbles/bubble_normal_audio.dart';
+import '../bubbles/bubble_normal_image.dart';
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../services/firebase_mass.dart';
@@ -266,6 +267,44 @@ class _PrivateChatState extends State<PrivateChat>
                                   ),
                                 ],
                               );
+                            } else if (msg[index][Strings.contentType] ==
+                                Integers.imgType) {
+                              return Column(
+                                crossAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
+                                mainAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: [
+                                  BubbleNormalImage(
+                                    id: msg[index][Strings.msg],
+                                    imgLink: msg[index][Strings.msg],
+                                    isSender: (widget.myToken ==
+                                        msg[index][Strings.isSender]),
+                                    tail: true,
+                                    myToken: widget.myToken, isPrivate: true,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 5.0,
+                                        right: 10,
+                                        left: 13,
+                                        bottom: 15),
+                                    child: Text(
+                                      DateFormat('jm').format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              int.parse(msgTime[index]))),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize:
+                                              displayWidth(context) * 0.03),
+                                    ),
+                                  ),
+                                ],
+                              );
                             }
                           },
                         );
@@ -313,6 +352,10 @@ class _PrivateChatState extends State<PrivateChat>
                                       curve: Curves.linear);
                                 });
                               },
+                              myToken: widget.myToken,
+                              msgTokenImage: widget.msgToken,
+                              revMsgTokenImage: widget.revMsgToken,
+                              isPrivate: true,
                             );
                     },
                   ),
