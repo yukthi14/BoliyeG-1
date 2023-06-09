@@ -54,7 +54,6 @@ class FirebaseMassage {
     required int type,
     required String deviceToken,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
     await ref.child(Strings.msg).get().then((value) async {
       for (var element in value.children) {
@@ -81,7 +80,11 @@ class FirebaseMassage {
           Strings.isSender: deviceToken
         });
       } else {
-        ref.child(Strings.msg).child(reverseToken).child(now.toString()).set({
+        ref
+            .child(Strings.msg)
+            .child(reverseToken)
+            .child((timeStamp == '') ? now.toString() : timeStamp)
+            .set({
           Strings.msg: msg,
           Strings.contentType: type,
           Strings.isSender: deviceToken
@@ -91,7 +94,6 @@ class FirebaseMassage {
   }
 
   setPrivatePassword({required String pwd, required String deviceToken}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await ref
         .child(Strings.user)
         .child(deviceToken)
@@ -125,9 +127,9 @@ class FirebaseMassage {
       {required String msg,
       required String msgToken,
       required String reverseToken,
+      String timeStamp = '',
       required String myToken,
       required int type}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     List msgList = [];
     await ref.child(Strings.privateMsg).get().then((value) async {
       for (var element in value.children) {
@@ -137,7 +139,7 @@ class FirebaseMassage {
         ref
             .child(Strings.privateMsg)
             .child(msgToken)
-            .child(now.toString())
+            .child((timeStamp == '') ? now.toString() : timeStamp)
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
@@ -147,7 +149,7 @@ class FirebaseMassage {
         ref
             .child(Strings.privateMsg)
             .child(reverseToken)
-            .child(now.toString())
+            .child((timeStamp == '') ? now.toString() : timeStamp)
             .set({
           Strings.msg: msg,
           Strings.contentType: type,
@@ -157,7 +159,7 @@ class FirebaseMassage {
         ref
             .child(Strings.privateMsg)
             .child(reverseToken)
-            .child(now.toString())
+            .child((timeStamp == '') ? now.toString() : timeStamp)
             .set({
           Strings.msg: msg,
           Strings.contentType: type,

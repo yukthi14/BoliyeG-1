@@ -1,8 +1,9 @@
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/screens/camera_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../constant/strings.dart';
+import 'image_alert_dialog.dart';
 
 class MessageBar extends StatefulWidget {
   const MessageBar({
@@ -168,14 +169,21 @@ class _MessageBarState extends State<MessageBar> {
                         onPressed: () async {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => const PhotoPicker()));
+                              PageTransition(
+                                  duration: const Duration(milliseconds: 100),
+                                  type: PageTransitionType.topToBottom,
+                                  child: const ImageDialogBox()));
+                          // try {
+                          //   ImagePicker pick = ImagePicker();
+                          //   XFile? path = await pick.pickImage(
+                          //       source: ImageSource.camera);
+                          // } catch (e) {
+                          //   print(e.toString());
+                          // }
                           // Navigator.push(
                           //     context,
-                          //     PageTransition(
-                          //         duration: const Duration(milliseconds: 300),
-                          //         type: PageTransitionType.bottomToTop,
-                          //         child: const PhotoPicker()));
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const PhotoPicker()));
                         },
                         icon: const Icon(
                           Icons.camera_alt_rounded,

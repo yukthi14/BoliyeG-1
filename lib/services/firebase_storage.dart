@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/strings.dart';
@@ -13,6 +14,7 @@ class FirebaseVoiceMessage {
   sendAudio(
       {required String path,
       required String msgTokenAudio,
+      required bool isPrivate,
       required String reverseTokenAudio,
       required String timeStamp,
       required String myToken,
@@ -31,17 +33,28 @@ class FirebaseVoiceMessage {
             .child(prefs.get(Strings.token).toString())
             .child(timeStamp);
         recUrl = await voiceRec.getDownloadURL();
-        firebaseMassage.sendMessage(
-          timeStamp: timeStamp,
-          msg: recUrl,
-          msgToken: msgTokenAudio,
-          reverseToken: reverseTokenAudio,
-          type: typeAudio,
-          deviceToken: myToken,
-        );
+        if (isPrivate) {
+          firebaseMassage.sendPrivateMessage(
+              msg: recUrl,
+              msgToken: msgTokenAudio,
+              reverseToken: reverseTokenAudio,
+              myToken: myToken,
+              type: typeAudio);
+        } else {
+          firebaseMassage.sendMessage(
+            timeStamp: timeStamp,
+            msg: recUrl,
+            msgToken: msgTokenAudio,
+            reverseToken: reverseTokenAudio,
+            type: typeAudio,
+            deviceToken: myToken,
+          );
+        }
       });
     } catch (e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 }

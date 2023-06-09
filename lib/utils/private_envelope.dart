@@ -158,27 +158,6 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                   ),
                 ),
               ),
-              // AnimatedBuilder(
-              //     animation: _controllerRotation,
-              //     builder: (context, child) {
-              //       Size size =
-              //           Size(displayWidth(context), displayHeight(context));
-              //       return Transform(
-              //         alignment: Alignment.topCenter,
-              //         transform: Matrix4.identity()
-              //           ..rotateX(_animationRotation.value),
-              //         child: Opacity(
-              //           opacity: opening ? 0.9 : 0.9,
-              //           child: ClipPath(
-              //             clipper: EnvelopeCover(),
-              //             child: Container(
-              //               color: Colors.blue,
-              //               height: 40,
-              //             ),
-              //           ),
-              //         ),
-              //       );
-              //     }),
               Opacity(
                 opacity: opening ? 0.9 : 0.9,
                 child: ClipPath(
@@ -189,21 +168,6 @@ class _PrivateEnvelopeState extends State<PrivateEnvelope>
                   ),
                 ),
               ),
-              // Transform(
-              //   alignment: Alignment.topCenter,
-              //   transform: Matrix4.identity()
-              //     ..rotateX( _animationRotation.value),
-              //   child: Opacity(
-              //     opacity: opening ? 0.9 : 0.9,
-              //     child: ClipPath(
-              //       clipper: EnvelopeCover(),
-              //       child: Container(
-              //         color: Colors.blue,
-              //         height: 50,
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Opacity(
                 opacity: 0.2,
                 child: ClipPath(

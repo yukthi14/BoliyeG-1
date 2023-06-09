@@ -1,6 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/constant/color.dart';
+import 'package:boliye_g/constant/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../utils/alert_dialog_box.dart';
 
 const double BUBBLE_RADIUS_AUDIO = 16;
 
@@ -19,9 +23,12 @@ class AudioBar extends StatefulWidget {
       fontSize: 12,
     ),
     required this.audioUrl,
+    required this.myToken,
+    required this.normalAudio,
   }) : super(key: key);
   final double bubbleRadius;
   final bool isSender;
+  final bool normalAudio;
   final Color color;
   final bool tail;
   final bool sent;
@@ -29,6 +36,7 @@ class AudioBar extends StatefulWidget {
   final String audioUrl;
   final bool seen;
   final TextStyle textStyle;
+  final String myToken;
   @override
   State<AudioBar> createState() => _AudioBarState();
 }
@@ -112,22 +120,27 @@ class _AudioBarState extends State<AudioBar> {
                         fillColor: Colors.white,
                         padding: const EdgeInsets.all(0.0),
                         shape: const CircleBorder(),
-                        child: !isPlaying
-                            ? const Icon(
-                                Icons.play_arrow,
+                        child: (!openEnvelope || widget.normalAudio)
+                            ? !isPlaying
+                                ? const Icon(
+                                    Icons.play_arrow,
+                                    size: 30.0,
+                                  )
+                                : isLoading
+                                    ? const CircularProgressIndicator()
+                                    : isPause
+                                        ? const Icon(
+                                            Icons.play_arrow,
+                                            size: 30.0,
+                                          )
+                                        : const Icon(
+                                            Icons.pause,
+                                            size: 30.0,
+                                          )
+                            : const Icon(
+                                Icons.lock,
                                 size: 30.0,
-                              )
-                            : isLoading
-                                ? const CircularProgressIndicator()
-                                : isPause
-                                    ? const Icon(
-                                        Icons.play_arrow,
-                                        size: 30.0,
-                                      )
-                                    : const Icon(
-                                        Icons.pause,
-                                        size: 30.0,
-                                      ),
+                              ),
                       ),
                       Expanded(
                         child: Slider(
@@ -176,46 +189,65 @@ class _AudioBarState extends State<AudioBar> {
   }
 
   void _playAudio() async {
-    if (isPause) {
-      await audioPlayer.resume();
-      setState(() {
-        isPlaying = true;
-        isPause = false;
+    if (!openEnvelope || widget.normalAudio) {
+      if (isPause) {
+        await audioPlayer.resume();
+        setState(() {
+          isPlaying = true;
+          isPause = false;
+        });
+      } else if (isPlaying) {
+        await audioPlayer.pause();
+        setState(() {
+          isPlaying = false;
+          isPause = true;
+        });
+      } else {
+        setState(() {
+          isLoading = true;
+        });
+        await audioPlayer.play(widget.audioUrl);
+        setState(() {
+          isPlaying = true;
+        });
+      }
+
+      audioPlayer.onDurationChanged.listen((Duration d) {
+        setState(() {
+          duration = d;
+          isLoading = false;
+        });
       });
-    } else if (isPlaying) {
-      await audioPlayer.pause();
-      setState(() {
-        isPlaying = false;
-        isPause = true;
+      audioPlayer.onAudioPositionChanged.listen((Duration p) {
+        setState(() {
+          position = p;
+        });
+      });
+      audioPlayer.onPlayerCompletion.listen((event) {
+        setState(() {
+          isPlaying = false;
+          duration = const Duration();
+          position = const Duration();
+        });
       });
     } else {
-      setState(() {
-        isLoading = true;
-      });
-      await audioPlayer.play(widget.audioUrl);
-      setState(() {
-        isPlaying = true;
-      });
+      Navigator.push(
+        context,
+        PageTransition(
+          duration: const Duration(
+            milliseconds: 300,
+          ),
+          alignment: Alignment.center,
+          type: PageTransitionType.rotate,
+          child: AlertDialogBox(
+            title: Strings.secretCode,
+            buttonString: Strings.openEnvelope,
+            suggestionString: Strings.changePwd,
+            myToken: widget.myToken,
+          ),
+        ),
+      );
     }
-
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      setState(() {
-        duration = d;
-        isLoading = false;
-      });
-    });
-    audioPlayer.onAudioPositionChanged.listen((Duration p) {
-      setState(() {
-        position = p;
-      });
-    });
-    audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() {
-        isPlaying = false;
-        duration = const Duration();
-        position = const Duration();
-      });
-    });
   }
 
   String audioTimer(double duration, double position) {

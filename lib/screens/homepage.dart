@@ -300,18 +300,19 @@ class _HomePageState extends State<HomePage> {
                                             String revToken =
                                                 '${deviceToken.value}${Strings.middleOfMessageToken}${userKey[index]}';
                                             Navigator.push(
-                                                context,
-                                                PageTransition(
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                    type: PageTransitionType
-                                                        .topToBottom,
-                                                    child: ChattingScreen(
-                                                      msgToken: msgToken,
-                                                      revMsgToken: revToken,
-                                                      myToken:
-                                                          deviceToken.value,
-                                                    )));
+                                              context,
+                                              PageTransition(
+                                                duration: const Duration(
+                                                    milliseconds: 300),
+                                                type: PageTransitionType
+                                                    .topToBottom,
+                                                child: ChattingScreen(
+                                                  msgToken: msgToken,
+                                                  revMsgToken: revToken,
+                                                  myToken: deviceToken.value,
+                                                ),
+                                              ),
+                                            );
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.only(

@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../bubbles/bubble_normal_audio.dart';
 import '../bubbles/bubble_special_three.dart';
 import '../constant/strings.dart';
 import '../services/firebase_mass.dart';
 import '../utils/alert_dialog_box.dart';
 import '../utils/message_bar.dart';
+import '../utils/neonButtons.dart';
 import '../utils/private_envelope.dart';
 
 class PrivateChat extends StatefulWidget {
@@ -44,7 +46,7 @@ class _PrivateChatState extends State<PrivateChat>
   @override
   void dispose() {
     online = false;
-    openEnvelope = false;
+    openEnvelope = true;
     opening = false;
     super.dispose();
   }
@@ -108,64 +110,66 @@ class _PrivateChatState extends State<PrivateChat>
           ),
           body: Stack(
             children: [
-              SizedBox(
-                  height: (MediaQuery.of(context).viewInsets.bottom == 0.0)
-                      ? displayHeight(context) * 0.831
-                      : displayHeight(context) * 0.54,
-                  child: StreamBuilder<DatabaseEvent>(
-                    stream: ref.onValue,
-                    builder: (context, snapshot) {
-                      var msg = [];
-                      var msgTime = [];
-                      var allChats = snapshot.data?.snapshot.children;
-                      allChats?.forEach(
-                        (element) {
-                          if (element.key == widget.msgToken ||
-                              element.key == widget.revMsgToken) {
-                            var childrenArray = element.children.toList();
-                            childrenArray.sort(
-                              (b, a) {
-                                String key1 = a.key.toString();
-                                String key2 = b.key.toString();
-                                return key1.compareTo(key2);
-                              },
-                            );
-                            for (var element in childrenArray) {
-                              msgTime.add(element.key);
-                              msg.add(element.value);
+              Column(
+                children: [
+                  Expanded(
+                    child: StreamBuilder<DatabaseEvent>(
+                      stream: ref.onValue,
+                      builder: (context, snapshot) {
+                        var msg = [];
+                        var msgTime = [];
+                        var allChats = snapshot.data?.snapshot.children;
+                        allChats?.forEach(
+                          (element) {
+                            if (element.key == widget.msgToken ||
+                                element.key == widget.revMsgToken) {
+                              var childrenArray = element.children.toList();
+                              childrenArray.sort(
+                                (b, a) {
+                                  String key1 = a.key.toString();
+                                  String key2 = b.key.toString();
+                                  return key1.compareTo(key2);
+                                },
+                              );
+                              for (var element in childrenArray) {
+                                msgTime.add(element.key);
+                                msg.add(element.value);
+                              }
                             }
-                          }
-                        },
-                      );
+                          },
+                        );
 
-                      return ListView.builder(
-                        reverse: true,
-                        itemCount: msg.length + 1,
-                        controller: listScrollController,
-                        itemBuilder: (context, index) {
-                          if (index == msg.length) {
-                            return SizedBox(
-                              height: displayHeight(context) * 0.04,
-                            );
-                          }
-
-                          return Column(
-                            crossAxisAlignment:
-                                (widget.myToken == msg[index][Strings.isSender])
+                        return ListView.builder(
+                          reverse: true,
+                          itemCount: msg.length + 1,
+                          shrinkWrap: true,
+                          controller: listScrollController,
+                          itemBuilder: (context, index) {
+                            if (index == msg.length) {
+                              return SizedBox(
+                                height: displayHeight(context) * 0.04,
+                              );
+                            }
+                            if (msg[index][Strings.contentType] ==
+                                Integers.textType) {
+                              return Column(
+                                crossAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
                                     ? CrossAxisAlignment.end
                                     : CrossAxisAlignment.start,
-                            mainAxisAlignment:
-                                (widget.myToken == msg[index][Strings.isSender])
+                                mainAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
                                     ? MainAxisAlignment.end
                                     : MainAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          duration:
-                                              const Duration(milliseconds: 300),
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          duration: const Duration(
+                                            milliseconds: 300,
+                                          ),
                                           alignment: Alignment.center,
                                           type: PageTransitionType.rotate,
                                           child: AlertDialogBox(
@@ -173,33 +177,77 @@ class _PrivateChatState extends State<PrivateChat>
                                             buttonString: Strings.openEnvelope,
                                             suggestionString: Strings.changePwd,
                                             myToken: widget.myToken,
-                                          )));
-                                },
-                                child: AnimatedContainer(
-                                  margin: EdgeInsets.only(
-                                    top: animate
-                                        ? displayHeight(context) * 0.69
-                                        : 0,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: AnimatedContainer(
+                                      margin: EdgeInsets.only(
+                                        top: animate
+                                            ? displayHeight(context) * 0.69
+                                            : 0,
+                                      ),
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      child: PrivateEnvelope(
+                                        msg: MessageEncryption().decryptText(
+                                            msg[index][Strings.msg]),
+                                        coverColor: Colors.red,
+                                        topCoverColor: Colors.white,
+                                        isSender: (widget.myToken ==
+                                            msg[index][Strings.isSender]),
+                                        textColor: Colors.black,
+                                        fountSize: 15,
+                                        envelopeSize: displaySize(context),
+                                        sent: false,
+                                        delivered: false,
+                                        seen: false,
+                                      ),
+                                    ),
                                   ),
-                                  duration: const Duration(milliseconds: 300),
-                                  child: PrivateEnvelope(
-                                    msg: MessageEncryption()
-                                        .decryptText(msg[index][Strings.msg]),
-                                    coverColor: Colors.red,
-                                    topCoverColor: Colors.white,
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0,
+                                            right: 10,
+                                            left: 13,
+                                            bottom: 15),
+                                        child: Text(
+                                          DateFormat('jm').format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(msgTime[index]))),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize:
+                                                  displayWidth(context) * 0.03),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            } else if (msg[index][Strings.contentType] ==
+                                Integers.audioType) {
+                              return Column(
+                                crossAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
+                                mainAxisAlignment: (widget.myToken ==
+                                        msg[index][Strings.isSender])
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: [
+                                  AudioBar(
+                                    color: const Color(0xFFE8E8EE),
+                                    tail: true,
                                     isSender: (widget.myToken ==
                                         msg[index][Strings.isSender]),
-                                    textColor: Colors.black,
-                                    fountSize: 15,
-                                    envelopeSize: displaySize(context),
-                                    sent: false,
-                                    delivered: false,
-                                    seen: false,
+                                    audioUrl: msg[index][Strings.msg],
+                                    myToken: widget.myToken,
+                                    normalAudio: false,
                                   ),
-                                ),
-                              ),
-                              Column(
-                                children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         top: 5.0,
@@ -211,47 +259,64 @@ class _PrivateChatState extends State<PrivateChat>
                                           DateTime.fromMillisecondsSinceEpoch(
                                               int.parse(msgTime[index]))),
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black,
                                           fontSize:
                                               displayWidth(context) * 0.03),
                                     ),
                                   ),
                                 ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: startAudioChat,
+                    builder: (context, value, _) {
+                      return value
+                          ? NeonButton(
+                              msgToken: widget.msgToken,
+                              revMsgToken: widget.revMsgToken,
+                              myToken: widget.myToken,
+                              isPrivate: true,
+                            )
+                          : MessageBar(
+                              messageBarColor: Colors.black,
+                              sendButtonColor: Colors.white,
+                              onSend: (_) {
+                                FirebaseMassage().sendPrivateMessage(
+                                  msg:
+                                      MessageEncryption().encryptText(_).base64,
+                                  msgToken: widget.msgToken,
+                                  reverseToken: widget.revMsgToken,
+                                  type: 0,
+                                  myToken: widget.myToken,
+                                );
+                                setState(() {
+                                  animate = true;
+                                });
+                                Future.delayed(
+                                        const Duration(milliseconds: 300))
+                                    .then((value) {
+                                  setState(() {
+                                    animate = false;
+                                  });
+                                });
+                                setState(() {
+                                  final position = listScrollController
+                                      .position.maxScrollExtent;
+                                  listScrollController.animateTo(position,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.linear);
+                                });
+                              },
+                            );
                     },
-                  )),
-              MessageBar(
-                messageBarColor: Colors.black,
-                sendButtonColor: Colors.white,
-                onSend: (_) {
-                  FirebaseMassage().sendPrivateMessage(
-                    msg: MessageEncryption().encryptText(_).base64,
-                    msgToken: widget.msgToken,
-                    reverseToken: widget.revMsgToken,
-                    type: 0,
-                    myToken: widget.myToken,
-                  );
-                  setState(() {
-                    animate = true;
-                  });
-                  Future.delayed(const Duration(milliseconds: 300))
-                      .then((value) {
-                    setState(() {
-                      animate = false;
-                    });
-                  });
-                  setState(() {
-                    final position =
-                        listScrollController.position.maxScrollExtent;
-                    listScrollController.animateTo(position,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.linear);
-                  });
-                },
+                  ),
+                ],
               ),
             ],
           ), // This trailing comma makes auto-formatting nicer for build methods.

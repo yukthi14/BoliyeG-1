@@ -36,6 +36,7 @@ class Strings {
   static const String changePwd = 'Forgot Password';
   static const String textField = 'Type Something ...';
   static const String error = 'Error in generate token';
+  static const String noAudio = 'Please Record Audio';
   static const String middleOfMessageToken = '@boliyegUser';
   static const String voice = 'VoiceRecording';
   static const String logoMsg = 'Powered By ';
@@ -64,6 +65,7 @@ bool isOpenAlertDialogBox = true;
 bool animate = false;
 
 ValueNotifier<bool> startAudioChat = ValueNotifier(false);
+ValueNotifier<bool> startPrivateAudioChat = ValueNotifier(false);
 ValueNotifier<bool> shoeEmoji = ValueNotifier(false);
 int radius = 20;
 

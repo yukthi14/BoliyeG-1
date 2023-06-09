@@ -176,7 +176,8 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                       await SharedPreferences.getInstance();
                   if (widget.buttonString == Strings.openEnvelope) {
                     String code = await firebaseMassage.getPrivatePassword(
-                        deviceToken: widget.myToken);
+                      deviceToken: widget.myToken,
+                    );
                     if (_controller.text == (code)) {
                       Navigator.pop(context);
                       setState(() {

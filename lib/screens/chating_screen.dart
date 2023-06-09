@@ -287,6 +287,8 @@ class _ChattingScreenState extends State<ChattingScreen>
                                         isSender: (widget.myToken ==
                                             msg[index][Strings.isSender]),
                                         audioUrl: msg[index][Strings.msg],
+                                        myToken: widget.myToken,
+                                        normalAudio: true,
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
@@ -351,6 +353,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                 msgToken: widget.msgToken,
                                 revMsgToken: widget.revMsgToken,
                                 myToken: widget.myToken,
+                                isPrivate: false,
                               )
                             : MessageBar(
                                 messageBarColor: Colors.black,
