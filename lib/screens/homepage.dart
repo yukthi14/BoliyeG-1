@@ -6,6 +6,7 @@ import 'package:boliye_g/services/is_internet_connected.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
@@ -24,24 +25,25 @@ class _HomePageState extends State<HomePage> {
   final ref = FirebaseDatabase.instance.ref('users');
   List userName = [];
   List userKey = [];
+  String? name = '';
 
   @override
   void initState() {
-    setState(() {
-      online = true;
-    });
-
+    online = true;
     FirebaseMassage().setToken();
 
     Network().checkConnection();
     super.initState();
   }
 
+  getUserName() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    name = preferences.getString(Strings.userName);
+  }
+
   @override
   void dispose() {
-    setState(() {
-      online = false;
-    });
+    online = false;
     super.dispose();
   }
 
@@ -61,6 +63,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    getUserName();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -72,8 +75,8 @@ class _HomePageState extends State<HomePage> {
           width: displayWidth(context) * 0.5,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(50),
-                  bottomRight: Radius.circular(50))),
+                  topRight: Radius.circular(35),
+                  bottomRight: Radius.circular(35))),
           backgroundColor: const Color(0xffbcbcd1),
           child: ListView(
             padding: EdgeInsets.zero,
@@ -139,7 +142,9 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Padding(
-                padding: EdgeInsets.only(top: displayHeight(context) * 0.5),
+                padding: EdgeInsets.only(
+                  top: displayHeight(context) * 0.5,
+                ),
                 child: ListTile(
                   trailing: const Icon(
                     Icons.logout,
@@ -207,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                     top: displayHeight(context) * 0.24),
                 child: Center(
                   child: Text(
-                    Strings.userName,
+                    (name! == '') ? Strings.userName : name!,
                     style: TextStyle(
                       fontSize: displayWidth(context) * 0.05,
                       color: Colors.white,

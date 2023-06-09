@@ -89,26 +89,34 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
           ],
         ),
       ),
-      content: TextField(
-        obscureText: !_passwordVisible,
-        maxLength: 4,
-        controller: _controller,
-        keyboardType: TextInputType.number,
-        cursorColor: Colors.black,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white60,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              borderSide: BorderSide.none,
+      content: Stack(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: displayWidth(context) * 0.07),
+            child: TextField(
+              obscureText: !_passwordVisible,
+              maxLength: 4,
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              cursorColor: Colors.black,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white60,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide.none,
+                ),
+              ),
             ),
-            prefixIcon: IconButton(
-              icon: const Icon(Icons.abc_rounded),
-              onPressed: () {},
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              left: displayWidth(context) * 0.6,
+              top: displayHeight(context) * 0.01,
             ),
-            suffixIcon: IconButton(
+            child: IconButton(
               icon: Icon(
                 _passwordVisible ? Icons.visibility : Icons.visibility_off,
                 color: Colors.black,
@@ -118,7 +126,9 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                   _passwordVisible = !_passwordVisible;
                 });
               },
-            )),
+            ),
+          ),
+        ],
       ),
       actions: <Widget>[
         Row(
@@ -137,16 +147,15 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                           child: const SettingPage()));
                 },
                 child: ClayContainer(
-                  width: displayWidth(context) * 0.3,
+                  width: displayWidth(context) * 0.39,
                   height: displayHeight(context) * 0.03,
                   borderRadius: 10,
                   color: const Color(0xff8585a2),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       Strings.changePwd,
                       style: TextStyle(
-                          color: Colors.red.shade400,
-                          fontWeight: FontWeight.bold),
+                          color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -170,7 +179,6 @@ class _AlertDialogBoxState extends State<AlertDialogBox> {
                         deviceToken: widget.myToken);
                     if (_controller.text == (code)) {
                       Navigator.pop(context);
-
                       setState(() {
                         openEnvelope = !openEnvelope;
                         Future.delayed(

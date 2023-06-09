@@ -10,7 +10,7 @@ import '../constant/strings.dart';
 class FirebaseMassage {
   final ref = FirebaseDatabase.instance.ref();
   int now = DateTime.now().millisecondsSinceEpoch;
-  getToken() async {
+  getToken({required String userName}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.get(Strings.token) == null) {
       try {
@@ -25,10 +25,11 @@ class FirebaseMassage {
             );
           } else {
             prefs.setString(Strings.token, tokenValue!);
+            prefs.setString(Strings.userName, userName);
             await ref
                 .child(Strings.user)
                 .child(tokenValue)
-                .set({Strings.userName: 'vishwajeet'}).whenComplete(() =>
+                .set({Strings.userName: userName}).whenComplete(() =>
                     deviceToken.value = prefs.get(Strings.token).toString());
           }
         });
