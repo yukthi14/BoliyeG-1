@@ -7,13 +7,16 @@ import 'package:boliye_g/bloc/bloc_state.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:boliye_g/screens/homepage.dart';
-import 'package:boliye_g/services/firebase_mass.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 
 import '../constant/strings.dart';
+import '../services/firebase_mass.dart';
+import '../utils/preview_imd.dart';
 
 class ItemData {
   final Color color;
@@ -212,26 +215,52 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                       ],
                     ),
                   )
-                : Container(
-                    width: double.infinity,
-                    color: data[index].color,
-                    child: Column(
+                : GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: Stack(
                       children: [
                         Container(
+                          width: double.infinity,
+                          color: data[index].color,
+                        ),
+                        Container(
                           margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.08),
-                          width: displayWidth(context) * 0.65,
+                              top: displayHeight(context) * 0.03,
+                              left: displayWidth(context) * 0.25),
+                          width: displayWidth(context) * 0.5,
                           height: displayHeight(context) * 0.3,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/img.png'),
-                              fit: BoxFit.fill,
-                            ),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber.shade200,
+                              image: const DecorationImage(
+                                image: AssetImage(Strings.avatarImage),
+                              )),
+                        ),
+                        Container(
+                          width: displayWidth(context) * 0.13,
+                          height: displayHeight(context) * 0.06,
+                          margin: EdgeInsets.only(
+                            top: displayHeight(context) * 0.25,
+                            left: displayWidth(context) * 0.65,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.profileCardColor,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: MaterialButton(
+                            child: const Icon(Icons.edit),
+                            onPressed: () {
+                              showCustomDialog(context);
+                            },
                           ),
                         ),
                         Container(
                           margin: EdgeInsets.only(
-                              left: displayWidth(context) * 0.08),
+                            left: displayWidth(context) * 0.08,
+                            top: displayHeight(context) * 0.35,
+                          ),
                           width: displayWidth(context),
                           height: displayHeight(context) * 0.05,
                           child: const Text(
@@ -244,8 +273,10 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              left: displayWidth(context) * 0.05,
-                              right: displayWidth(context) * 0.05),
+                            left: displayWidth(context) * 0.05,
+                            right: displayWidth(context) * 0.05,
+                            top: displayHeight(context) * 0.4,
+                          ),
                           child: TextField(
                             controller: _controller,
                             keyboardType: TextInputType.name,
@@ -265,8 +296,9 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: displayHeight(context) * 0.07,
-                              left: displayWidth(context) * 0.7),
+                            top: displayHeight(context) * 0.5,
+                            left: displayWidth(context) * 0.8,
+                          ),
                           child: TextButton(
                             onPressed: () {
                               if (_controller.text.isNotEmpty) {
@@ -336,4 +368,74 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
       page = lpage;
     });
   }
+
+  void showCustomDialog(BuildContext context) => showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            backgroundColor: AppColors.profileCardColor,
+            title: const Text(Strings.selectOption),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            children: <Widget>[
+              SimpleDialogOption(
+                padding: EdgeInsets.symmetric(
+                  horizontal: displayWidth(context) * 0.06,
+                  vertical: displayWidth(context) * 0.04,
+                ),
+                onPressed: () async {
+                  ImagePicker image = ImagePicker();
+                  try {
+                    XFile? filePath =
+                        await image.pickImage(source: ImageSource.camera);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewImage(
+                                  path: filePath!.path,
+                                  myToken: deviceToken.value,
+                                )));
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
+                },
+                child: const Text(
+                  Strings.cameraText,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.symmetric(
+                  horizontal: displayWidth(context) * 0.06,
+                  vertical: displayWidth(context) * 0.04,
+                ),
+                onPressed: () async {
+                  ImagePicker image = ImagePicker();
+                  try {
+                    XFile? filePath =
+                        await image.pickImage(source: ImageSource.gallery);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewImage(
+                                  path: filePath!.path,
+                                  myToken: deviceToken.value,
+                                )));
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
+                },
+                child: const Text(
+                  Strings.galleryText,
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+            ],
+          );
+        },
+      );
 }
