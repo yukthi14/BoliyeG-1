@@ -334,6 +334,8 @@ class _HomePageState extends State<HomePage> {
                                                   myToken: deviceToken.value,
                                                   name: userName[index]
                                                       [Strings.userName],
+                                                  image: userName[index]
+                                                      [Strings.profileImg],
                                                 ),
                                               ),
                                             );

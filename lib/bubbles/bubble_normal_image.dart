@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:boliye_g/bloc/bloc.dart';
 import 'package:boliye_g/bloc/bloc_event.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -180,17 +179,11 @@ class BubbleNormalImage extends StatelessWidget {
 
   Widget _image() {
     return Container(
-      constraints: const BoxConstraints(
-        minHeight: 20.0,
-        minWidth: 20.0,
-      ),
-      child: CachedNetworkImage(
-        imageUrl: imgLink,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
-    );
+        constraints: const BoxConstraints(
+          minHeight: 20.0,
+          minWidth: 20.0,
+        ),
+        child: Image.memory(base64Decode(imgLink)));
   }
 }
 
@@ -230,14 +223,7 @@ class _DetailScreenState extends State<DetailScreen> {
         minHeight: 20.0,
         minWidth: 20.0,
       ),
-      child: (widget.isNetwork)
-          ? CachedNetworkImage(
-              imageUrl: widget.image,
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CircularProgressIndicator(value: downloadProgress.progress),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            )
-          : Image.memory(base64Decode(widget.image)),
+      child: Image.memory(base64Decode(widget.image)),
     );
   }
 

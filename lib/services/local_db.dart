@@ -67,10 +67,10 @@ class DatabaseHelper {
         where: '$dbUserImageFilePath=?', whereArgs: [id]);
   }
 
-  Future<int> updateUserImage(int id, Map<String, dynamic> row) async {
+  updateUserImage(int id, Map<String, dynamic> row) async {
     Database? db = await instance.database;
-    return await db!.update(dbUserDetails, row,
-        where: '$dbUserImageFilePath=?', whereArgs: [id]);
+    return await db!
+        .update(dbUserDetails, row, where: '$dbId=?', whereArgs: [id]);
   }
 
   Future close() async {

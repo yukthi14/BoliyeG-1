@@ -76,49 +76,49 @@ class FirebaseVoiceMessage {
     }
   }
 
-  sendImage({
-    required String path,
-    required String msgTokenImage,
-    required bool isPrivate,
-    required String reverseTokenImage,
-    required String timeStamp,
-    required String myToken,
-  }) async {
-    File file = File(path);
-    String recUrl = '';
-    try {
-      Reference referenceDirVos = references.child(Strings.image);
-      await referenceDirVos
-          .child(myToken)
-          .child(timeStamp)
-          .putFile(file)
-          .whenComplete(() async {
-        var voiceRec = referenceDirVos.child(myToken).child(timeStamp);
-        recUrl = await voiceRec.getDownloadURL();
-        if (isPrivate) {
-          firebaseMassage.sendPrivateMessage(
-              msg: recUrl,
-              msgToken: msgTokenImage,
-              reverseToken: reverseTokenImage,
-              myToken: myToken,
-              type: 2);
-        } else {
-          firebaseMassage.sendMessage(
-            timeStamp: timeStamp,
-            msg: recUrl,
-            msgToken: msgTokenImage,
-            reverseToken: reverseTokenImage,
-            type: 2,
-            deviceToken: myToken,
-          );
-        }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
-    }
-  }
+  // sendImage({
+  //   required String path,
+  //   required String msgTokenImage,
+  //   required bool isPrivate,
+  //   required String reverseTokenImage,
+  //   required String timeStamp,
+  //   required String myToken,
+  // }) async {
+  //   File file = File(path);
+  //   String recUrl = '';
+  //   try {
+  //     Reference referenceDirVos = references.child(Strings.image);
+  //     await referenceDirVos
+  //         .child(myToken)
+  //         .child(timeStamp)
+  //         .putFile(file)
+  //         .whenComplete(() async {
+  //       var voiceRec = referenceDirVos.child(myToken).child(timeStamp);
+  //       recUrl = await voiceRec.getDownloadURL();
+  //       if (isPrivate) {
+  //         firebaseMassage.sendPrivateMessage(
+  //             msg: recUrl,
+  //             msgToken: msgTokenImage,
+  //             reverseToken: reverseTokenImage,
+  //             myToken: myToken,
+  //             type: 2);
+  //       } else {
+  //         firebaseMassage.sendMessage(
+  //           timeStamp: timeStamp,
+  //           msg: recUrl,
+  //           msgToken: msgTokenImage,
+  //           reverseToken: reverseTokenImage,
+  //           type: 2,
+  //           deviceToken: myToken,
+  //         );
+  //       }
+  //     });
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
 }
 
 final FirebaseVoiceMessage firebaseVoiceMessage = FirebaseVoiceMessage();

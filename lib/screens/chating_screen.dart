@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:boliye_g/bubbles/bubble_normal_audio.dart';
@@ -28,12 +29,14 @@ class ChattingScreen extends StatefulWidget {
       required this.msgToken,
       required this.revMsgToken,
       required this.myToken,
-      required this.name})
+      required this.name,
+      required this.image})
       : super(key: key);
   final String msgToken;
   final String myToken;
   final String revMsgToken;
   final String name;
+  final String image;
   final void Function(String)? onSend;
 
   @override
@@ -120,10 +123,10 @@ class _ChattingScreenState extends State<ChattingScreen>
                   Container(
                     width: displayWidth(context) * 0.10,
                     height: displayHeight(context) * 0.10,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                          image: AssetImage(Strings.avatarImage)),
+                          image: MemoryImage(base64Decode(widget.image))),
                     ),
                   ),
                   const SizedBox(
@@ -361,7 +364,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                                         : MainAxisAlignment.start,
                                     children: [
                                       BubbleNormalImage(
-                                        id: msg[index][Strings.msg],
+                                        id: index.toString(),
                                         imgLink: msg[index][Strings.msg],
                                         isSender: (widget.myToken ==
                                             msg[index][Strings.isSender]),

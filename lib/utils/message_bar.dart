@@ -267,7 +267,6 @@ class _MessageBarState extends State<MessageBar> {
                     ImagePicker pick = ImagePicker();
                     XFile? path =
                         await pick.pickImage(source: ImageSource.camera);
-
                     if (path != null) {
                       final bytes = Io.File(path.path).readAsBytesSync();
                       Navigator.push(
@@ -321,12 +320,14 @@ class _MessageBarState extends State<MessageBar> {
                     XFile? path =
                         await pick.pickImage(source: ImageSource.gallery);
                     if (path != null) {
+                      final bytes = Io.File(path.path).readAsBytesSync();
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailScreen(
-                            tag: path!.path,
-                            image: path.path,
+                            tag: path.path,
+                            image: base64Encode(bytes),
                             isNetwork: false,
                             isPrivate: widget.isPrivate,
                             msgTokenImage: widget.msgTokenImage,

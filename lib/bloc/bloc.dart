@@ -1,7 +1,6 @@
 import 'package:boliye_g/bloc/bloc_event.dart';
 import 'package:boliye_g/bloc/bloc_state.dart';
 import 'package:boliye_g/services/firebase_mass.dart';
-import 'package:boliye_g/services/firebase_storage.dart';
 import 'package:boliye_g/services/local_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,14 +30,22 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
       }
     });
     on<UpLoadImage>((event, emit) async {
-      firebaseVoiceMessage.sendImage(
-        path: event.file,
-        msgTokenImage: event.msgTokenImage,
-        isPrivate: event.isPrivate,
-        reverseTokenImage: event.reverseTokenImage,
-        timeStamp: event.timeStamp,
-        myToken: event.myToken,
-      );
+      if (event.isPrivate) {
+        firebaseMassage.sendPrivateMessage(
+            msg: event.file,
+            msgToken: event.msgTokenImage,
+            reverseToken: event.reverseTokenImage,
+            myToken: event.myToken,
+            type: 2);
+      } else {
+        firebaseMassage.sendMessage(
+          msg: event.file,
+          msgToken: event.msgTokenImage,
+          reverseToken: event.reverseTokenImage,
+          type: 2,
+          deviceToken: event.myToken,
+        );
+      }
     });
     on<SetUserEvent>((event, emit) async {
       try {
@@ -56,14 +63,11 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
       }
     });
     on<EditProfileImage>((event, emit) async {
-      final SharedPreferences preferences =
-          await SharedPreferences.getInstance();
       try {
         databaseHelper.updateUserImage(
             0, {DatabaseHelper.dbUserImageFilePath: event.image});
         firebaseMassage.setProfileImage(
             imgLink: event.image, deviceToken: event.myToken);
-        String? userName = preferences.getString(Strings.userName);
       } catch (e) {
         print(e.toString());
       }
