@@ -1,4 +1,4 @@
-import 'package:boliye_g/screens/intro_screen.dart';
+import 'package:boliye_g/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: IntroScreen(),
+      home: SplashScreen(),
     );
   }
 }

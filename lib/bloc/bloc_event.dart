@@ -4,16 +4,20 @@ class InitialEvent extends ChatEvent {
   InitialEvent();
 }
 
-class SetUserEvent extends ChatEvent {
-  String name;
-  SetUserEvent({required this.name});
+class SplashEvent extends ChatEvent {
+  SplashEvent();
 }
 
-class EditProfile extends ChatEvent {
-  String myToken;
+class SetUserEvent extends ChatEvent {
   String name;
   String image;
-  EditProfile({required this.image, required this.name, required this.myToken});
+  SetUserEvent({required this.name, required this.image});
+}
+
+class EditProfileImage extends ChatEvent {
+  String myToken;
+  String image;
+  EditProfileImage({required this.image, required this.myToken});
 }
 
 class UpLoadImage extends ChatEvent {

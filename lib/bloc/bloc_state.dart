@@ -10,5 +10,6 @@ class IntroPage extends ChatState {
 
 class HomeState extends ChatState {
   String name;
-  HomeState({required this.name});
+  String image;
+  HomeState({required this.name, required this.image});
 }

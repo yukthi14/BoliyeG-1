@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as Io;
+
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/screens/profile_screen.dart';
 import 'package:boliye_g/screens/setting_screen.dart';
@@ -11,12 +12,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
 import 'chating_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.name, required this.imageString}) : super(key: key);
+  const HomePage({Key? key, required this.name, required this.imageString})
+      : super(key: key);
   final String name;
   final String imageString;
 
@@ -35,7 +38,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     online = true;
     FirebaseMassage().setToken();
-
     Network().checkConnection();
     super.initState();
   }
@@ -67,7 +69,6 @@ class _HomePageState extends State<HomePage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         key: _globalKey,
         drawer: Drawer(
             width: displayWidth(context) * 0.5,
@@ -85,10 +86,14 @@ class _HomePageState extends State<HomePage> {
                   width: displayWidth(context) * 0.55,
                   height: displayHeight(context) * 0.18,
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.amber.shade200,
-                      image: const DecorationImage(
-                          image: AssetImage(Strings.avatarImage))),
+                    shape: BoxShape.circle,
+                    color: Colors.amber.shade200,
+                    image: DecorationImage(
+                      image: MemoryImage(
+                        base64Decode(widget.imageString),
+                      ),
+                    ),
+                  ),
                 ),
                 Container(
                   width: displayWidth(context) * 0.13,
@@ -216,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                   image: DecorationImage(
                     image: MemoryImage(
-                      base64Decode(imageString.value),
+                      base64Decode(widget.imageString),
                     ),
                   ),
                 ),
@@ -297,7 +302,6 @@ class _HomePageState extends State<HomePage> {
                             allUser?.forEach((element) {
                               if (element.key != deviceToken.value) {
                                 userName.add(element.value);
-
                                 userKey.add(element.key);
                               }
                             });
@@ -360,13 +364,17 @@ class _HomePageState extends State<HomePage> {
                                                         displayWidth(context) *
                                                             0.05,
                                                   ),
-                                                  decoration: const BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Colors.blueAccent,
-                                                      image: DecorationImage(
-                                                          image: AssetImage(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.blueAccent,
+                                                    image: DecorationImage(
+                                                      image: MemoryImage(
+                                                          base64Decode(userName[
+                                                                  index][
                                                               Strings
-                                                                  .avatarImage))),
+                                                                  .profileImg])),
+                                                    ),
+                                                  ),
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.only(
@@ -465,6 +473,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => PreviewImage(
                                   path: base64Encode(bytes),
                                   myToken: deviceToken.value,
+                                  name: widget.name,
                                 )));
                   } catch (e) {
                     if (kDebugMode) {
@@ -494,6 +503,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => PreviewImage(
                                   path: base64Encode(bytes),
                                   myToken: deviceToken.value,
+                                  name: widget.name,
                                 )));
                   } catch (e) {
                     if (kDebugMode) {

@@ -1,21 +1,21 @@
-import 'dart:async';
+import 'dart:convert';
+import 'dart:io' as Io;
 import 'dart:math';
 
 import 'package:boliye_g/bloc/bloc.dart';
 import 'package:boliye_g/bloc/bloc_event.dart';
-import 'package:boliye_g/bloc/bloc_state.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
-import 'package:boliye_g/screens/homepage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 
 import '../constant/strings.dart';
 import '../utils/preview_imd.dart';
+import 'homepage.dart';
 
 class ItemData {
   final Color color;
@@ -25,7 +25,9 @@ class ItemData {
 class IntroScreen extends StatefulWidget {
   const IntroScreen({
     super.key,
+    this.imgae = '',
   });
+  final String imgae;
 
   @override
   _WithBuilder createState() => _WithBuilder();
@@ -97,45 +99,8 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: BlocProvider(
-          create: (_) => _blocks,
-          child: BlocBuilder<ChatBlocks, ChatState>(
-            builder: (context, state) {
-              if (state is IntroPage) {
-                return body(context);
-              } else if (state is HomeState) {
-                return HomePage(
-                  name: state.name,
-                  imageString: '',
-                );
-              } else {
-                return splash(context);
-              }
-            },
-          ),
-        ));
-  }
-
-  Widget splash(context) {
-    Timer(const Duration(seconds: 2), () {
-      _blocks.add(InitialEvent());
-    });
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Container(
-          width: displayWidth(context) * 0.65,
-          height: displayHeight(context) * 0.3,
-          decoration: const BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-              image: AssetImage('assets/splash_logo.gif'),
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
-      ),
+      resizeToAvoidBottomInset: false,
+      body: body(context),
     );
   }
 
@@ -227,19 +192,34 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                           width: double.infinity,
                           color: data[index].color,
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.03,
-                              left: displayWidth(context) * 0.25),
-                          width: displayWidth(context) * 0.5,
-                          height: displayHeight(context) * 0.3,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.amber.shade200,
-                              image: const DecorationImage(
-                                image: AssetImage(Strings.avatarImage),
-                              )),
-                        ),
+                        (widget.imgae == '')
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: displayHeight(context) * 0.03,
+                                    left: displayWidth(context) * 0.25),
+                                width: displayWidth(context) * 0.5,
+                                height: displayHeight(context) * 0.3,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.amber.shade200,
+                                    image: const DecorationImage(
+                                      image: AssetImage(Strings.avatarImage),
+                                    )),
+                              )
+                            : Container(
+                                margin: EdgeInsets.only(
+                                    top: displayHeight(context) * 0.03,
+                                    left: displayWidth(context) * 0.25),
+                                width: displayWidth(context) * 0.5,
+                                height: displayHeight(context) * 0.3,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.amber.shade200,
+                                    image: DecorationImage(
+                                      image: MemoryImage(
+                                          base64Decode(widget.imgae)),
+                                    )),
+                              ),
                         Container(
                           width: displayWidth(context) * 0.13,
                           height: displayHeight(context) * 0.06,
@@ -302,10 +282,40 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                             left: displayWidth(context) * 0.8,
                           ),
                           child: TextButton(
-                            onPressed: () {
-                              if (_controller.text.isNotEmpty) {
-                                _blocks
-                                    .add(SetUserEvent(name: _controller.text));
+                            onPressed: () async {
+                              if (_controller.text.isNotEmpty &&
+                                  widget.imgae != '') {
+                                _blocks.add(
+                                  SetUserEvent(
+                                      name: _controller.text,
+                                      image: widget.imgae),
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage(
+                                            name: _controller.text,
+                                            imageString: widget.imgae)),
+                                    (route) => false);
+                              } else if (_controller.text.isNotEmpty &&
+                                  widget.imgae == '') {
+                                ByteData bytes =
+                                    await rootBundle.load('assets/avatar.webp');
+                                var buffer = bytes.buffer;
+                                String image =
+                                    base64.encode(Uint8List.view(buffer));
+
+                                _blocks.add(
+                                  SetUserEvent(
+                                      name: _controller.text, image: image),
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage(
+                                            name: _controller.text,
+                                            imageString: image)),
+                                    (route) => false);
                               } else {
                                 Fluttertoast.showToast(
                                   msg: Strings.profileMsgError,
@@ -343,6 +353,7 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
           enableSideReveal: true,
           preferDragFromRevealedArea: true,
           enableLoop: false,
+          initialPage: (widget.imgae != '') ? 1 : 0,
           ignoreUserGestureWhileAnimating: true,
         ),
         Padding(
@@ -386,13 +397,15 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                   try {
                     XFile? filePath =
                         await image.pickImage(source: ImageSource.camera);
+                    final bytes = Io.File(filePath!.path).readAsBytesSync();
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewImage(
-                                  path: filePath!.path,
-                                  myToken: deviceToken.value,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PreviewImage(
+                          path: base64Encode(bytes),
+                        ),
+                      ),
+                    ).then((value) => Navigator.pop(context, true));
                   } catch (e) {
                     if (kDebugMode) {
                       print(e);
@@ -414,13 +427,15 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                   try {
                     XFile? filePath =
                         await image.pickImage(source: ImageSource.gallery);
+                    final bytes = Io.File(filePath!.path).readAsBytesSync();
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewImage(
-                                  path: filePath!.path,
-                                  myToken: deviceToken.value,
-                                )));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PreviewImage(
+                                      path: base64Encode(bytes),
+                                      myToken: deviceToken.value,
+                                    )))
+                        .then((value) => Navigator.pop(context, true));
                   } catch (e) {
                     if (kDebugMode) {
                       print(e);

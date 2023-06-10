@@ -21,9 +21,8 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
           emit(IntroPage());
         } else {
           var map = await databaseHelper.getPhoto(0);
-          print(map);
           String? userName = preferences.getString(Strings.userName);
-          emit(HomeState(name: userName!));
+          emit(HomeState(name: userName!, image: map[0]['photoName']));
         }
       } catch (error) {
         if (kDebugMode) {
@@ -41,22 +40,33 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
         myToken: event.myToken,
       );
     });
-    on<SetUserEvent>((event, emit) {
-      firebaseMassage.getToken(userName: event.name);
-      emit(HomeState(name: event.name));
-    });
-    on<EditProfile>((event, emit) {
-      if (event.name == '' && event.image.isNotEmpty) {
-        try {
-          databaseHelper.updateUserImage(
-              0, {DatabaseHelper.dbUserImageFilePath: event.image});
-          firebaseMassage.setProfileImage(
-              imgLink: event.image, deviceToken: event.myToken);
-        } catch (e) {
+    on<SetUserEvent>((event, emit) async {
+      try {
+        databaseHelper.insertUserDetails({
+          DatabaseHelper.dbId: 0,
+          DatabaseHelper.dbUserName: event.name,
+          DatabaseHelper.dbUserImageFilePath: event.image
+        });
+        await firebaseMassage.getToken(
+            userName: event.name, image: event.image);
+      } catch (e) {
+        if (kDebugMode) {
           print(e.toString());
         }
-        emit(HomeState(name: event.name));
-      } else if (event.image == '' && event.name.isNotEmpty) {}
+      }
+    });
+    on<EditProfileImage>((event, emit) async {
+      final SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+      try {
+        databaseHelper.updateUserImage(
+            0, {DatabaseHelper.dbUserImageFilePath: event.image});
+        firebaseMassage.setProfileImage(
+            imgLink: event.image, deviceToken: event.myToken);
+        String? userName = preferences.getString(Strings.userName);
+      } catch (e) {
+        print(e.toString());
+      }
     });
   }
 }

@@ -8,6 +8,7 @@ class DatabaseHelper {
   static const dbName = 'testing5.db';
   static const dbVersion = 1;
   static const dbUserDetails = 'user';
+  static const dbUserName = 'name';
   static const dbId = 'id';
   static const dbUserImageFilePath = 'photoName';
   static final DatabaseHelper instance = DatabaseHelper();
@@ -29,6 +30,7 @@ class DatabaseHelper {
       db.execute('''
       CREATE TABLE  $dbUserDetails (
       $dbId VARCHAR(2) PRIMARY KEY,
+      $dbUserName TEXT,
       $dbUserImageFilePath TEXT
       )
       ''');
