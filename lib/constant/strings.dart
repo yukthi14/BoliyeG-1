@@ -30,7 +30,7 @@ class Strings {
   static const String setSecretCode = 'Set Secret Code';
   static const String submitButton = 'Submit';
   static const String openEnvelope = 'Open';
-  static const String pwdToast = 'Password Saved';
+  static const String pwdToast = 'Password Set Successfully';
   static const String pwdSuggestion = 'Password should be of four digit';
   static const String invalidPwdToast = 'Invalid';
   static const String changePwd = 'Forgot Password';

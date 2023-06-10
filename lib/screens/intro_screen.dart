@@ -307,7 +307,7 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
             child: const Icon(Icons.arrow_back_ios),
           ),
           onPageChangeCallback: pageChangeCallback,
-          waveType: WaveType.liquidReveal,
+          waveType: WaveType.circularReveal,
           liquidController: liquidController,
           fullTransitionValue: 880,
           enableSideReveal: true,

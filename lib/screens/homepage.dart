@@ -461,6 +461,13 @@ class _HomePageState extends State<HomePage> {
                   try {
                     XFile? filePath =
                         await image.pickImage(source: ImageSource.camera);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewImage(
+                                  path: filePath!.path,
+                                  myToken: deviceToken.value,
+                                )));
                   } catch (e) {
                     if (kDebugMode) {
                       print(e);
