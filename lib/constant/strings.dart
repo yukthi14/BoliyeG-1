@@ -74,6 +74,7 @@ bool animate = false;
 
 ValueNotifier<bool> startAudioChat = ValueNotifier(false);
 ValueNotifier<bool> startPrivateAudioChat = ValueNotifier(false);
+ValueNotifier<String> imageString = ValueNotifier('');
 ValueNotifier<bool> shoeEmoji = ValueNotifier(false);
 int radius = 20;
 

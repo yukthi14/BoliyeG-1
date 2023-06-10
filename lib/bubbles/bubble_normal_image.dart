@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:boliye_g/bloc/bloc.dart';
 import 'package:boliye_g/bloc/bloc_event.dart';
@@ -230,14 +230,14 @@ class _DetailScreenState extends State<DetailScreen> {
         minHeight: 20.0,
         minWidth: 20.0,
       ),
-      child: widget.isNetwork
+      child: (widget.isNetwork)
           ? CachedNetworkImage(
               imageUrl: widget.image,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   CircularProgressIndicator(value: downloadProgress.progress),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             )
-          : Image.file(File(widget.image)),
+          : Image.memory(base64Decode(widget.image)),
     );
   }
 

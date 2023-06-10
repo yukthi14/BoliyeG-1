@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io' as Io;
+
 import 'package:boliye_g/bloc/bloc.dart';
 import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/sizer.dart';
@@ -264,13 +267,15 @@ class _MessageBarState extends State<MessageBar> {
                     ImagePicker pick = ImagePicker();
                     XFile? path =
                         await pick.pickImage(source: ImageSource.camera);
+
                     if (path != null) {
+                      final bytes = Io.File(path.path).readAsBytesSync();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailScreen(
-                            tag: path!.path ?? '',
-                            image: path.path ?? '',
+                            tag: path.name,
+                            image: base64Encode(bytes),
                             isNetwork: false,
                             isPrivate: widget.isPrivate,
                             msgTokenImage: widget.msgTokenImage,

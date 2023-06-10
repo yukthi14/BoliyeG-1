@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io' as Io;
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/screens/profile_screen.dart';
 import 'package:boliye_g/screens/setting_screen.dart';
@@ -9,14 +11,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
-
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
 import 'chating_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.name}) : super(key: key);
+  const HomePage({Key? key, required this.name, required this.imageString}) : super(key: key);
   final String name;
+  final String imageString;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -194,36 +196,23 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w500),
                 )),
               ),
-              StreamBuilder(
-                  stream: FirebaseDatabase.instance
-                      .ref(
-                          "${Strings.user}/${deviceToken.value}/${Strings.profileImg}")
-                      .onValue,
-                  builder: (context, snapshot) {
-                    var image = snapshot.data?.snapshot.value;
-                    return Container(
-                      width: displayWidth(context) * 0.3,
-                      height: displayHeight(context) * 0.3,
-                      margin: EdgeInsets.only(
-                          left: displayWidth(context) * 0.35,
-                          top: displayHeight(context) * 0.02),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: AppColors.scaffoldColor, width: 2),
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        image: (image.toString().isEmpty)
-                            ? const DecorationImage(
-                                image: AssetImage(Strings.avatarImage),
-                              )
-                            : DecorationImage(
-                                image: NetworkImage(
-                                  image.toString(),
-                                ),
-                              ),
-                      ),
-                    );
-                  }),
+              Container(
+                width: displayWidth(context) * 0.3,
+                height: displayHeight(context) * 0.3,
+                margin: EdgeInsets.only(
+                    left: displayWidth(context) * 0.35,
+                    top: displayHeight(context) * 0.02),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.scaffoldColor, width: 2),
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  image: DecorationImage(
+                    image: MemoryImage(
+                      base64Decode(imageString.value),
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 width: displayWidth(context) * 0.4,
                 height: displayWidth(context) * 0.08,
@@ -461,11 +450,12 @@ class _HomePageState extends State<HomePage> {
                   try {
                     XFile? filePath =
                         await image.pickImage(source: ImageSource.camera);
+                    final bytes = Io.File(filePath!.path).readAsBytesSync();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PreviewImage(
-                                  path: filePath!.path,
+                                  path: base64Encode(bytes),
                                   myToken: deviceToken.value,
                                 )));
                   } catch (e) {
@@ -489,11 +479,12 @@ class _HomePageState extends State<HomePage> {
                   try {
                     XFile? filePath =
                         await image.pickImage(source: ImageSource.gallery);
+                    final bytes = Io.File(filePath!.path).readAsBytesSync();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PreviewImage(
-                                  path: filePath!.path,
+                                  path: base64Encode(bytes),
                                   myToken: deviceToken.value,
                                 )));
                   } catch (e) {

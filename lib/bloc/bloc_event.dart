@@ -4,6 +4,18 @@ class InitialEvent extends ChatEvent {
   InitialEvent();
 }
 
+class SetUserEvent extends ChatEvent {
+  String name;
+  SetUserEvent({required this.name});
+}
+
+class EditProfile extends ChatEvent {
+  String myToken;
+  String name;
+  String image;
+  EditProfile({required this.image, required this.name, required this.myToken});
+}
+
 class UpLoadImage extends ChatEvent {
   String file;
   bool isPrivate;

@@ -1,6 +1,7 @@
-import 'dart:io';
+import 'dart:convert';
 
-import 'package:boliye_g/services/firebase_storage.dart';
+import 'package:boliye_g/bloc/bloc.dart';
+import 'package:boliye_g/bloc/bloc_event.dart';
 import 'package:flutter/material.dart';
 
 import '../constant/sizer.dart';
@@ -18,6 +19,14 @@ class _PreviewImageState extends State<PreviewImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final ChatBlocks block = ChatBlocks();
+          block.add(EditProfile(
+              image: widget.path, name: '', myToken: widget.myToken));
+        },
+        child: const Icon(Icons.check),
+      ),
       backgroundColor: Colors.black,
       body: Center(
         child: Container(
@@ -25,17 +34,14 @@ class _PreviewImageState extends State<PreviewImage> {
           width: displayWidth(context),
           height: displayHeight(context) * 5,
           decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: FileImage(File(widget.path)))),
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: MemoryImage(
+                base64Decode(widget.path),
+              ),
+            ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          firebaseVoiceMessage.setProfileImage(
-              path: widget.path, myToken: widget.myToken);
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.check),
       ),
     );
   }

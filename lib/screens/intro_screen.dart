@@ -15,7 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 
 import '../constant/strings.dart';
-import '../services/firebase_mass.dart';
 import '../utils/preview_imd.dart';
 
 class ItemData {
@@ -106,7 +105,10 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
               if (state is IntroPage) {
                 return body(context);
               } else if (state is HomeState) {
-                return HomePage(name: state.name);
+                return HomePage(
+                  name: state.name,
+                  imageString: '',
+                );
               } else {
                 return splash(context);
               }
@@ -167,9 +169,9 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                               top: displayHeight(context) * 0.2),
                           width: displayWidth(context),
                           height: displayHeight(context) * 0.03,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
                                 Strings.logoMsg,
                                 style: TextStyle(fontSize: 17),
@@ -302,12 +304,8 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                           child: TextButton(
                             onPressed: () {
                               if (_controller.text.isNotEmpty) {
-                                firebaseMassage.getToken(
-                                    userName: _controller.text);
-                                Future.delayed(
-                                        const Duration(milliseconds: 500))
-                                    .then(
-                                        (value) => _blocks.add(InitialEvent()));
+                                _blocks
+                                    .add(SetUserEvent(name: _controller.text));
                               } else {
                                 Fluttertoast.showToast(
                                   msg: Strings.profileMsgError,
