@@ -86,17 +86,14 @@ class FirebaseVoiceMessage {
   }) async {
     File file = File(path);
     String recUrl = '';
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       Reference referenceDirVos = references.child(Strings.image);
       await referenceDirVos
-          .child(prefs.get(Strings.token).toString())
+          .child(myToken)
           .child(timeStamp)
           .putFile(file)
           .whenComplete(() async {
-        var voiceRec = referenceDirVos
-            .child(prefs.get(Strings.token).toString())
-            .child(timeStamp);
+        var voiceRec = referenceDirVos.child(myToken).child(timeStamp);
         recUrl = await voiceRec.getDownloadURL();
         if (isPrivate) {
           firebaseMassage.sendPrivateMessage(
