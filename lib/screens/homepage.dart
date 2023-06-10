@@ -68,32 +68,35 @@ class _HomePageState extends State<HomePage> {
         resizeToAvoidBottomInset: false,
         key: _globalKey,
         drawer: Drawer(
-          width: displayWidth(context) * 0.5,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(35),
-                  bottomRight: Radius.circular(35))),
-          backgroundColor: const Color(0xffbcbcd1),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: displayHeight(context) * 0.05),
-                width: displayWidth(context) * 0.3,
-                height: displayHeight(context) * 0.15,
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blueAccent,
-                    image: DecorationImage(
-                        image: AssetImage(Strings.avatarImage))),
-                child: Container(
+            width: displayWidth(context) * 0.5,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(35),
+                    bottomRight: Radius.circular(35))),
+            backgroundColor: const Color(0xffbcbcd1),
+            child: Stack(
+              children: [
+                Container(
                   margin: EdgeInsets.only(
-                      top: displayHeight(context) * 0.12,
-                      left: displayWidth(context) * 0.35,
-                      right: displayWidth(context) * 0.02),
+                    top: displayHeight(context) * 0.05,
+                  ),
+                  width: displayWidth(context) * 0.55,
+                  height: displayHeight(context) * 0.18,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.amber.shade200,
+                      image: const DecorationImage(
+                          image: AssetImage(Strings.avatarImage))),
+                ),
+                Container(
+                  width: displayWidth(context) * 0.13,
+                  height: displayHeight(context) * 0.06,
+                  margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.19,
+                      left: displayWidth(context) * 0.35),
                   decoration: BoxDecoration(
                     color: AppColors.profileCardColor,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                   child: MaterialButton(
                     child: const Icon(Icons.edit),
@@ -102,68 +105,73 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-              ),
-              ListTile(
-                title: const Text(Strings.profile),
-                leading: const Icon(
-                  Icons.people,
-                  color: Colors.black,
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          duration: const Duration(milliseconds: 300),
-                          type: PageTransitionType.rightToLeft,
-                          child: const ProfilePage()));
-                  // Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                color: Colors.black,
-                thickness: 0.2,
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.settings_suggest_rounded,
-                  color: Colors.black,
-                ),
-                title: const Text(Strings.setting),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          duration: const Duration(milliseconds: 300),
-                          type: PageTransitionType.rightToLeft,
-                          child: const SettingPage()));
-                  // Navigator.pop(context);
-                },
-              ),
-              const Divider(
-                color: Colors.black,
-                thickness: 0.2,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: displayHeight(context) * 0.55,
-                ),
-                child: ListTile(
-                  trailing: const Icon(
-                    Icons.logout,
-                    color: Colors.black,
+                Padding(
+                  padding: EdgeInsets.only(top: displayHeight(context) * 0.24),
+                  child: ListView(
+                    children: [
+                      ListTile(
+                        title: const Text(Strings.profile),
+                        leading: const Icon(
+                          Icons.people,
+                          color: Colors.black,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  duration: const Duration(milliseconds: 300),
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const ProfilePage()));
+                          // Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 0.2,
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.settings_suggest_rounded,
+                          color: Colors.black,
+                        ),
+                        title: const Text(Strings.setting),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  duration: const Duration(milliseconds: 300),
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const SettingPage()));
+                          // Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 0.2,
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: displayHeight(context) * 0.48),
+                        child: ListTile(
+                          trailing: const Icon(
+                            Icons.logout,
+                            color: Colors.black,
+                          ),
+                          title: const Text(
+                            Strings.logOut,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          onTap: () async {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  title: const Text(
-                    Strings.logOut,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  onTap: () async {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+                )
+              ],
+            )),
         body: Container(
           color: AppColors.profileCardColor,
           child: Stack(
