@@ -86,8 +86,6 @@ class _ChattingScreenState extends State<ChattingScreen>
     });
   }
 
-  Offset dragGesturePosition = const Offset(0.0, 0.0);
-
   final TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -95,11 +93,6 @@ class _ChattingScreenState extends State<ChattingScreen>
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      onPanUpdate: (DragUpdateDetails details) => setState(
-        () {
-          dragGesturePosition = details.localPosition;
-        },
-      ),
       child: SafeArea(
         child: WillPopScope(
           onWillPop: () {

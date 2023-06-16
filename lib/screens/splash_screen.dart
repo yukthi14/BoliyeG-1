@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:boliye_g/bloc/bloc.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
 import 'package:boliye_g/screens/intro_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/bloc_event.dart';
-import '../bloc/bloc_state.dart';
+import '../bloc/initiate_state_bloc/bloc_event.dart';
+import '../bloc/initiate_state_bloc/bloc_state.dart';
 import '../constant/sizer.dart';
 import 'homepage.dart';
 
@@ -37,10 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: BlocBuilder<ChatBlocks, ChatState>(
           builder: (context, state) {
             if (state is HomeState) {
-              return HomePage(
-                name: state.name,
-                imageString: state.image,
-              );
+              return HomeScreen(name: state.name, imageString: state.image);
             } else if (state is IntroPage) {
               return const IntroScreen();
             } else {

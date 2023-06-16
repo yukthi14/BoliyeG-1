@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io' as Io;
 import 'dart:math';
 
-import 'package:boliye_g/bloc/bloc.dart';
-import 'package:boliye_g/bloc/bloc_event.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc_event.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:flutter/foundation.dart';
@@ -293,7 +293,7 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomePage(
+                                        builder: (context) => HomeScreen(
                                             name: _controller.text,
                                             imageString: widget.imgae)),
                                     (route) => false);
@@ -312,10 +312,11 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomePage(
+                                        builder: (context) => HomeScreen(
                                             name: _controller.text,
                                             imageString: image)),
                                     (route) => false);
+                                _blocks.add(UpdateUsersEvent());
                               } else {
                                 Fluttertoast.showToast(
                                   msg: Strings.profileMsgError,

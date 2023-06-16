@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:boliye_g/bloc/bloc.dart';
-import 'package:boliye_g/bloc/bloc_event.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc_event.dart';
 import 'package:boliye_g/screens/homepage.dart';
 import 'package:boliye_g/screens/intro_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +40,8 @@ class _PreviewImageState extends State<PreviewImage> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        HomePage(name: widget.name, imageString: widget.path)),
+                    builder: (context) => HomeScreen(
+                        name: widget.name, imageString: widget.path)),
                 (route) => false);
           }
         },

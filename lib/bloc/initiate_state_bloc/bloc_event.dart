@@ -14,6 +14,10 @@ class SetUserEvent extends ChatEvent {
   SetUserEvent({required this.name, required this.image});
 }
 
+class UpdateUsersEvent extends ChatEvent {
+  UpdateUsersEvent();
+}
+
 class EditProfileImage extends ChatEvent {
   String myToken;
   String image;

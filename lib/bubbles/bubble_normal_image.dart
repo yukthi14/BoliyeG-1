@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:boliye_g/bloc/bloc.dart';
-import 'package:boliye_g/bloc/bloc_event.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc_event.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';

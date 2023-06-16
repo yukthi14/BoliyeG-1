@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io' as Io;
 
-import 'package:boliye_g/bloc/bloc.dart';
+import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
 import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
