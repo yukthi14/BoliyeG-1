@@ -8,11 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constant/strings.dart';
+import '../../services/is_internet_connected.dart';
 
 class ChatBlocks extends Bloc<ChatEvent, ChatState> {
   ChatBlocks() : super(SplashState()) {
     final DatabaseHelper databaseHelper = DatabaseHelper();
     final FirebaseMassage firebaseMassage = FirebaseMassage();
+    final Network network = Network();
     final firebaseDatabase = FirebaseDatabase.instance.ref();
     on<InitialEvent>((event, emit) async {
       final SharedPreferences preferences =
@@ -26,23 +28,29 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
         if (preferences.getString(Strings.token) == null) {
           emit(IntroPage());
         } else {
-          var usersDate = await firebaseDatabase.child(Strings.user).get();
-          for (var token in usersDate.children) {
-            if (preferences.getString(Strings.token) != token.key) {
-              info.add(token.value);
-              infoKey.add(token.key);
+          if (await network.checkConnection()) {
+            var usersDate = await firebaseDatabase.child(Strings.user).get();
+            for (var token in usersDate.children) {
+              if (preferences.getString(Strings.token) != token.key) {
+                info.add(token.value);
+                infoKey.add(token.key);
+              }
             }
+            for (int i = 0; i < info.length; i++) {
+              databaseHelper.insertUsersDetails({
+                DatabaseHelper.dbMyUsersTokens: infoKey[i],
+                DatabaseHelper.dbUserImageFilePath: info[i][Strings.profileImg],
+                DatabaseHelper.dbUserName: info[i][Strings.userName]
+              });
+            }
+            var map = await databaseHelper.getPhoto(0);
+            String? userName = preferences.getString(Strings.userName);
+            emit(HomeState(name: userName!, image: map[0]['photoName']));
+          } else {
+            var map = await databaseHelper.getPhoto(0);
+            String? userName = preferences.getString(Strings.userName);
+            emit(HomeState(name: userName!, image: map[0]['photoName']));
           }
-          for (int i = 0; i < info.length; i++) {
-            databaseHelper.updateUsersDetails(infoKey[i], {
-              DatabaseHelper.dbMyUsersTokens: infoKey[i],
-              DatabaseHelper.dbUserImageFilePath: info[i][Strings.profileImg],
-              DatabaseHelper.dbUserName: info[i][Strings.userName]
-            });
-          }
-          var map = await databaseHelper.getPhoto(0);
-          String? userName = preferences.getString(Strings.userName);
-          emit(HomeState(name: userName!, image: map[0]['photoName']));
         }
       } catch (error) {
         if (kDebugMode) {
@@ -63,11 +71,17 @@ class ChatBlocks extends Bloc<ChatEvent, ChatState> {
         }
       }
       for (int i = 0; i < info.length; i++) {
-        databaseHelper.insertUsersDetails({
-          DatabaseHelper.dbMyUsersTokens: infoKey[i],
-          DatabaseHelper.dbUserImageFilePath: info[i][Strings.profileImg],
-          DatabaseHelper.dbUserName: info[i][Strings.userName]
-        });
+        try {
+          databaseHelper.updateUsersDetails(infoKey[i], {
+            DatabaseHelper.dbMyUsersTokens: infoKey[i],
+            DatabaseHelper.dbUserImageFilePath: info[i][Strings.profileImg],
+            DatabaseHelper.dbUserName: info[i][Strings.userName]
+          });
+        } catch (e) {
+          if (kDebugMode) {
+            print(e.toString());
+          }
+        }
       }
     });
 

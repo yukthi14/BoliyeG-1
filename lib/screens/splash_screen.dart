@@ -37,6 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
         child: BlocBuilder<ChatBlocks, ChatState>(
           builder: (context, state) {
             if (state is HomeState) {
+              print(
+                  'helooooooooooooooooooooooooooooooooooooooooooooooooooooooo');
               return HomeScreen(name: state.name, imageString: state.image);
             } else if (state is IntroPage) {
               return const IntroScreen();

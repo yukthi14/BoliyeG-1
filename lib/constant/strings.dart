@@ -62,6 +62,8 @@ class Integers {
 }
 
 StreamController<bool> streamController = StreamController<bool>();
+StreamController<List<Map<String, Object?>>> usersStreaming =
+    StreamController<List<Map<String, Object?>>>();
 
 bool showEmoji = false;
 bool openEnvelope = true;

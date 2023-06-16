@@ -398,6 +398,104 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget notInternet(context) {
+    return SizedBox(
+      height: displayHeight(context) * 0.58,
+      child: StreamBuilder<List<Map<String, Object?>>>(
+          stream: usersStreaming.stream,
+          builder: (context, snapshot) {
+            userName.clear();
+            userKey.clear();
+            List userImage = [];
+            var allUser = snapshot.data;
+            userImage.clear();
+            for (int i = 0; i < allUser!.length; i++) {
+              print(allUser[i]['userToken']);
+              userName.add(allUser[i]['name']);
+              userKey.add(allUser[i]['userToken']);
+              userImage.add(allUser[i]['photoName']);
+            }
+            print(userKey.length);
+            return RefreshIndicator(
+              onRefresh: () async {
+                // await _refresh(true, snapshot);
+              },
+              color: Colors.black,
+              backgroundColor: AppColors.refresherColor,
+              child: ListView.builder(
+                itemCount: allUser.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () async {
+                      String msgToken =
+                          '${allUser[index]['userToken']}${Strings.middleOfMessageToken}${deviceToken.value}';
+                      String revToken =
+                          '${deviceToken.value}${Strings.middleOfMessageToken}${allUser[index]['userToken']}';
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          duration: const Duration(milliseconds: 300),
+                          type: PageTransitionType.topToBottom,
+                          child: ChattingScreen(
+                            msgToken: msgToken,
+                            revMsgToken: revToken,
+                            myToken: deviceToken.value,
+                            name: userName[index],
+                            image: userImage[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                          color: Colors.deepPurple.shade300,
+                        ),
+                      ),
+                      height: displayHeight(context) * 0.075,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: displayWidth(context) * 0.12,
+                            height: displayHeight(context) * 0.12,
+                            margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.05,
+                            ),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.blueAccent,
+                              image: DecorationImage(
+                                image:
+                                    MemoryImage(base64Decode(userImage[index])),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: displayWidth(context) * 0.2,
+                                top: displayHeight(context) * 0.025),
+                            child: Text(
+                              userName[index],
+                              style: TextStyle(
+                                fontSize: displayWidth(context) * 0.05,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }),
+    );
+  }
+
   Widget noInternet(context) {
     return Column(
       children: [

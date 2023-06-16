@@ -90,7 +90,7 @@ class DatabaseHelper {
         .update(dbMyUsers, row, where: '$dbMyUsersTokens=?', whereArgs: [id]);
   }
 
-  queryRecord() async {
+  Future<List<Map<String, Object?>>> queryRecord() async {
     Database? db = await instance.database;
     return await db!.query(dbMyUsers);
   }

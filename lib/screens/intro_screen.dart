@@ -6,6 +6,7 @@ import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
 import 'package:boliye_g/bloc/initiate_state_bloc/bloc_event.dart';
 import 'package:boliye_g/constant/color.dart';
 import 'package:boliye_g/constant/sizer.dart';
+import 'package:boliye_g/services/is_internet_connected.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -283,48 +284,56 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                           ),
                           child: TextButton(
                             onPressed: () async {
-                              if (_controller.text.isNotEmpty &&
-                                  widget.imgae != '') {
-                                _blocks.add(
-                                  SetUserEvent(
-                                      name: _controller.text,
-                                      image: widget.imgae),
-                                );
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen(
-                                            name: _controller.text,
-                                            imageString: widget.imgae)),
-                                    (route) => false);
-                              } else if (_controller.text.isNotEmpty &&
-                                  widget.imgae == '') {
-                                ByteData bytes =
-                                    await rootBundle.load('assets/avatar.webp');
-                                var buffer = bytes.buffer;
-                                String image =
-                                    base64.encode(Uint8List.view(buffer));
+                              final net = Network();
+                              if (await net.checkConnection()) {
+                                if (_controller.text.isNotEmpty &&
+                                    widget.imgae != '') {
+                                  _blocks.add(
+                                    SetUserEvent(
+                                        name: _controller.text,
+                                        image: widget.imgae),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen(
+                                              name: _controller.text,
+                                              imageString: widget.imgae)),
+                                      (route) => false);
+                                } else if (_controller.text.isNotEmpty &&
+                                    widget.imgae == '') {
+                                  ByteData bytes = await rootBundle
+                                      .load('assets/avatar.webp');
+                                  var buffer = bytes.buffer;
+                                  String image =
+                                      base64.encode(Uint8List.view(buffer));
 
-                                _blocks.add(
-                                  SetUserEvent(
-                                      name: _controller.text, image: image),
-                                );
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
+                                  _blocks.add(
+                                    SetUserEvent(
+                                        name: _controller.text, image: image),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
                                         builder: (context) => HomeScreen(
                                             name: _controller.text,
-                                            imageString: image)),
-                                    (route) => false);
-                                _blocks.add(UpdateUsersEvent());
+                                            imageString: image),
+                                      ),
+                                      (route) => false);
+                                  _blocks.add(UpdateUsersEvent());
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg: Strings.profileMsgError,
+                                    gravity: ToastGravity.TOP,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
                               } else {
                                 Fluttertoast.showToast(
-                                  msg: Strings.profileMsgError,
-                                  gravity: ToastGravity.TOP,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                    msg: 'No Connection',
+                                    backgroundColor: Colors.red);
                               }
                             },
                             style: TextButton.styleFrom(
