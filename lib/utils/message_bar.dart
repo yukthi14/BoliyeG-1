@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as Io;
 
-import 'package:boliye_g/bloc/initiate_state_bloc/bloc.dart';
 import 'package:boliye_g/bubbles/bubble_normal_image.dart';
 import 'package:boliye_g/constant/sizer.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
@@ -52,7 +51,6 @@ class MessageBar extends StatefulWidget {
 
 class _MessageBarState extends State<MessageBar> {
   final TextEditingController _textController = TextEditingController();
-  final ChatBlocks _chatBlocks = ChatBlocks();
   makeIconTilt() {
     setState(() {
       showCheckIcon = _textController.text.isNotEmpty;
@@ -112,21 +110,22 @@ class _MessageBarState extends State<MessageBar> {
               //     size: 24,
               //   ),
               //   onTap: () {
+              //
               //     EmojiPicker(
               //       onEmojiSelected: (category, emoji) {
-              //         // Do something when emoji is tapped
+              //         _textController.text = emoji.toString();
               //       },
               //       config: const Config(
               //           columns: 7,
               //           emojiSizeMax: 32.0,
               //           verticalSpacing: 0,
               //           horizontalSpacing: 0,
-              //           initCategory: Category.RECENT,
+              //           //  initCategory: Category.RECENT,
               //           bgColor: Color(0xFFF2F2F2),
               //           indicatorColor: Colors.blue,
               //           iconColor: Colors.grey,
               //           iconColorSelected: Colors.blue,
-              //           showRecentsTab: true,
+              //           //  showRecentsTab: true,
               //           recentsLimit: 28,
               //           categoryIcons: CategoryIcons(),
               //           buttonMode: ButtonMode.MATERIAL),
@@ -162,13 +161,14 @@ class _MessageBarState extends State<MessageBar> {
                     bottom: displayHeight(context) * 0.005,
                     top: displayHeight(context) * 0.009,
                   ),
-                  child: TextField(
+                  child: TextFormField(
                     controller: _textController,
                     keyboardType: TextInputType.multiline,
                     cursorColor: Colors.black,
                     textCapitalization: TextCapitalization.sentences,
                     minLines: 1,
                     maxLines: 3,
+                    enableIMEPersonalizedLearning: false,
                     onChanged: (_) => {widget.onTextChanged, makeIconTilt()},
                     decoration: InputDecoration(
                       prefixIcon: IconButton(
