@@ -135,9 +135,9 @@ class _WithBuilder extends State<IntroScreen> with TickerProviderStateMixin {
                               top: displayHeight(context) * 0.2),
                           width: displayWidth(context),
                           height: displayHeight(context) * 0.03,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 Strings.logoMsg,
                                 style: TextStyle(fontSize: 17),

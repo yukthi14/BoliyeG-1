@@ -48,6 +48,7 @@ class Strings {
   static const String selectOption = 'Select Option';
   static const String cameraText = 'Camera';
   static const String galleryText = 'Gallery';
+  static const String emojiText = 'Emoji';
   static const String errorInternetMsg = 'No Internet Connection';
   static const String sadImg = 'assets/sad_img.gif';
   static const String shadow = 'assets/Ellipse8.png';

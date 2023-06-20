@@ -18,6 +18,7 @@ import 'package:page_transition/page_transition.dart';
 import '../constant/sizer.dart';
 import '../constant/strings.dart';
 import 'chating_screen.dart';
+import 'emoji_page.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({
@@ -303,6 +304,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+<<<<<<< Updated upstream
   Widget usersBody(context) {
     return SizedBox(
       height: displayHeight(context) * 0.58,
@@ -524,6 +526,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   void showCustomDialog(BuildContext context) => showDialog(
+=======
+  showCustomDialog(BuildContext context) => showDialog(
+>>>>>>> Stashed changes
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
@@ -591,7 +596,23 @@ class HomeScreen extends StatelessWidget {
                   Strings.galleryText,
                   style: TextStyle(fontSize: 18),
                 ),
-              )
+              ),
+              SimpleDialogOption(
+                padding: EdgeInsets.symmetric(
+                  horizontal: displayWidth(context) * 0.06,
+                  vertical: displayWidth(context) * 0.04,
+                ),
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EmojiPage()));
+                },
+                child: const Text(
+                  Strings.emojiText,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
             ],
           );
         },
