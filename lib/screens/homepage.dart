@@ -92,7 +92,6 @@ class HomeScreen extends StatelessWidget {
                 child: MaterialButton(
                   child: const Icon(Icons.edit),
                   onPressed: () {
-                    showCustomDialog(context);
                   },
                 ),
               ),
@@ -304,7 +303,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-<<<<<<< Updated upstream
   Widget usersBody(context) {
     return SizedBox(
       height: displayHeight(context) * 0.58,
@@ -525,96 +523,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void showCustomDialog(BuildContext context) => showDialog(
-=======
-  showCustomDialog(BuildContext context) => showDialog(
->>>>>>> Stashed changes
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            backgroundColor: AppColors.profileCardColor,
-            title: const Text(Strings.selectOption),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            children: <Widget>[
-              SimpleDialogOption(
-                padding: EdgeInsets.symmetric(
-                  horizontal: displayWidth(context) * 0.06,
-                  vertical: displayWidth(context) * 0.04,
-                ),
-                onPressed: () async {
-                  ImagePicker image = ImagePicker();
-                  try {
-                    XFile? filePath =
-                        await image.pickImage(source: ImageSource.camera);
-                    final bytes = Io.File(filePath!.path).readAsBytesSync();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewImage(
-                                  path: base64Encode(bytes),
-                                  myToken: deviceToken.value,
-                                  name: name,
-                                )));
-                  } catch (e) {
-                    if (kDebugMode) {
-                      print(e);
-                    }
-                  }
-                },
-                child: const Text(
-                  Strings.cameraText,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.symmetric(
-                  horizontal: displayWidth(context) * 0.06,
-                  vertical: displayWidth(context) * 0.04,
-                ),
-                onPressed: () async {
-                  ImagePicker image = ImagePicker();
-                  try {
-                    XFile? filePath =
-                        await image.pickImage(source: ImageSource.gallery);
-                    final bytes = Io.File(filePath!.path).readAsBytesSync();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewImage(
-                                  path: base64Encode(bytes),
-                                  myToken: deviceToken.value,
-                                  name: name,
-                                )));
-                  } catch (e) {
-                    if (kDebugMode) {
-                      print(e);
-                    }
-                  }
-                },
-                child: const Text(
-                  Strings.galleryText,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SimpleDialogOption(
-                padding: EdgeInsets.symmetric(
-                  horizontal: displayWidth(context) * 0.06,
-                  vertical: displayWidth(context) * 0.04,
-                ),
-                onPressed: () async {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EmojiPage()));
-                },
-                child: const Text(
-                  Strings.emojiText,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
-          );
-        },
-      );
 }
